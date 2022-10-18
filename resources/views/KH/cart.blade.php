@@ -130,7 +130,7 @@
                                                         @csrf
                                                 <td>
                                                     <input style="height: 35px" type="number" name="quantity"
-                                                        value="{{ $item->quantity }}" placeholder="0" min="1">
+                                                        value="{{ $item->quantity }}" placeholder="0" min="1" max="5">
                                                 </td>
 
                                                 <td>

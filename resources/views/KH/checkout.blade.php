@@ -88,43 +88,177 @@
                                     <h5 class="mb-0">
                                         <button class="btn btn-link" type="button" data-toggle="collapse"
                                             data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                            Billing Address
+                                            địa chỉ nhận hàng
                                         </button>
                                     </h5>
                                 </div>
+                                <!-- Modal -->
+                                <div style="margin-top: 100px" class="modal fade" id="exampleModal" tabindex="-1"
+                                    role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body" style="width: 100%">
+                                                @foreach ($kk as $value)
+                                                    <a href="{{ route('client.informations.updateStatus', $value->id) }}"
+                                                        style="text-decoration: none;">
+                                                        <div style="border: 1px solid gray;width: 100%;height: 161px;">
+                                                            <span style="margin-left: 20px"><b>Name:</b>
+                                                                {{ $value->name_to }}</span> <br>
+                                                            <span style="margin-left: 20px"><b>Email:</b>
+                                                                {{ $value->email_to }}</span> <br>
+                                                            <span style="margin-left: 20px"><b>address:</b>
+                                                                {{ $value->address_to }}</span> <br>
+                                                            <span style="margin-left: 20px"><b>Phone:</b>
+                                                                {{ $value->phone }}</span> <br> <br>
+
+                                                        </div> <br>
+                                                        <a style="float: right;position: relative;top: -59px">
+                                                            <button type="button" class="btn btn-outline-info"
+                                                                data-toggle="modal"
+                                                                data-target="#exampleModal1{{ $value->id }}">
+                                                                Sửa
+                                                            </button> </a>
+                                                    </a>
+                                                    {{-- start modals edit address --}}
+                                                    <!-- Button trigger modal -->
+                                                    <!-- Modal -->
+                                                    <div style="width: 500px;margin-left: 701px;margin-top: 100px"
+                                                        class="modal fade" id="exampleModal1{{ $value->id }}"
+                                                        tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                                                        aria-hidden="true">
+                                                        <div class="modal-dialog" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="exampleModalLabel">Modal
+                                                                        title</h5>
+                                                                    <button type="button" class="close"
+                                                                        data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <form
+                                                                        action="{{ route('client.informations.update', $value->id) }}"
+                                                                        method="POST" enctype="multipart/form-data">
+                                                                        {{ method_field('PUT') }}
+                                                                        @csrf
+                                                                        <input hidden type="text"
+                                                                            value="{{ $value->id }}" name="id"
+                                                                            id="">
+                                                                        <div class="form-group">
+                                                                            <label for="">Tên người nhận</label>
+                                                                            <input type="text" name="name_to"
+                                                                                id=""
+                                                                                value="{{ $value->name_to }}"
+                                                                                class="form-control">
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label for="">Email</label>
+                                                                            <input type="text" name="email_to"
+                                                                                id=""
+                                                                                value="{{ $value->email_to }}"
+                                                                                class="form-control">
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label for="">Địa chỉ nhận</label>
+                                                                            <input type="text" name="address_to"
+                                                                                id=""
+                                                                                value="{{ $value->address_to }}"
+                                                                                class="form-control">
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label for="">Số điện thoại</label>
+                                                                            <input type="text" name="phone"
+                                                                                id=""
+                                                                                value="{{ $value->phone }}"
+                                                                                class="form-control">
+                                                                        </div>
+                                                                        <div hidden class="form-group">
+                                                                            <input type="text" name="status"
+                                                                                id=""
+                                                                                value="{{ $value->status }}"
+                                                                                class="form-control">
+                                                                        </div>
+                                                                        <button class="btn btn-success">
+                                                                            Cập nhật
+                                                                        </button>
+                                                                        <button class="btn btn-danger">nhập lại</button>
+                                                                        <br>
+                                                                        <br><br> <br> <br><br><br><br><br><br><br>.
+
+                                                                    </form>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {{-- end modals edit address --}}
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {{-- end model --}}
 
                                 <div id="collapseOne" class="collapse show" aria-labelledby="headingOne"
                                     data-parent="#accordionExample">
                                     <div class="card-body">
+                                        <i class="fas fa-search-location" style="color: orangered"> <span>Địa chỉ nhận
+                                                hàng</span></i>
+                                        @foreach ($address as $value)
+                                            <div style="margin-left: 10px">
+                                                <span><b>Name:</b> {{ $value->name_to }}</span> <br>
+                                                <span><b>Email:</b> {{ $value->email_to }}</span> <br>
+                                                <span><b>address:</b> {{ $value->address_to }}</span> <br>
+                                                <span><b>Phone:</b> {{ $value->phone }}</span> <br> <br>
+                                                <!-- Button trigger modal -->
+                                                <button style="color: black" type="button"
+                                                    class="btn btn-outline-warning" data-toggle="modal"
+                                                    data-target="#exampleModal">
+                                                    Thay đổi
+                                                </button>
+
+                                            </div>
+                                        @endforeach
                                         <div class="billing-address-form">
                                             <form action="{{ route('client.storeOrder') }}" method="POST">
                                                 @csrf
-
-                                                <input hidden type="text" name="user_id" value="{{ Auth::id() }}"
-                                                    id="">
-                                                <input hidden type="text" name="oderStatus" value="0"
-                                                    id="">
-                                                <p><input type="text" value="" name="orderName" placeholder="Name">
-                                                </p>
-                                                <p><input type="email" value="" name="oderEmail"
-                                                        placeholder="Email"></p>
-                                                <p><input type="text" value="" name="address"
-                                                        placeholder="Address"></p>
-                                                <input type="text" hidden name="ship" value="{{ $ship }}"
-                                                    id="">
-                                                <p><input type="tel" name="phone" placeholder="Phone"></p>
-                                                {{-- @foreach ($products as $item) --}}
-                                                <input hidden type="text" name="total"
-                                                    value="{{ $total + $ship - $price_coupon }}" id="">
+                                                @foreach ($address as $item)
+                                                    <input hidden type="text" name="user_id"
+                                                        value="{{ Auth::id() }}" id="">
+                                                    <input hidden type="text" name="oderStatus" value="0"
+                                                        id="">
+                                                    <p><input hidden type="text" value="{{ $item->name_to }}"
+                                                            name="orderName" placeholder="Name">
+                                                    </p>
+                                                    <p><input hidden type="email" value="{{ $item->email_to }}"
+                                                            name="oderEmail" placeholder="Email"></p>
+                                                    <p><input hidden type="text" value="{{ $item->address_to }}"
+                                                            name="address" placeholder="Address"></p>
+                                                    <input hidden type="text" hidden name=""
+                                                        value="{{ $ship }}" id="">
+                                                    <p><input hidden type="tel" name="phone"
+                                                            value="{{ $item->phone }}" placeholder="Phone"></p>
+                                                    {{-- @foreach ($products as $item) --}}
+                                                    <input hidden type="text" name="total"
+                                                        value="{{ $total - $price_coupon }}" id="">
+                                                @endforeach
                                                 {{-- @endforeach --}}
                                                 @foreach ($id_cart as $haha)
-                                                    <input type="text" hidden name="id_cart[]" value="{{ $haha }}"
-                                                        id="">
+                                                    <input type="text" hidden name="id_cart[]"
+                                                        value="{{ $haha }}" id="">
                                                 @endforeach
                                                 <p>
                                                     <textarea name="bill" id="bill" cols="30" rows="10" placeholder="Say Something"></textarea>
                                                 </p>
-                                                <button class="btn btn-warning">Save</button> <br>
+                                                {{-- <button class="btn btn-warning">Save</button> <br> --}}
                                                 <div>
                                                     @if ($errors->any())
                                                         <ul>
@@ -134,7 +268,6 @@
                                                         </ul>
                                                     @endif
                                                 </div>
-                                            </form>
                                         </div>
                                     </div>
                                 </div>
@@ -144,7 +277,7 @@
                                     <h5 class="mb-0">
                                         <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
                                             data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                            Shipping Address
+                                            phương thức vận chuyển
                                         </button>
                                     </h5>
                                 </div>
@@ -154,22 +287,30 @@
                                         <div class="shipping-address-form">
                                             <p style="font-size: 18px;font-weight: bold">Chọn loại vận chuyển</p>
                                             <div>
-                                               @foreach ($ships as $value)
-                                                   <input type="radio" name="ship_id" value="" id=""><span style="margin-left: 10px">{{$value->name_ship}}</span><br>
-                                               @endforeach
+                                                @foreach ($ships as $value)
+                                                    <input type="radio" onclick="ok{{ $value->id }}()"
+                                                        id="alo{{ $value->id }}" name="ship"
+                                                        value="{{ $ship + ($value->price_ship / 100) * $ship }}"
+                                                        id=""><span
+                                                        style="margin-left: 10px">{{ $value->name_ship }}
+                                                        ({{ number_format($ship + ($value->price_ship / 100) * $ship) }}<sup>đ</sup>)
+                                                    </span><br>
+                                                @endforeach
                                             </div>
+                                            <br>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </form>
+                            {{-- lu luon --}}
+                            {{-- </form> --}}
                             <div class="card single-accordion">
                                 <div class="card-header" id="headingThree">
                                     <h5 class="mb-0">
                                         <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
                                             data-target="#collapseThree" aria-expanded="false"
                                             aria-controls="collapseThree">
-                                            Card Details
+                                            Phương thức thanh toán
                                         </button>
                                     </h5>
                                 </div>
@@ -177,14 +318,113 @@
                                     data-parent="#accordionExample">
                                     <div class="card-body">
                                         <div class="card-details">
-                                            <p>Your card details goes here.</p>
-                                        </div>
+                                            {{-- <p>Your card details goes here.</p> --}}
+                                            <!-- Button trigger modal -->
+                                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                data-target="#exampleModal2">
+                                                Thanh toán onile
+                                            </button>
+
+                                            <!-- Modal -->
+                                            <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog"
+                                                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLabel">Ngân hàng liên
+                                                                kết
+                                                            </h5>
+                                                            <button type="button" class="close" data-dismiss="modal"
+                                                                aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <span><b>Số tài khoản:</b> 19036632929019 </span> <br>
+                                                            <span><b>Tên tài khoản:</b> DAO CU HOAN </span> <br>
+                                                            <span><b>Ngân hàng:</b> TECHCOMBANK</span> <br>
+                                                            <span><b>Ghi chú:</b> {{ Auth::user()->name }} thanh toan tien
+                                                                hang </span> <br>
+                                                            <hr>
+                                                            <span><b>Số tài khoản:</b> 0392397262 </span> <br>
+                                                            <span><b>Tên tài khoản:</b> DAO CU HOAN </span> <br>
+                                                            <span><b>Ngân hàng:</b> MOMO</span> <br>
+                                                            <span><b>Ghi chú:</b> {{ Auth::user()->name }} thanh toan tien
+                                                                hang </span> <br>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            {{-- <button type="button" class="btn btn-secondary"
+                                                                data-dismiss="modal">Close</button> --}}
+                                                            <button data-dismiss="modal" type="button"
+                                                                class="btn btn-primary" onclick="hienthi0()">thanh toán
+                                                                thành công</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {{-- end modals --}}
+                                            <!-- Button trigger modal -->
+                                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                data-target="#exampleModal3">
+                                                thanh toán sau khi nhận hàng
+                                            </button>
+
+                                            <!-- Modal -->
+                                            <div class="modal fade" id="exampleModal3" tabindex="-1" role="dialog"
+                                                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLabel">Modal title
+                                                            </h5>
+                                                            <button type="button" class="close" data-dismiss="modal"
+                                                                aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <p style="font-style: italic">Vui lòng cọc 15% tiền hàng để đảm
+                                                                bảo tính xác thực trước khi nhận hàng mong quý khách chuyển
+                                                                qua STK dưới đây: </p>
+                                                            <br>
+                                                            <span style="font-style: italic">Số tiền phải cọc:
+                                                                {{ number_format(0.2 * ($total + $ship - $price_coupon)) }}</span>
+                                                            <br>
+                                                            <span><b>Số tài khoản:</b> 19036632929019 </span> <br>
+                                                            <span><b>Tên tài khoản:</b> DAO CU HOAN </span> <br>
+                                                            <span><b>Ngân hàng:</b> TECHCOMBANK</span> <br>
+                                                            <span><b>Ghi chú:</b> khach hang {{ Auth::user()->name }}
+                                                                chuyen tien coc hang </span> <br>
+                                                            <hr>
+                                                            <span><b>Số tài khoản:</b> 0392397262 </span> <br>
+                                                            <span><b>Tên tài khoản:</b> DAO CU HOAN </span> <br>
+                                                            <span><b>Ngân hàng:</b> MOMO</span> <br>
+                                                            <span><b>Ghi chú:</b> khach hang {{ Auth::user()->name }}
+                                                                chuyen tien coc hang </span> <br>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            {{-- <button type="button" class="btn btn-secondary"
+                                                                data-dismiss="modal">Close</button> --}}
+                                                            <button data-dismiss="modal" onclick="hienthi()"
+                                                                type="button" class="btn btn-primary">thanh toán thành
+                                                                công</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {{-- end modals coc --}}
+                                        </div> <br>
                                     </div>
                                 </div>
-                            </div>
+                            </div> <br>
+                            <button id="btn_order" class="bnt btn-default"
+                                style="display: none;background: #F28123;color: white;width: 110px;height: 40px;border: 0px;border-radius: 10px">Đặt
+                                hàng</button>
                         </div>
                     </div>
                 </div>
+                </form>
+                {{-- end form gui request sang ben order --}}
                 <div class="col-lg-4">
                     <div class="order-details-wrap">
                         <table class="order-details">
@@ -196,10 +436,10 @@
                             </thead>
                             <tbody class="order-details-body">
 
-                                {{-- <tr>
+                                <tr>
                                     <td>Product</td>
                                     <td>Total</td>
-                                </tr> --}}
+                                </tr>
                                 <span hidden>
                                     {{ $total = 0 }}
                                 </span>
@@ -243,11 +483,31 @@
 								</tr> --}}
                                 <tr>
                                     <td>Phí ship</td>
-                                    <td>{{ number_format($ship) }}</td>
+                                    <td>
+                                        <div id="haha">{{ $ship }}</div>
+                                        @foreach ($ships as $value)
+                                            <div style="display: none" id="hienthi{{ $value->id }}">
+                                                {{ number_format($ship + ($value->price_ship / 100) * $ship) }}<sup>đ</sup>
+                                            </div>
+                                        @endforeach
+                                        {{-- <div id="hienhi2">{{ number_format($ship) }}</div>
+                                        <div id="hienthi3">{{ number_format($ship) }}</div> --}}
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>Tổng tiền</td>
-                                    <td>{{ number_format($total = $total + $ship - $price_coupon) }}</td>
+                                    <td>
+                                        <div id="kkk">
+                                            {{ number_format($total + $ship - $price_coupon) }}
+                                        </div>
+                                        <div>
+                                            @foreach ($ships as $value)
+                                                <div style="display: none" id="tongtien{{ $value->id }}">
+                                                    {{ number_format( $total + ($ship + ($value->price_ship / 100) * $ship) - $price_coupon) }}<sup>đ</sup>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </td>
                                     {{-- <td>{{dd($price_coupon)}}</td> --}}
                                 </tr>
                             </tbody>
@@ -279,4 +539,65 @@
         </div>
     </div>
     <!-- end check out section -->
+    <script>
+        let btn_orderElementDiv = document.getElementById("btn_order")
+
+        // 
+        let hienthi1ElementDiv = document.getElementById("hienthi1")
+        let hienthi2ElementDiv = document.getElementById("hienthi2")
+        let hienthi3ElementDiv = document.getElementById("hienthi3")
+        let hahaElementDiv = document.getElementById("haha")
+        // 
+        let tongtien1ElementDiv = document.getElementById("tongtien1")
+        let tongtien2ElementDiv = document.getElementById("tongtien2")
+        let tongtien3ElementDiv = document.getElementById("tongtien3")
+        let kkkElementDiv = document.getElementById("kkk")
+
+        function ok1() {
+            hienthi1ElementDiv.style.display = "block"
+            hienthi2ElementDiv.style.display = "none"
+            hienthi3ElementDiv.style.display = "none"
+            hahaElementDiv.style.display = "none"
+            // 
+            tongtien1ElementDiv.style.display = "block"
+            tongtien2ElementDiv.style.display = "none"
+            tongtien3ElementDiv.style.display = "none"
+            kkkElementDiv.style.display = "none"
+
+        }
+
+        function ok2() {
+            hienthi1ElementDiv.style.display = "none"
+            hienthi2ElementDiv.style.display = "block"
+            hienthi3ElementDiv.style.display = "none"
+            
+            // 
+            tongtien1ElementDiv.style.display = "none"
+            tongtien2ElementDiv.style.display = "block"
+            tongtien3ElementDiv.style.display = "none"
+            kkkElementDiv.style.display = "none"
+
+        }
+
+        function ok3() {
+            hienthi1ElementDiv.style.display = "none"
+            hienthi2ElementDiv.style.display = "none"
+            hienthi3ElementDiv.style.display = "block"
+            kkkElementDiv.style.display = "none"
+            // 
+            tongtien1ElementDiv.style.display = "none"
+            tongtien2ElementDiv.style.display = "none"
+            tongtien3ElementDiv.style.display = "block"
+            hahaElementDiv.style.display = "none"
+
+        }
+
+        function hienthi() {
+            btn_orderElementDiv.style.display = "block"
+        }
+
+        function hienthi0() {
+            btn_orderElementDiv.style.display = "block"
+        }
+    </script>
 @endsection

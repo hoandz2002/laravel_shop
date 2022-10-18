@@ -17,6 +17,7 @@ class Order extends Model
         'address',
         'oderEmail',
         'orderName',
+        'orderShip',
         'total',
     ];
 }

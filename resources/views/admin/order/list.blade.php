@@ -7,7 +7,7 @@
 @section('content')
     <div>
         @if (session()->has('sucssec'))
-            <div class="alert alert-success">
+            <div class="alert alert-info">
                 {{ session()->get('sucssec') }}
             </div>
         @endif
@@ -44,14 +44,17 @@
                                 </option>
                                 <option {{ $item->oderStatus == 2 ? 'selected' : '' }} value="2">Đang giao hàng</option>
                                 <option {{ $item->oderStatus == 3 ? 'selected' : '' }} value="3">Đã nhận hàng</option>
+                                <option {{ $item->oderStatus == 5 ? 'selected' : '' }} value="5">Đã thanh toán</option>
                                 <option {{ $item->oderStatus == 4 ? 'selected' : '' }} value="4">Đã hủy đơn</option>
                             </select>
+                            <input type="text" name="oderEmail" value="{{$item->oderEmail}}" hidden  id="">
                             <button style="height: 30px" class="btn btn-dark "><i class="fa fa-redo"></i></button>
                         </form>
                     </td>
 
                     <td>
                         <form action="{{ route('admin.orders.detail', $item->id) }}">
+                            <input type="text" hidden name="orderShip" value="{{$item->orderShip}}" id="">
                             <input type="text" hidden name="oddPricePrd" value="{{$item->total}}" id="">
                             <button class="btn btn-warning">
                                 <i class="fas fa-eye"></i>

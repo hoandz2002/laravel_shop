@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendMaid;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +15,7 @@ class OrderController extends Controller
         $total = 0;
         $ship = 0;
         $data = Order::select(
-            'id',   
+            'id',
             'orderDate',
             'user_id',
             'oderStatus',
@@ -27,39 +28,45 @@ class OrderController extends Controller
             // ->cursorPaginate(5);
             ->orderBy('orders.id', 'DESC')
             ->paginate(10);
-            foreach ($data as $item) {
-                $mass += $item->quantity * $item->mass;
-            }
-            if ($mass <= 10) {
-                $ship = 50000;
-            } elseif ($mass <= 30) {
-                $ship = 150000;
-            } elseif ($mass <= 60) {
-                $ship = 300000;
-            } else {
-                $ship = 500000;
-            }
-            // dd($data);
+        foreach ($data as $item) {
+            $mass += $item->quantity * $item->mass;
+        }
+        if ($mass <= 10) {
+            $ship = 50000;
+        } elseif ($mass <= 30) {
+            $ship = 150000;
+        } elseif ($mass <= 60) {
+            $ship = 300000;
+        } else {
+            $ship = 500000;
+        }
+        // dd($data);
         // dd($usersPaginate);
-        return view('admin.order.list',compact('data','ship','mass'));
+        return view('admin.order.list', compact('data', 'ship', 'mass'));
     }
-    public function updateStatusOrder(Request $request, $order) {
+    public function updateStatusOrder(Request $request, $order)
+    {
         // dd($request->all());
         $data = Order::find($order);
+        // dd($data);
         $data->oderStatus = $request->oderStatus;
+
         // dd($data->oderStatus);
         // dd($data->orderStatus);
-        session()->flash('sucssec','đơn hàng đã được cập nhật');
+        session()->flash('sucssec', 'đơn hàng đã được cập nhật');   
         $data->save();
+        if ($data->oderStatus == 1) {
+            SendMaid::dispatch($request->oderEmail)->delay(now()->addSeconds(2));
+            return redirect()->route('admin.orders.list');
+        }
         return redirect()->route('admin.orders.list');
     }
     public function showOrder()
     {
-        $data = Order::all()->where('user_id','=',Auth::id());
-           
+        $data = Order::all()->where('user_id', '=', Auth::id());
+
         return view('KH.order', [
             'order_list' => $data,
         ]);
     }
-    
 }

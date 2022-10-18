@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ContactRequest;
 use App\Http\Requests\OrderRequest;
 use App\Http\Requests\UserRequest;
+use App\Jobs\SendMaid;
 use App\Models\Cart;
 use App\Models\CategoryProduct;
 use App\Models\Comment;
 use App\Models\Contact;
 use App\Models\Coupon;
+use App\Models\Information;
 use App\Models\Material;
 use App\Models\Order;
 use App\Models\OrderDetail;
@@ -291,8 +293,10 @@ class ClientController extends Controller
     }
     public function checkout(Request $request)
     {
-        $ships=Ship::all();
-        //    dd($request->all());
+        $ships = Ship::all();
+        $kk = Information::all();
+        // dd($data);
+        $address = Information::where('information.status', '=', 0)->get();
         if ($request->id) {
             $price_coupon = 0;
             $id_cart = $request->id;
@@ -331,7 +335,7 @@ class ClientController extends Controller
                     $ship = 500000;
                 }
                 // dd($products);
-                return view('KH.checkout', compact('products', 'mass', 'total', 'ship', 'id_cart', 'price_coupon','ships'));
+                return view('KH.checkout', compact('kk', 'products', 'mass', 'total', 'ship', 'id_cart', 'price_coupon', 'ships', 'address'));
             }
         } else {
             session()->flash('empty_checkbok', 'Vui lòng chọn sản phẩm thanh toán !');
@@ -340,7 +344,10 @@ class ClientController extends Controller
     }
     public function check_coupon(Request $request)
     {
-        // dd($request->all());
+        $ships = Ship::all();
+        $kk = Information::all();
+        $address = Information::where('information.status', '=', 0)->get();
+
         $price_coupon = 0;
         $coupon = Coupon::all();
         // dd($coupon);
@@ -384,7 +391,7 @@ class ClientController extends Controller
                 $price_coupon = $item->sale;
                 // dd($price_coupon);
                 session()->flash('success', 'Đã thêm mã giảm giá thành công!');
-                return view('KH.checkout', compact('products', 'mass', 'total', 'ship', 'id_cart', 'price_coupon'));
+                return view('KH.checkout', compact('products', 'mass', 'total', 'ship', 'id_cart', 'price_coupon','kk','ships','address'));
             } elseif ($request->code != $item->code) {
                 dd('ma giam gia khong hop le');
             }
@@ -392,7 +399,7 @@ class ClientController extends Controller
     }
     public function createOrder(Request $request)
     {
-        // dd($request->all());
+        dd($request->all());
         $data = new Order();
         $data->orderDate = date('Y-m-d');
         $data->fill($request->all());
@@ -410,7 +417,9 @@ class ClientController extends Controller
         $order = new Order();
         $order->orderDate = date('Y-m-d');
         $order->oderStatus = 0;
-        $order->total = $request->total;
+        $order->total = $request->total+$request->ship;
+        // dd($order->total);
+        $order->orderShip = $request->ship;
         $order->user_id = Auth::user()->id;
         $order->orderName = $request->orderName;
         $order->oderEmail = $request->oderEmail;
@@ -452,6 +461,8 @@ class ClientController extends Controller
             }
         }
         session()->flash('success', 'Thanh toán hóa đơn thành công!');
+        // SendMaid::dispatch($request->input('oderEmail'))->delay(now()->addSeconds(2));
+
         return redirect()->route('client.cart');
         // dd($carts);
     }

@@ -30,7 +30,7 @@
 </head>
 
 <body>
-    <a style="margin-left: 40px;position: absolute;top: 50px" href="{{route('client.index')}}"><button class="btn btn-danger">Back</button></a>
+    <a style="margin-left: 40px;position: absolute;top: 50px" href="{{route('client.index')}}"><button class="btn btn-outline-success">Trang chủ</button></a>
     <section class="vh-100">
         <div class="container-fluid h-custom">
             <div class="row d-flex justify-content-center align-items-center h-100">

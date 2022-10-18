@@ -140,7 +140,8 @@
                                 @csrf
                                 <input hidden type="text" name="nameProduct" value="{{ $data->nameProduct }}"
                                     id="">
-                                <input hidden type="text" name="price" value="{{ $data->price_in_active }}" id="">
+                                <input hidden type="text" name="price" value="{{ $data->price_in_active }}"
+                                    id="">
                                 <input hidden type="text" value="{{ $data->id }}" name="productId" id="">
                                 <input hidden type="text" value="{{ Auth::user() ? Auth::user()->id : '' }}"
                                     name="userId" id="">
@@ -195,18 +196,18 @@
                         accusant</div>
                     <!--Countdown Timer-->
                     <div class="time-counter">
-                        <div class="time-countdown clearfix" data-countdown="2020/2/01">
+                        <div class="time-countdown clearfix" data-countdown="10/19/2022">
                             <div class="counter-column">
-                                <div class="inner"><span class="count">00</span>Days</div>
+                                <div class="inner"><span id="ngay" class="count">00</span>Days</div>
                             </div>
                             <div class="counter-column">
-                                <div class="inner"><span class="count">00</span>Hours</div>
+                                <div class="inner"><span id="gio" class="count">00</span>Hours</div>
                             </div>
                             <div class="counter-column">
-                                <div class="inner"><span class="count">00</span>Mins</div>
+                                <div class="inner"><span id="phut" class="count">00</span>Mins</div>
                             </div>
                             <div class="counter-column">
-                                <div class="inner"><span class="count">00</span>Secs</div>
+                                <div class="inner"><span id="giay" class="count">00</span>Secs</div>
                             </div>
                         </div>
                     </div>

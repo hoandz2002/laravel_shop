@@ -9,6 +9,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\InformationController;
 use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderDetailController;
@@ -108,6 +109,17 @@ Route::name('client.')->group(function () {
     //feedback
     Route::get('/create/{id_Order}', [FeedbackController::class, 'create'])->name('create');
     Route::post('storeFeedback', [FeedbackController::class, 'storeFeedback'])->name('storeFeedback');
+
+    Route::prefix('/informations')->name('informations.')->group(function () {
+        Route::get('/list', [InformationController::class, 'index'])->name('list');
+        Route::delete('/delete/{id}', [InformationController::class, 'delete'])->name('delete');
+        Route::get('/create', [InformationController::class, 'create'])->name('create');
+        Route::post('/store', [InformationController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [InformationController::class, 'edit'])->name('edit');
+        Route::put('/update/{id}', [InformationController::class, 'update'])->name('update');
+        Route::get('/updateStatus/{id}', [InformationController::class, 'updateStatus'])->name('updateStatus');
+
+    });
 });
 //giao dien danh muc san pham
 Route::prefix('/catepr')->name('catepr.')->group(function () {
@@ -212,7 +224,6 @@ Route::middleware('admin')->prefix('/admin')->name('admin.')->group(function () 
         Route::get('/edit_productDetail/{product}', [ProductController::class, 'edit_productDetail'])->name('edit_productDetail');
         Route::put('/update_productDetail/{id}', [ProductController::class, 'update_productDetail'])->name('update_productDetail');
     });
-
 });
 //Auth
 Route::prefix('auth')->name('auth.')->group(function () {

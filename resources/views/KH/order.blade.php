@@ -95,6 +95,8 @@
                                     </option>
                                     <option {{ $item->oderStatus == 4 ? 'selected' : '' }} value="4">Hủy đơn hàng
                                     </option>
+                                    <option {{ $item->oderStatus == 5 ? 'selected' : '' }} value="5">Đã thanh toán
+                                    </option>
                                 </select>
                                 {{-- <button style="height: 30px" class="btn btn-dark "><i class="fa fa-redo"></i></button> --}}
                             </form>
@@ -102,7 +104,9 @@
 
                         <td>
                             <form action="{{ route('client.detail', $item->id) }}">
-                                <input type="text" hidden name="oddPricePrd" value="{{$item->total}}" id="">
+                                <input type="text" hidden name="oddPricePrd" value="{{ $item->total }}" id="">
+                                <input type="text" hidden name="orderShip" value="{{ $item->orderShip }}" id="">
+
                                 <button class="btn btn-warning">
                                     <i class="fas fa-eye"></i>
                                 </button>
@@ -129,6 +133,10 @@
                                         Đã nhận hàng
                                     </button>
                                 @elseif ($item->oderStatus == 3)
+                                    <button style="width: 170px" class="btn btn-warning">
+                                        Đánh giá
+                                    </button>
+                                @elseif ($item->oderStatus == 5)
                                     <button style="width: 170px" class="btn btn-warning">
                                         Đánh giá
                                     </button>

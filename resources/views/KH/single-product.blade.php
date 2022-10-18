@@ -63,6 +63,18 @@
                     <div class="single-product-img">
                         <img src="{{ asset($dataProduct->avatar) }}" width="100%" alt="">
                     </div>
+                    <br><br>
+                    <div>
+                        <p style="" id="myContent" class="text-capitalize nameContent my-1">
+                            {{ $dataProduct->description }}
+                        </p>
+                        <div style="" class="m-auto text-center">
+                            <a onclick="myFunctionHide()" id="buttonHide"
+                                style="color: blue; cursor: pointer; display: none;">Ấn</a>
+                            <a onclick="myFunctionShow()" id="buttonShow" style="color: blue; cursor: pointer;">Hiển
+                                thị</a>
+                        </div>
+                    </div> <br> <br>
                 </div>
 
                 <div class="col-md-7">
@@ -110,7 +122,7 @@
 
                         <div>
                             <br>
-                            <p style="" id="myContent" class="text-capitalize nameContent my-1">
+                            {{-- <p style="" id="myContent" class="text-capitalize nameContent my-1">
                                 {{ $dataProduct->description }}
                             </p>
                             <div style="" class="m-auto text-center">
@@ -118,7 +130,7 @@
                                     style="color: blue; cursor: pointer; display: none;">Ấn</a>
                                 <a onclick="myFunctionShow()" id="buttonShow" style="color: blue; cursor: pointer;">Hiển
                                     thị</a>
-                            </div>
+                            </div> --}}
 
 
                             <div class="single-product-form">
@@ -196,7 +208,7 @@
                                         name="userId" id="">
                                     {{-- <input hidden type="text" value="{{ $dataProduct->price }}" name="price"
                                     id=""> --}}
-                                    <input type="number" name="quantity" min="1" value="1"
+                                    <input type="number" name="quantity" min="1" max="5" value="1"
                                         placeholder="0">
                                     <br>
                                     <button class="btn btn-warning p-2" style="border-radius: 20px;font-weight: bold">
@@ -558,11 +570,11 @@
             display: block;
             display: -webkit-box;
             max-width: 100%;
-            height: 84px;
+            height: 44px;
             margin: 0 auto;
             font-size: 14px;
             /* line-height:  1; */
-            -webkit-line-clamp: 3;
+            -webkit-line-clamp: 7;
             -webkit-box-orient: vertical;
             overflow: hidden;
             text-overflow: ellipsis;

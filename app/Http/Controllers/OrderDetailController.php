@@ -54,8 +54,9 @@ class OrderDetailController extends Controller
   public function detail($order, Request $request)
   {
     // dd($order);
+    // dd($request->all());
     $mass = 0;
-    $ship = 0;
+    $ship = $request->orderShip;
     $total = 0;
     $price_sale = 0;
     // dd($request->all());
@@ -67,7 +68,7 @@ class OrderDetailController extends Controller
       ->where('order_id', '=', $order)
       // ->join('price_products','order_details.product_id','=','price_products.product_Id')
       // ->where('order_details.product_id','=','price_products.product_Id')
-      ->get();
+      ->get(); 
       // dd($orders);
     foreach ($orders as $item) {
       $price_sale += ($item->oddPricePrd - ($item->oddPricePrd * $item->sale) / 100) * $item->oddQuantityPrd;
@@ -77,15 +78,15 @@ class OrderDetailController extends Controller
     // dd($price_sale);
     // dd($total);
     // dd($mass);
-    if ($mass <= 10) {
-      $ship = 50000;
-    } elseif ($mass <= 30) {
-      $ship = 150000;
-    } elseif ($mass <= 60) {
-      $ship = 300000;
-    } else {
-      $ship = 500000;
-    }
+    // if ($mass <= 10) {
+    //   $ship = 50000;
+    // } elseif ($mass <= 30) {
+    //   $ship = 150000;
+    // } elseif ($mass <= 60) {
+    //   $ship = 300000;
+    // } else {
+    //   $ship = 500000;
+    // }
     // dd($ship);
     $data = Order::find($order);
     // dd($data);

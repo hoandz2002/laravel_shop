@@ -17,15 +17,15 @@
                             <li class="current-list-item"><a href="{{ route('client.index') }}">Home</a>
 
                             </li>
-                            <li><a href="{{ route('client.about') }}">About</a></li>
+                            <li><a style="font-size: 15px" href="{{ route('client.about') }}">About</a></li>
                             {{-- <li><a href="#">Pages</a> --}}
 
                             </li>
-                            <li><a href="{{ route('client.new') }}">News</a>
+                            <li><a style="font-size: 15px" href="{{ route('client.new') }}">News</a>
 
                             </li>
-                            <li><a href="{{ route('client.contact') }}">Contact</a></li>
-                            <li><a href="{{ route('client.shop') }}">Shop</a>
+                            <li><a style="font-size: 15px" href="{{ route('client.contact') }}">Contact</a></li>
+                            <li><a style="font-size: 15px" href="{{ route('client.shop') }}">Shop</a>
 
                             </li>
                             <li>
@@ -72,6 +72,7 @@
                                                     {{-- <a href="{{route('client.profile',Auth::user()->id)}}">Thông tin cá nhân</a> --}}
                                                 </li>
                                                 {{-- <li><a href="checkout.html">Check Out</a></li> --}}
+                                                <li><a href="{{ route('client.informations.list') }}">Địa chỉ</a></li>
                                                 <li><a href="{{ route('client.showOrder') }}">Hóa Đơn</a></li>
                                                 <li><a href="{{ route('logout') }}">Đăng xuất</a></li>
                                             </ul>
