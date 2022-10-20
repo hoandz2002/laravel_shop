@@ -391,7 +391,7 @@ class ClientController extends Controller
                 $price_coupon = $item->sale;
                 // dd($price_coupon);
                 session()->flash('success', 'Đã thêm mã giảm giá thành công!');
-                return view('KH.checkout', compact('products', 'mass', 'total', 'ship', 'id_cart', 'price_coupon','kk','ships','address'));
+                return view('KH.checkout', compact('products', 'mass', 'total', 'ship', 'id_cart', 'price_coupon', 'kk', 'ships', 'address'));
             } elseif ($request->code != $item->code) {
                 dd('ma giam gia khong hop le');
             }
@@ -399,7 +399,7 @@ class ClientController extends Controller
     }
     public function createOrder(Request $request)
     {
-        dd($request->all());
+        // dd($request->all());
         $data = new Order();
         $data->orderDate = date('Y-m-d');
         $data->fill($request->all());
@@ -410,6 +410,11 @@ class ClientController extends Controller
     public function storeOrder(OrderRequest $request)
     {
         // dd($request->all());
+        if ($request->ship == null) {
+            $abc = 1;
+            $bla = Ship::find($abc);
+            $request->ship = $request->ship_db + ($request->ship_db * ($bla->price_ship / 100));
+        }
         $pice_ship = $request->ship;
         $statement = DB::select("SHOW TABLE STATUS LIKE 'orders'");
         $nextId = $statement[0]->Auto_increment;
@@ -417,7 +422,7 @@ class ClientController extends Controller
         $order = new Order();
         $order->orderDate = date('Y-m-d');
         $order->oderStatus = 0;
-        $order->total = $request->total+$request->ship;
+        $order->total = $request->total + $request->ship;
         // dd($order->total);
         $order->orderShip = $request->ship;
         $order->user_id = Auth::user()->id;

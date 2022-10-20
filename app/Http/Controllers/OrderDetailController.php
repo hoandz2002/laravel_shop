@@ -75,19 +75,6 @@ class OrderDetailController extends Controller
       // $total += $item->oddQuantityPrd * $item->oddPricePrd;
       $mass += $item->mass * $item->oddQuantityPrd;
     }
-    // dd($price_sale);
-    // dd($total);
-    // dd($mass);
-    // if ($mass <= 10) {
-    //   $ship = 50000;
-    // } elseif ($mass <= 30) {
-    //   $ship = 150000;
-    // } elseif ($mass <= 60) {
-    //   $ship = 300000;
-    // } else {
-    //   $ship = 500000;
-    // }
-    // dd($ship);
     $data = Order::find($order);
     // dd($data);
     return view('KH.detail', compact('orders', 'data', 'total', 'mass', 'order', 'ship', 'total_price', 'price_sale'));
@@ -110,5 +97,5 @@ class OrderDetailController extends Controller
     $updateStatus->save();
     session()->flash('success', 'Bạn đã cập nhật trạng thái thành công!');
     return redirect()->route('client.showOrder');
-  }
+  } 
 }

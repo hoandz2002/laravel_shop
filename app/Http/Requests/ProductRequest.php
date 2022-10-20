@@ -23,29 +23,56 @@ class ProductRequest extends FormRequest
      */
     public function rules()
     {
+        $data = $this->all();
         return [
-                'nameProduct'=> 'required|min:6',
-                // 'price' => 'required|integer',
-                'description' => 'required|max:3000',
-                'category_id' => 'required',
-                // 'size_id1' => 'required',
-                // 'size_id2' => 'required',
-                // 'size_id3' => 'required'
+            'nameProduct' => 'required|min:6',
+            'price_in_active' => 'required|integer',
+            'description' => 'required|max:3000',
+            'category_id' => 'required',
+            'material_Id' => [
+                function ($attribute, $value, $fail) use ($data) {
+                    $count = count($value);
+                    foreach ($value as $key => $item) {
+                        for ($i = 0; $i < $count; $i++) {
+                            if ($i == $key) {
+                                continue;
+                            }
+                            // dd($value[$i]);
+                            if ($item == $value[$i]) {
+                                if ($data['size_Id'][$i] == $data['size_Id'][$key]) {
+                                    return $fail('Không được nhập trùng size trong cùng 1 chất liệu');
+                                }
+                            }
+                        }
+                        // if($item>1){
+                        //     return $fail('khong duoc nhap trung size trong chat lieu');
+                        // }
+                    }
+                }
+            ],
+            'price' => [
+                function ($attribute, $value, $fail) {
+                    foreach ($value as $key => $item) {
+                       if ($item == null) {
+                        return $fail('không được để trống giá tiền !');
+                       }
+                    }
+                  
+                }
+            ]
 
         ];
     }
-    public function messages() {
+    public function messages()
+    {
         return [
             'nameProduct.required' => 'Tên sản phẩm không được để trống',
             'nameProduct.min' => 'Tên sản phẩm tối thiểu 6 kí tự',
-            // 'price.required' => 'Giá sản phẩm không được để trống',
-            // 'price.integer' => 'Giá sản phẩm phải là số dương',
             'description.required' => 'Tiêu đề sản phẩm không được để trống',
             'description.max' => 'Mô tả sản phẩm không được quá 3000 kí tự',
-            // 'size_id1.required' => 'Kích cỡ sản phẩm không được để trống',
-            // 'size_id2.required' => 'Kích cỡ sản phẩm không được để trống',
-            // 'size_id3.required' => 'Kích cỡ sản phẩm không được để trống',
             'category_id.required' => 'Danh mục sản phẩm không được để trống',
+            'price_in_active.required' => 'Không được để trống giá hiển thị',
+            'price_in_active.integer' => 'bạn nhập sai định dạng giá tiền',
 
         ];
     }

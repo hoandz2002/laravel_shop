@@ -50,6 +50,7 @@ class ProductController extends Controller
 
     public function store(ProductRequest $request)
     {
+        dd($request->all());
         $product = new Product();
         $product->fill($request->all());
         // 2. Kiểm tra file và lưu

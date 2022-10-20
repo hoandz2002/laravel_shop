@@ -118,7 +118,6 @@ Route::name('client.')->group(function () {
         Route::get('/edit/{id}', [InformationController::class, 'edit'])->name('edit');
         Route::put('/update/{id}', [InformationController::class, 'update'])->name('update');
         Route::get('/updateStatus/{id}', [InformationController::class, 'updateStatus'])->name('updateStatus');
-
     });
 });
 //giao dien danh muc san pham
@@ -224,6 +223,8 @@ Route::middleware('admin')->prefix('/admin')->name('admin.')->group(function () 
         Route::get('/edit_productDetail/{product}', [ProductController::class, 'edit_productDetail'])->name('edit_productDetail');
         Route::put('/update_productDetail/{id}', [ProductController::class, 'update_productDetail'])->name('update_productDetail');
     });
+    //Quản lí mail
+    Route::get('/mailOrder/{order}', [OrderDetailController::class, 'mailOrder'])->name('mailOrder');
 });
 //Auth
 Route::prefix('auth')->name('auth.')->group(function () {

@@ -1,45 +1,40 @@
 @extends('layout.master')
-@section('title', 'Thêm mới sản phẩm')
-@section('content-title', 'Thêm mới sản phẩm')
+@section('title', 'Cap nhat san pham')
+@section('content-title', 'Cap nhat san pham')
 @section('content')
 
-    <form action="{{ isset($product) ? route('products.update', $product->id) : route('products.store') }}" method="POST"
-        enctype="multipart/form-data">
-        {{ isset($product) ? method_field('PUT') : '' }}
+    <form action="" method="POST" enctype="multipart/form-data">
+        {{ method_field('PUT') }}
         @csrf
         <div cclass="form-group">
             <label for="">Tên sản phẩm</label>
-            <input type="text" name="nameProduct" value="{{ isset($product) ? $product->nameProduct : old('nameProduct') }}"
-                id="" class="form-control">
+            <input type="text" name="nameProduct" value="{{ $product->nameProduct }}" id="" class="form-control">
             @if ($errors->has('nameProduct'))
                 <p class="text-danger">{{ $errors->first('nameProduct') }}</p>
             @endif
         </div>
+
         <div class="form-group">
             <label for="">Mô tả</label>
-            <input class="form-control" type="text" name="description"
-                value="{{ isset($product) ? $product->description : old('description') }}" id="">
+            <input class="form-control" type="text" name="description" value="{{ $product->description }}"
+                id="">
             @if ($errors->has('description'))
                 <p class="text-danger">{{ $errors->first('description') }}</p>
             @endif
         </div>
         <div class="form-group">
             <label for="">Avatar</label><br>
-            <td><img src="{{ isset($product) ? asset($product->avatar) : '' }}" alt="" width="100"></td>
+            <td><img src="{{ $product->avatar }}" alt="" width="100"></td>
             <br> <br>
-            <input class="form-control" type="file" name="avatar"
-                value="{{ isset($product) ? $product->avatar : old('avatar') }}" id="">
+            <input class="form-control" type="file" name="avatar" value="{{ $product->avatar }}" id="">
             @if (session()->has('error'))
                 <p class="text-danger">{{ session()->get('error') }}</p>
             @endif
         </div>
         <div class="form-group">
             <label for="">Gía tiền hiển thị</label>
-            <input class="form-control" type="text" name="price_in_active"
-                value="{{ isset($product) ? $product->price_in_active : old('price_in_active') }}" id="">
-            @if ($errors->has('price_in_active'))
-                <p class="text-danger">{{ $errors->first('price_in_active') }}</p>
-            @endif
+            <input class="form-control" type="text" name="price_in_active" value="{{ $product->price_in_active }}"
+                id="">
         </div>
         <div class="col-md-6">
             <label class="form-label">Thư viện ảnh</label> <br>
@@ -50,8 +45,7 @@
             <select class="w-100 p-2" name="category_id" id="">
                 <option value="">chọn danh mục sản phẩm</option>
                 @foreach ($cate as $item)
-                    <option value="{{ $item->id }}"
-                        {{ isset($data) && $data->category_id == $item->id ? 'selected' : '' }}>
+                    <option value="{{ $item->id }}" {{ $product->category_id === $item->id ? 'checked' : '' }}>
                         {{ $item->name }}</option>
                 @endforeach
             </select>
@@ -61,33 +55,30 @@
         </div>
         <div class="form-group">
             <label for="">Sale (%)</label>
-            <input class="form-control" type="text" name="sale"
-                value="{{ isset($product) ? $product->sale : old('sale') }}" id="">
+            <input class="form-control" type="text" name="sale" value="{{ $product->sale }}" id="">
             @if ($errors->has('description'))
                 <p class="text-danger">{{ $errors->first('description') }}</p>
             @endif
         </div>
         <div class="form-group">
             <label for="">Khối lượng (kg)</label>
-            <input class="form-control" type="text" name="mass"
-                value="{{ isset($product) ? $product->mass : old('mass') }}" id="">
+            <input class="form-control" type="text" name="mass" value="{{ $product->mass }}" id="">
             @if ($errors->has('description'))
                 <p class="text-danger">{{ $errors->first('description') }}</p>
             @endif
         </div>
         <div class="form-group">
-            <label for="">Trạng thái</label> <br>
-            <input type="radio" name="statusPrd" value="0" {{-- {{ $product->statusPrd === 0 ? 'checked' : '' }}  --}} /> Hiển thị
-            <input type="radio" name="statusPrd" value="1" {{-- {{ $product->statusPrd === 1 ? 'checked' : '' }}  --}} /> Ẩn
+            <label for="">Trạng thái</label>
+            <input type="radio" name="statusPrd" value="0" {{ $product->statusPrd === 0 ? 'checked' : '' }} /> Hiển
+            thị
+            <input type="radio" name="statusPrd" value="1" {{ $product->statusPrd === 1 ? 'checked' : '' }} /> Ẩn
         </div>
         <div>
-            <label for="">Màu sắc </label> <br>
             @foreach ($color as $value)
                 <input type="checkbox" name="color_id[]" value="{{ $value->id }}"
                     id="">{{ $value->name_Color }}
             @endforeach
         </div>
-        <br>
         <div>
             <table>
                 <tr>
@@ -113,21 +104,16 @@
                         <button type="button" onclick="them(this)">thêm</button>
                 </tr>
             </table>
-            @if ($errors->has('material_Id'))
-                <p class="text-danger">{{ $errors->first('material_Id') }}</p>
-            @endif
-            @if ($errors->has('price'))
-                <p class="text-danger">{{ $errors->first('price') }}</p>
-            @endif
             <h3 hidden id="empty">Bạn chưa chọn mặt hàng nào</h3>
             <div id="not-empty" style="display:none;">
+
                 <table id="giohang"></table>
                 <h3 hidden> $<span id="tong">0</span></h3>
                 <script>
                     function them(button) {
                         var row = button.parentElement.parentElement.cloneNode(
                             true
-                        ); //button.parentElement.parentElement thêm vào bảng dưới(bản chính) + cloneNode(true) cho phép thêm bản sao của các nút đã nhấn thêm 
+                            ); //button.parentElement.parentElement thêm vào bảng dưới(bản chính) + cloneNode(true) cho phép thêm bản sao của các nút đã nhấn thêm 
                         var nutXoa = row.getElementsByTagName("button")[0]; //gọi đến tagname button đã đc thêm
                         nutXoa.innerText = "Xóa"; //thêm chữ xóa vào button
                         nutXoa.setAttribute('onclick',
@@ -169,7 +155,7 @@
                 </script>
             </div>
             <button class="btn btn-success">
-                {{ isset($product) ? 'Update' : 'Create' }}
+                Update
             </button>
             <button class="btn btn-danger">nhập lại</button>
     </form>

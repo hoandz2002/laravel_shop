@@ -242,7 +242,7 @@
                                                             name="oderEmail" placeholder="Email"></p>
                                                     <p><input hidden type="text" value="{{ $item->address_to }}"
                                                             name="address" placeholder="Address"></p>
-                                                    <input hidden type="text" hidden name=""
+                                                    <input hidden type="text" hidden name="ship_db"
                                                         value="{{ $ship }}" id="">
                                                     <p><input hidden type="tel" name="phone"
                                                             value="{{ $item->phone }}" placeholder="Phone"></p>
