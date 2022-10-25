@@ -7,7 +7,7 @@
         enctype="multipart/form-data">
         {{ isset($product) ? method_field('PUT') : '' }}
         @csrf
-        <div cclass="form-group">
+        <div cclass="form-group"> 
             <label for="">Tên sản phẩm</label>
             <input type="text" name="nameProduct" value="{{ isset($product) ? $product->nameProduct : old('nameProduct') }}"
                 id="" class="form-control">
@@ -41,14 +41,14 @@
                 <p class="text-danger">{{ $errors->first('price_in_active') }}</p>
             @endif
         </div>
-        <div class="col-md-6">
+        <div hidden class="col-md-6">
             <label class="form-label">Thư viện ảnh</label> <br>
             <input type="file" name="filenames[]" multiple class="form-control" placeholder="Chọn ảnh sản phẩm" />
         </div>
         <div class="form-group">
             <label for="">Danh mục dản phẩm</label>
             <select class="w-100 p-2" name="category_id" id="">
-                <option value="">chọn danh mục sản phẩm</option>
+                {{-- <option value="">chọn danh mục sản phẩm</option> --}}
                 @foreach ($cate as $item)
                     <option value="{{ $item->id }}"
                         {{ isset($data) && $data->category_id == $item->id ? 'selected' : '' }}>
@@ -77,16 +77,16 @@
         </div>
         <div class="form-group">
             <label for="">Trạng thái</label> <br>
-            <input type="radio" name="statusPrd" value="0" {{-- {{ $product->statusPrd === 0 ? 'checked' : '' }}  --}} /> Hiển thị
-            <input type="radio" name="statusPrd" value="1" {{-- {{ $product->statusPrd === 1 ? 'checked' : '' }}  --}} /> Ẩn
+            <input type="radio" name="statusPrd" value="0"/> Hiển thị
+            <input type="radio" name="statusPrd" value="1"/> Ẩn
         </div>
-        <div>
-            <label for="">Màu sắc </label> <br>
-            @foreach ($color as $value)
-                <input type="checkbox" name="color_id[]" value="{{ $value->id }}"
-                    id="">{{ $value->name_Color }}
-            @endforeach
-        </div>
+      <div>
+        <label for="">Màu sắc </label> <br>
+        @foreach ($color as $value)
+            <input type="checkbox" name="color_id[]" value="{{ $value->id }}"
+                id="">{{ $value->name_Color }}
+        @endforeach
+    </div>
         <br>
         <div>
             <table>

@@ -128,8 +128,11 @@ class ProductController extends Controller
             ->where('product_Id', '=', 12)
             ->select('price_products.*')
             ->get();
-        // dd($price_pro);
-        return view('admin.products.create', compact('product', 'cate', 'sizes', 'price_pro', 'color', 'material'));
+      
+        // $old_pice = Price_product::where('price_products.product_Id', '=', $product)
+        //     ->get();
+        // dd($old_pice);
+        return view('admin.products.edit_product', compact('product', 'cate', 'sizes', 'price_pro', 'color', 'material'));
     }
     public function update(ProductRequest $request, $product)
     {
@@ -163,8 +166,7 @@ class ProductController extends Controller
         $request->statusPrd ? $data->statusPrd = $request->statusPrd : $data->statusPrd = $data->statusPrd;
 
         $data->save();
-        // update size 
-
+        // 
         session()->flash('success', 'Bạn đã sửa thành công!');
         return redirect()->route('products.list');
     }
@@ -181,7 +183,7 @@ class ProductController extends Controller
             ->where('price_products.product_id', '=', $id)
             ->get();
         // dd($product);
-        return view('admin.products.product_detail', compact('products','id','sizes','material'));
+        return view('admin.products.product_detail', compact('products', 'id', 'sizes', 'material'));
     }
     public function edit_productDetail($id)
     {
@@ -194,12 +196,12 @@ class ProductController extends Controller
             ->join('products', 'price_products.product_Id', '=', 'products.id')
             ->join('sizes', 'price_products.size_Id', '=', 'sizes.id')
             ->join('materials', 'price_products.material_Id', '=', 'materials.id_material')
-            ->select('price_products.*', 'sizes.nameSize', 'materials.name_Material','products.nameProduct')
+            ->select('price_products.*', 'sizes.nameSize', 'materials.name_Material', 'products.nameProduct')
             ->get();
         // dd($price_pro);
-        return view('admin.products.create_productDetail', compact('price_pro','material','sizes'));
+        return view('admin.products.create_productDetail', compact('price_pro', 'material', 'sizes'));
     }
-    public function update_productDetail ($id,Request $request)
+    public function update_productDetail($id, Request $request)
     {
         // dd($request->all());
         $product = Price_product::find($id);
@@ -209,7 +211,7 @@ class ProductController extends Controller
         $product->price = $request->price;
 
         $product->save();
-        return redirect()->route('admin.datailProduct.list',$request->product_Id);
+        return redirect()->route('admin.datailProduct.list', $request->product_Id);
     }
     public function create_productDetail(Request $request)
     {
@@ -217,20 +219,19 @@ class ProductController extends Controller
         // dd($material);
         $sizes = Size::all()->where('statusSize', '=', 0);
         // dd($request->all());
-        return view('admin.products.create_detail',compact('sizes','material'));
+        return view('admin.products.create_detail', compact('sizes', 'material'));
     }
     public function store_productDetail(Request $request)
     {
-        $product=new Price_product();
-        $product ->fill($request->all());
+        $product = new Price_product();
+        $product->fill($request->all());
         $product->save();
         return redirect()->back();
     }
     public function delete_productDetail($id)
     {
-        $data=Price_product::find($id);
+        $data = Price_product::find($id);
         $data->delete();
         return redirect()->back();
-
     }
 }

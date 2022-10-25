@@ -25,6 +25,7 @@
                 <th>Màu sắc</th>
                 <th>Trạng thái</th>
                 <th>Avatar</th>
+                <th>Chi tiết sản phẩm</th>
                 <th>Hành động</th>
             </tr>
         </thead>
@@ -33,20 +34,19 @@
                 <tr>
                     <td>{{ $product->id }}</td>
                     <td>
-                        <a href="{{ route('admin.datailProduct.list', $product->id) }}">
-                            {{ $product->nameProduct }}
-                        </a>
+                        {{ $product->nameProduct }}
                     </td>
                     {{-- <td>{{ $price->price }}</td> --}}
                     <td>{{ $product->name }}</td>
                     {{-- <td>{{$product->nameSize}}</td> --}}
                     <td>
-                        <a href="{{route('admin.productColors.list',$product->id)}}">
+                        <a href="{{ route('admin.productColors.list', $product->id) }}">
                             <button class='btn btn-info'>Quản lý màu sắc</button>
                         </a>
                     </td>
                     <td>{{ $product->statusPrd == 0 ? 'còn hàng' : 'hết hàng' }}</td>
                     <td><img src="{{ asset($product->avatar) }}" alt="" width="100"></td>
+                    <td><a href="{{ route('admin.datailProduct.list', $product->id) }}"><i class="fas fa-eye"></i></a></td>
                     <td>
                         <a href="{{ route('products.edit', $product->id) }}">
                             <button class='btn btn-warning'>Sửa</button>

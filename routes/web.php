@@ -5,6 +5,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryProductController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ColorController;
+use App\Http\Controllers\Combo2Controller;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\DashboardController;
@@ -69,6 +70,7 @@ Route::prefix('/products')->name('products.')->group(function () {
     Route::post('/store', [ProductController::class, 'store'])->name('store');
     Route::get('/edit/{product}', [ProductController::class, 'edit'])->name('edit');
     Route::put('/update/{product}', [ProductController::class, 'update'])->name('update');
+
 });
 
 // giao dien khach hang
@@ -222,6 +224,16 @@ Route::middleware('admin')->prefix('/admin')->name('admin.')->group(function () 
         Route::post('/store_productDetail', [ProductController::class, 'store_productDetail'])->name('store_productDetail');
         Route::get('/edit_productDetail/{product}', [ProductController::class, 'edit_productDetail'])->name('edit_productDetail');
         Route::put('/update_productDetail/{id}', [ProductController::class, 'update_productDetail'])->name('update_productDetail');
+    });
+    // quản lí combo2
+    Route::prefix('/combo2')->name('combo2.')->group(function () {
+        Route::get('/list', [Combo2Controller::class, 'index'])->name('list');
+        Route::delete('/delete/{id}', [Combo2Controller::class, 'delete'])->name('delete');
+        Route::get('/create', [Combo2Controller::class, 'create'])->name('create');
+        Route::post('/store', [Combo2Controller::class, 'store'])->name('store');
+        Route::get('/edit/{color}', [Combo2Controller::class, 'edit'])->name('edit');
+        Route::put('/update/{color}', [Combo2Controller::class, 'update'])->name('update');
+        // Route::post('/updateStatus/{cate}', [SizeController::class, 'updateStatus'])->name('updateStatus');
     });
     //Quản lí mail
     Route::get('/mailOrder/{order}', [OrderDetailController::class, 'mailOrder'])->name('mailOrder');
