@@ -7,7 +7,7 @@
     enctype="multipart/form-data">
     {{ isset($product) ? method_field('PUT') : '' }}
         @csrf
-        <div cclass="form-group">
+        <div class="form-group">
             <label for="">Tên sản phẩm</label>
             <input type="text" name="nameProduct" value="{{ $product->nameProduct }}" id="" class="form-control">
             @if ($errors->has('nameProduct'))

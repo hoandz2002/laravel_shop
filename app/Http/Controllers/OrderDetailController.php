@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\OrderDetail;
+use App\Models\Return_detail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -28,7 +29,7 @@ class OrderDetailController extends Controller
       // ->join('price_products','order_details.product_id','=','price_products.product_Id')
       // ->where('order_details.product_id','=','price_products.product_Id')
       ->get();
-      // dd($orders);
+    // dd($orders);
     foreach ($orders as $item) {
       $price_sale += ($item->oddPricePrd - ($item->oddPricePrd * $item->sale) / 100) * $item->oddQuantityPrd;
       // $total += $item->oddQuantityPrd * $item->oddPricePrd;
@@ -68,8 +69,8 @@ class OrderDetailController extends Controller
       ->where('order_id', '=', $order)
       // ->join('price_products','order_details.product_id','=','price_products.product_Id')
       // ->where('order_details.product_id','=','price_products.product_Id')
-      ->get(); 
-      // dd($orders);
+      ->get();
+    // dd($orders);
     foreach ($orders as $item) {
       $price_sale += ($item->oddPricePrd - ($item->oddPricePrd * $item->sale) / 100) * $item->oddQuantityPrd;
       // $total += $item->oddQuantityPrd * $item->oddPricePrd;
@@ -81,6 +82,7 @@ class OrderDetailController extends Controller
   }
   public function updateStatusOrder($order)
   {
+    // dd($order);
     $updateStatus = Order::find($order);
     if ($updateStatus->oderStatus == 0) {
       $updateStatus->oderStatus = 4;
@@ -92,10 +94,16 @@ class OrderDetailController extends Controller
       $id_Order = $order;
       // session()->flash('danger', 'Bạn không thể hủy đơn');
       return redirect()->route('client.create', $id_Order);
-    }
+    } elseif ($updateStatus->oderStatus == 5) {
+      $id_Order = $order;
+      $updateStatus->oderStatus = 6;
+      $updateStatus->save();
+      return redirect()->route('client.returnProducts.create', $id_Order);
+    } 
 
     $updateStatus->save();
     session()->flash('success', 'Bạn đã cập nhật trạng thái thành công!');
     return redirect()->route('client.showOrder');
-  } 
+  }
+  
 }

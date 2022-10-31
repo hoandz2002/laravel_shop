@@ -46,7 +46,14 @@
                     </td>
                     <td>{{ $product->statusPrd == 0 ? 'còn hàng' : 'hết hàng' }}</td>
                     <td><img src="{{ asset($product->avatar) }}" alt="" width="100"></td>
-                    <td><a href="{{ route('admin.datailProduct.list', $product->id) }}"><i class="fas fa-eye"></i></a></td>
+                    <td>
+                        {{-- <a href="{{ route('admin.datailProduct.list', $product->id) }}"><i class="fas fa-eye"></i></a> --}}
+                        <form action="{{ route('admin.datailProduct.list', $product->id) }}">
+                            <button style="text-align: center;margin-left: 30px" class="btn btn-warning">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </form>
+                    </td>
                     <td>
                         <a href="{{ route('products.edit', $product->id) }}">
                             <button class='btn btn-warning'>Sửa</button>

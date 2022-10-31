@@ -22,7 +22,6 @@
         </div>
     </form>
     <!-- end search area -->
-
     <!-- breadcrumb-section -->
     <div class="breadcrumb-section breadcrumb-bg">
         <div class="container">
@@ -30,7 +29,7 @@
                 <div class="col-lg-8 offset-lg-2 text-center">
                     <div class="breadcrumb-text">
                         <p>Fresh and Organic</p>
-                        <h1>List order</h1>
+                        <h1>Order Return</h1>
                     </div>
                 </div>
             </div>
@@ -84,20 +83,6 @@
                                 @csrf
                                 @method('PUT')
                                 <select disabled style="height: 30px" name="oderStatus" id="">
-                                    <option {{ $item->oderStatus == 0 ? 'selected' : '' }} value="0">Đang xử lý
-                                    </option>
-                                    <option {{ $item->oderStatus == 1 ? 'selected' : '' }} value="1">Đang chuẩn bị
-                                        hàng
-                                    </option>
-                                    <option {{ $item->oderStatus == 2 ? 'selected' : '' }} value="2">Đang giao hàng
-                                    </option>
-                                    <option {{ $item->oderStatus == 3 ? 'selected' : '' }} value="3">Đã nhận hàng
-                                    </option>
-                                    <option {{ $item->oderStatus == 4 ? 'selected' : '' }} value="4">Hủy đơn hàng
-                                    </option>
-                                    <option {{ $item->oderStatus == 5 ? 'selected' : '' }} value="5">Đã thanh toán
-                                    </option>
-                                    <option {{ $item->oderStatus == 6 ? 'selected' : '' }} value="6">đang xác nhận HT
                                     </option>
                                     <option {{ $item->oderStatus == 7 ? 'selected' : '' }} value="7">Chuẩn bị lấy hàng
                                     </option>
@@ -112,13 +97,12 @@
                                 {{-- <button style="height: 30px" class="btn btn-dark "><i class="fa fa-redo"></i></button> --}}
                             </form>
                         </td>
-
                         <td>
                             <form action="{{ route('client.detail', $item->id) }}">
                                 <input type="text" hidden name="oddPricePrd" value="{{ $item->total }}" id="">
                                 <input type="text" hidden name="orderShip" value="{{ $item->orderShip }}"
                                     id="">
-                                <button class="btn btn-warning">
+                                <button style="margin-left: 150px" class="btn btn-warning">
                                     <i class="fas fa-eye"></i>
                                 </button>
                             </form>
@@ -134,7 +118,6 @@
                                 {{-- <button style="width:170px;" class="btn {{ $item->oderStatus == 4 ?'btn-success '  : 'btn-danger'}}"  >
                                     {{ $item->oderStatus == 4 ? 'Đặt lại đơn hàng' : 'Hủy đơn hàng'}}
                                 </button> --}}
-
                                 @if ($item->oderStatus == 0 || $item->oderStatus == 1)
                                     <button style="width: 170px" class="btn btn-danger">
                                         Hủy đơn hàng

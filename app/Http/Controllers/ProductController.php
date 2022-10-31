@@ -128,7 +128,7 @@ class ProductController extends Controller
             ->where('product_Id', '=', 12)
             ->select('price_products.*')
             ->get();
-      
+
         // $old_pice = Price_product::where('price_products.product_Id', '=', $product)
         //     ->get();
         // dd($old_pice);

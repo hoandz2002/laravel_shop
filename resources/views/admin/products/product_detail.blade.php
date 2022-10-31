@@ -25,14 +25,14 @@
                         enctype="multipart/form-data">
                         @csrf
                         {{-- <p style="font-weight: bold;font-size: 18px">mã sản phẩm: {{ $value->product_Id }}</p> --}}
-                        <p>Mã sản phẩm: <span style="font-weight: bold">{{$id}}</span></p>
-                        <div class="form-group" hidden>
+                        <p>Mã sản phẩm: <span style="font-weight: bold">{{ $id }}</span></p>
+                        <div hidden class="form-group">
                             <label for="">Product</label>
-                            <input type="text" name="product_Id" value="{{$id}}" id="" class="form-control">
+                            <input type="text" name="product_Id" value="{{ $id }}" id=""
+                                class="form-control">
                         </div>
                         <div class="form-group">
                             <label for="">kích thước: </label>
-                            {{-- <input type="text" name="product_Id" id="" value="{{ $value->nameSize }}" class="form-control"> --}}
                             <select name="size_Id" id="">
                                 @foreach ($sizes as $item)
                                     <option value="{{ $item->id }}">{{ $item->nameSize }}</option>
@@ -54,7 +54,7 @@
                             <input type="text" name="price" id="" value="" class="form-control">
 
                         </div>
-                        <button class="btn btn-success" >
+                        <button class="btn btn-success">
                             Create
                         </button>
                         <button class="btn btn-danger">nhập lại</button>
@@ -95,7 +95,8 @@
                         <a href="{{ route('admin.datailProduct.edit_productDetail', $product->id) }}">
                             <button class='btn btn-warning'>Sửa</button>
                         </a>
-                        <form action="{{ route('admin.datailProduct.delete_productDetail', $product->id) }}" method="POST">
+                        <form action="{{ route('admin.datailProduct.delete_productDetail', $product->id) }}"
+                            method="POST">
                             @csrf
                             @method('DELETE')
                             <button class='btn btn-danger'

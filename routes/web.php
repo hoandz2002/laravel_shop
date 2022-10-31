@@ -16,6 +16,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderDetailController;
 use App\Http\Controllers\ProductColorController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ReturnProductController;
 use App\Http\Controllers\ShipController;
 use App\Http\Controllers\SizeController;
 use App\Http\Controllers\UserController;
@@ -29,6 +30,7 @@ use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Product;
 use App\Models\ProductColor;
+use App\Models\ReturnProduct;
 use App\Models\Ship;
 use App\Models\Size;
 use GuzzleHttp\Psr7\Request;
@@ -70,7 +72,6 @@ Route::prefix('/products')->name('products.')->group(function () {
     Route::post('/store', [ProductController::class, 'store'])->name('store');
     Route::get('/edit/{product}', [ProductController::class, 'edit'])->name('edit');
     Route::put('/update/{product}', [ProductController::class, 'update'])->name('update');
-
 });
 
 // giao dien khach hang
@@ -101,6 +102,7 @@ Route::name('client.')->group(function () {
     Route::post('/createOrder', [ClientController::class, 'createOrder'])->name('createOrder');
     Route::post('/storeOrder', [ClientController::class, 'storeOrder'])->name('storeOrder');
     Route::get('/showOrder', [OrderController::class, 'showOrder'])->name('showOrder');
+    Route::get('/orderReturn', [OrderController::class, 'orderReturn'])->name('orderReturn');
     Route::get('/detail/{order}', [OrderDetailController::class, 'detail'])->name('detail');
     Route::post('/updateStatusOrder/{order}', [OrderDetailController::class, 'updateStatusOrder'])->name('updateStatusOrder');
     //profile
@@ -111,7 +113,20 @@ Route::name('client.')->group(function () {
     //feedback
     Route::get('/create/{id_Order}', [FeedbackController::class, 'create'])->name('create');
     Route::post('storeFeedback', [FeedbackController::class, 'storeFeedback'])->name('storeFeedback');
-
+    // hoan tra
+    Route::prefix('/returnProducts')->name('returnProducts.')->group(function () {
+        Route::get('/formReturn/{id_Order}', [ReturnProductController::class, 'formReturn'])->name('formReturn');
+        Route::post('/storeReturn', [ReturnProductController::class, 'storeReturn'])->name('storeReturn');
+        Route::get('/listReturn/{id}', [ReturnProductController::class, 'listReturn'])->name('listReturn');
+        Route::post('/updateStatus/{order}', [ReturnProductController::class, 'updateStatus'])->name('updateStatus');
+        Route::get('/listReturnProduct', [ReturnProductController::class, 'listReturnProduct'])->name('listReturnProduct');
+        // 
+        Route::get('/list', [ReturnProductController::class, 'index'])->name('list');
+        Route::delete('/delete/{id}', [ReturnProductController::class, 'delete'])->name('delete');
+        Route::get('/create/{id_Order}', [ReturnProductController::class, 'create'])->name('create');
+        Route::post('/store', [ReturnProductController::class, 'store'])->name('store');
+    });
+    // 
     Route::prefix('/informations')->name('informations.')->group(function () {
         Route::get('/list', [InformationController::class, 'index'])->name('list');
         Route::delete('/delete/{id}', [InformationController::class, 'delete'])->name('delete');
@@ -141,6 +156,8 @@ Route::post('/vnpay_payment', [ClientController::class, 'vnpay_payment'])->name(
 Route::middleware('admin')->prefix('/admin')->name('admin.')->group(function () {
     // thong ke
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    // Route::post('/orderReturn', [OrderDetailController::class, 'orderReturn'])->name('orderReturn');
+
     // quan ky lien he
     Route::prefix('/contacts')->name('contacts.')->group(function () {
         Route::get('/list', [ContactController::class, 'index'])->name('list');

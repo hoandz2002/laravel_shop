@@ -1,8 +1,8 @@
 @extends('layout.master')
 
-@section('title', 'Quản lí đơn hàng')
+@section('title', 'Đơn hàng hoàn trả')
 
-@section('content-title', 'Quản lí đơn hàng')
+@section('content-title', 'Đơn hàng hoàn trả')
 
 @section('content')
     <div>
@@ -22,7 +22,7 @@
                 <th>Địa chỉ</th>
                 <th>Tổng tiền</th>
                 <th>Trạng thái</th>
-                {{-- <th style="text-align: center">Hoàn trả</th> --}}
+                <th style="text-align: center">Hoàn trả</th>
                 <th>Hành động</th>
             </tr>
         </thead>
@@ -40,23 +40,23 @@
                             @csrf
                             @method('PUT')
                             <select style="height: 30px" name="oderStatus" id="">
-                                <option {{ $item->oderStatus == 0 ? 'selected' : '' }} value="0">Đang xử lý</option>
-                                <option {{ $item->oderStatus == 1 ? 'selected' : '' }} value="1">Đang chuẩn bị hàng
+                                <option {{ $item->oderStatus == 6 ? 'selected' : '' }} value="6">Đang xác nhận HT
                                 </option>
-                                <option {{ $item->oderStatus == 2 ? 'selected' : '' }} value="2">Đang giao hàng
+                                <option {{ $item->oderStatus == 7 ? 'selected' : '' }} value="6">Chuẩn bị lấy hàng
                                 </option>
-                                <option {{ $item->oderStatus == 3 ? 'selected' : '' }} value="3">Đã nhận hàng</option>
-                                <option {{ $item->oderStatus == 5 ? 'selected' : '' }} value="5">Đã thanh toán
+                                <option {{ $item->oderStatus == 8 ? 'selected' : '' }} value="8">Đang lấy hàng
                                 </option>
-                                {{-- <option {{ $item->oderStatus == 6 ? 'selected' : '' }} value="6">Đang xác nhận HT
-                                </option> --}}
-                                <option {{ $item->oderStatus == 4 ? 'selected' : '' }} value="4">Đã hủy đơn</option>
+                                <option {{ $item->oderStatus == 9 ? 'selected' : '' }} value="9">Lấy hàng thành công
+                                </option>
+                                <option {{ $item->oderStatus == 10 ? 'selected' : '' }} value="10">Đã hoàn tiền
+                                </option>
+
                             </select>
                             <input type="text" name="oderEmail" value="{{ $item->oderEmail }}" hidden id="">
                             <button style="height: 30px" class="btn btn-dark "><i class="fa fa-redo"></i></button>
                         </form>
                     </td>
-                    {{-- <td>
+                    <td>
                         @if ($item->oderStatus == 6)
                             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
                                 Chi tiết
@@ -65,7 +65,7 @@
                                 <button class="btn btn-danger">xác nhận</button>
                             </form>
                         @endif
-                    </td> --}}
+                    </td>
                     <td>
                         <form action="{{ route('admin.orders.detail', $item->id) }}">
                             <input type="text" hidden name="orderShip" value="{{ $item->orderShip }}" id="">
@@ -94,7 +94,9 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                ...
+                    <form action="">
+                        <input type="text" value="{{ $item->id }}" name="" id="">
+                    </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -102,8 +104,4 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div>
-        {{ $data->links() }}
-    </div>
-@endsection
+</div> @endsection
