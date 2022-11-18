@@ -54,6 +54,23 @@
                             <input type="text" name="price" id="" value="" class="form-control">
 
                         </div>
+                        <div class="form-group">
+                            <label for="">Loại giảm giá </label> <br>
+                            <select name="type_sale" id="">
+                                <option value="1">Trừ tiền</option>
+                                <option value="2">Trừ % giá trị</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Giá giảm </label>
+                            <input type="text" name="sale_value" id="" value="" class="form-control">
+
+                        </div>
+                        {{-- <div class="form-group">
+                            <label for="">Số lượng </label>
+                            <input type="text" name="quantity" id="" value="" class="form-control">
+
+                        </div> --}}
                         <button class="btn btn-success">
                             Create
                         </button>
@@ -81,6 +98,9 @@
                 <th>kích cỡ</th>
                 <th>Chất liệu</th>
                 <th>Giá sản phẩm</th>
+                <th>Loại giảm giá</th>
+                <th>Giá giảm</th>
+                <th>Số lượng</th>
                 <th>Hành động</th>
             </tr>
         </thead>
@@ -90,7 +110,22 @@
                     <td>{{ $product->id }}</td>
                     <td>{{ $product->nameSize }}</td>
                     <td>{{ $product->name_Material }}</td>
-                    <td>{{ $product->price }}</td>
+                    <td>{{ number_format($product->price) }} VND</td>
+                    <td>
+                        @if ($product->type_sale == 1)
+                            Trừ tiền 
+                            @elseif ($product->type_sale == 2)
+                            Trừ % giá trị
+                        @endif
+                    </td>
+                    <td>
+                        @if ($product->type_sale == 1)
+                        {{number_format($product->sale_value)}} VND
+                        @elseif ($product->type_sale == 2)
+                        {{$product->sale_value}} %
+                    @endif
+                    </td>
+                    <td>{{number_format($product->quantity)}}</td>
                     <td>
                         <a href="{{ route('admin.datailProduct.edit_productDetail', $product->id) }}">
                             <button class='btn btn-warning'>Sửa</button>

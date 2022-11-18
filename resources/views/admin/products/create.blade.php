@@ -105,8 +105,16 @@
                                     <option value="{{ $value->id }}">{{ $value->nameSize }}</option>
                                 @endforeach
                             </select>
-                            <label for=""> nhập giá tiền:</label>
+                            <label for="">nhập giá tiền: </label>
                             <input type="text" name="price[]" placeholder="nhap dia tien" id="">
+                            {{-- <label for="">loại giảm giá</label> --}}
+                            <select name="type_sale[]" id="">
+                                <option value="">------Chọn kiểu giảm giá-------</option>
+                                <option value="1">Trừ tiền</option>
+                                <option value="2">trừ %</option>
+                            </select>
+                            <label for="">Giảm giá</label>
+                            <input type="text" name="sale_value[]" id="">
                         </div>
                     </td>
                     <td>

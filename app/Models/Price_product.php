@@ -13,6 +13,9 @@ class Price_product extends Model
         'material_Id',
         'product_Id',
         'price',
+        'sale_value',
+        'type_sale',
+        'quantity'
     ];
 
     // public function product() {

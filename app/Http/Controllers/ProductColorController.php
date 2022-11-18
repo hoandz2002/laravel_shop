@@ -16,6 +16,8 @@ class ProductColorController extends Controller
         ->join('colors','product_colors.color_id','=','colors.id')
         // ->get();
         ->Paginate(6);
+        // $update_color = ProductColor::select('product_colors.*')->where('product_id','=',$product)->get();
+        // dd($update_color);
         // dd($categoryProducts);
         return view('admin.product-colors.list', [
             'list_cate' => $categoryProducts,

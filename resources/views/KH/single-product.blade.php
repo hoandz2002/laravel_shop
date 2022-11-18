@@ -65,6 +65,7 @@
                     </div>
                     <br><br>
                     <div>
+                        <input type="hidden" id="prd_id" value="{{ $dataProduct->id }}">
                         <p style="" id="myContent" class="text-capitalize nameContent my-1">
                             {{ $dataProduct->description }}
                         </p>
@@ -91,28 +92,66 @@
                             {{ $sale = ($dataProduct->price * $dataProduct->sale) / 100 }}
                         </span>
                         <p>
-                            @foreach ($price_material as $data)
-                                <div id="ww{{ $data->size_Id }}" style="height: 30px;display: none">
-                                    <p style="text-decoration: line-through">{{ number_format($data->price) }}<sup>đ</sup>
+                        <div id="showprice"></div>
+                        <div id="showtotals"></div>
+                        @foreach ($price_material as $data)
+                            <div id="ww{{ $data->size_Id }}" style="height: 30px;display: none">
+                                @if ($data->sale_value || $dataProduct->sale)
+                                    <p style="text-decoration: line-through">
+                                        {{ number_format($data->price) }}<sup>đ</sup>
                                     </p>
+                                @else
+                                    <br>
+                                @endif
+                                @if ($data->type_sale == 2)
+                                    <p style="color: red;font-size: 25px;font-weight: bold;margin-top: -30px">
+                                        {{ number_format($data->price - $data->price * ($data->sale / 100) - $data->price * ($data->sale_value / 100)) }}<sup>đ</sup>
+                                    </p>
+                                @elseif ($data->type_sale == 1)
+                                    <p style="color: red;font-size: 25px;font-weight: bold;margin-top: -30px">
+                                        {{ number_format($data->price - $data->price * ($data->sale / 100) - $data->sale_value) }}<sup>đ</sup>
+                                    </p>
+                                @else
                                     <p style="color: red;font-size: 25px;font-weight: bold;margin-top: -30px">
                                         {{ number_format($data->price - $data->price * ($data->sale / 100)) }}<sup>đ</sup>
                                     </p>
-                                    <input type="text" hidden value="{{ $data->price }}" name=""
-                                        id="db_price{{ $data->size_Id }}">
-                                </div>
-                            @endforeach
+                                @endif
+                                <input type="text" hidden value="{{ $data->price }}" name=""
+                                    id="db_price{{ $data->size_Id }}">
+                                <input type="text" hidden value="{{ $data->id }}" name=""
+                                    id="type_sale{{ $data->size_Id }}">
+
+                            </div>
+                        @endforeach
                         </p>
                         <p>
                             @foreach ($price_material2 as $data)
                                 <div id="bb{{ $data->size_Id }}" style="height: 30px;display: none">
-                                    <p style="text-decoration: line-through">{{ number_format($data->price) }}<sup>đ</sup>
-                                    </p>
-                                    <p style="color: red;font-size: 25px;font-weight: bold;margin-top: -30px">
-                                        {{ number_format($data->price - $data->price * ($data->sale / 100)) }}<sup>đ</sup>
-                                    </p>
+                                    @if ($data->sale_value || $dataProduct->sale)
+                                        <p style="text-decoration: line-through">
+                                            {{ number_format($data->price) }}<sup>đ</sup>
+                                        </p>
+                                    @else
+                                        <br>
+                                    @endif
+                                    @if ($data->type_sale == 2)
+                                        <p style="color: red;font-size: 25px;font-weight: bold;margin-top: -30px">
+                                            {{ number_format($data->price - $data->price * ($data->sale / 100) - $data->price * ($data->sale_value / 100)) }}<sup>đ</sup>
+                                        </p>
+                                    @elseif ($data->type_sale == 1)
+                                        <p style="color: red;font-size: 25px;font-weight: bold;margin-top: -30px">
+                                            {{ number_format($data->price - $data->price * ($data->sale / 100) - $data->sale_value) }}<sup>đ</sup>
+                                        </p>
+                                    @else
+                                        <p style="color: red;font-size: 25px;font-weight: bold;margin-top: -30px">
+                                            {{ number_format($data->price - $data->price * ($data->sale / 100)) }}<sup>đ</sup>
+                                        </p>
+                                    @endif
                                     <input type="text" hidden value="{{ $data->price }}" name=""
                                         id="mn_price{{ $data->size_Id }}">
+                                    <input type="text" hidden value="{{ $data->id }}" name=""
+                                        id="mmtype_sale{{ $data->size_Id }}">
+
                                 </div>
                             @endforeach
                         </p>
@@ -137,37 +176,131 @@
                                 <form action="{{ route('client.storeCart') }}" method="POST">
                                     @csrf
                                     <input type="text" name="price" hidden id="total_price">
+                                    <input type="text" name="price_product_id" value="" hidden
+                                        id="type_sale_submit">
+
                                     <span style="font-size: 18px;font-weight: bold">Chất liệu:</span><br> <br>
                                     <div style="display: inline-flex;margin-bottom: 10px">
                                         @foreach ($material as $bla)
                                             <div style="width: 200;height: 30px;">
                                                 <input name="material_id" id="hihi{{ $bla->id_material }}" type="radio"
-                                                    value="{{ $bla->id_material }}" style="width: 20px;height:20px"
-                                                    id=""> <span style="font-weight: bold">Chất liệu
+                                                    value="{{ $bla->id_material }}" data-id="{{ $bla->id_material }}"
+                                                    style="width: 20px;height:20px" class="changeMate"> <span
+                                                    style="font-weight: bold">Chất liệu
                                                     {{ $bla->name_Material }}</span>
                                             </div>
                                         @endforeach
                                     </div>
-                                    <div id="hienthi_size" style="display: none">
-                                        <p>Kích thước:</p>
-                                        @foreach ($price_material as $data)
-                                            <input style="cursor: pointer;width: 30px" type="radio" name="size_id"
-                                                value="{{ $data->size_Id }}" id="{{ $data->size_Id }}"><span
-                                                style="margin-left: 10px;font-weight: bold">{{ $data->nameSize }}
-                                            </span><br>
-                                            {{-- <div id="LL{{ $data->size }}" style="display: none">
-                                                    <input type="text" name="price" id=""
-                                                        value="{{ $data->price }}">
-                                                </div> --}}
-                                        @endforeach
+                                    <p>Chất liệu - Kích thước:</p>
+                                    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"
+                                        integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA=="
+                                        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+                                    <script>
+                                        $('.changeMate').on('change', function() {
+                                            var id_mate = $(this).data('id');
+                                            var id_prd = $('#prd_id').val();
+                                            $.ajax({
+                                                type: "GET",
+                                                url: "/getSizeMate",
+                                                data: {
+                                                    prd: id_prd,
+                                                    mate: id_mate,
+                                                },
+                                                dataType: "JSON",
+                                                success: function(response) {
+                                                    $('#hienthi_size').html('')
+                                                    $('#hienthi_size2').html('')
+                                                    $('#hienthi_size').append(response.show)
+                                                }
+                                            });
+                                        })
+
+                                        function clickRadio(el, pr, kk) {
+                                            // alert(pr)
+                                            $('#showtotals').html(
+
+                                                ` <p style="text-decoration: line-through;">${new Intl.NumberFormat('vn-VN').format(kk)}<sup>đ</sup></p>
+                                                <p style="color: red;font-size: 25px;font-weight: bold;margin-top: -30px">${new Intl.NumberFormat('vn-VN').format(pr)}<sup>đ</sup></p>
+                                                `)
+                                            $('#total_price').val(kk)
+                                            $('#type_sale_submit').val(el)
+                                            $('.clearCo').removeClass("btn-danger text-white")
+                                            $('.color' + el).addClass("btn-danger text-white")
+                                        }
+                                    </script>
+                                    <div id="hienthi_size" style="">
                                     </div>
-                                    <div id="hienthi_size2" style="display: none">
-                                        <p>Kích thước:</p>
-                                        @foreach ($price_material2 as $data)
-                                            <input style="cursor: pointer;width: 30px" type="radio" name="size_id"
-                                                value="{{ $data->size_Id }}" id="size{{ $data->size_Id }}"><span
+                                    <br>
+                                    <div id="hienthi_size2" style="">
+                                        {{-- <p>Kích thước:</p> --}}
+                                        <button disabled type="button" class="btn btn-outline-danger">Size lớn
+                                            <input disabled style="cursor: pointer;width: 100%;opacity: 0;"
+                                                type="radio">
+                                        </button>
+                                        <button disabled type="button" class="btn btn-outline-danger">Size trung bình
+                                            <input disabled style="cursor: pointer;width: 100%;opacity: 0;"
+                                                type="radio">
+                                        </button>
+                                        <button disabled type="button" class="btn btn-outline-danger">Size nhỏ
+                                            <input disabled style="cursor: pointer;width: 100%;opacity: 0;"
+                                                type="radio">
+                                        </button>
+                                        @foreach ($price_material2 as $key => $data)
+                                            @if ($data->quantity == 0 || $data->quantity == null)
+                                                <div style="display: inline-flex" class="d-none">
+                                                    <button disabled onclick="changeSize({{ $key }})"
+                                                        type="button"
+                                                        class="btn btn-outline-danger">{{ $data->nameSize }}
+                                                        - {{ $data->name_Material }}
+                                                        <input disabled style="cursor: pointer;width: 100%;opacity: 0;"
+                                                            type="radio" name="size_id" value="{{ $data->size_Id }}"
+                                                            id="size{{ $data->size_Id }}">
+                                                    </button>
+                                                    <div style="margin-left: -19px;display: none;z-index: inherit;width: 20px;height: 25px;"
+                                                        class="itemCheck itemCheck button{{ $key }}"
+                                                        style="">
+                                                        <i style="color: red" class="fas fa-check"></i>
+                                                    </div>
+                                                </div>
+                                            @else
+                                                <div style="display: inline-flex" class="d-none">
+                                                    <button onclick="changeSize({{ $key }})" type="button"
+                                                        class="btn btn-outline-danger">{{ $data->nameSize }}
+                                                        <input style="cursor: pointer;width: 100%;opacity: 0;"
+                                                            type="radio" name="size_id" value="{{ $data->size_Id }}"
+                                                            id="size{{ $data->size_Id }}">
+                                                    </button>
+                                                    <div style="margin-left: -19px;display: none;z-index: inherit;width: 20px;height: 25px;"
+                                                        class="itemCheck itemCheck button{{ $key }}"
+                                                        style="">
+                                                        <i style="color: red" class="fas fa-check"></i>
+                                                    </div>
+                                                </div>
+                                            @endif
+                                            <script>
+                                                let itemElemetRadio = document.getElementById("item1")
+                                                let showitemElementDiv = document.getElementById("showitem1")
+                                                let item2ElemetRadio = document.getElementById("item2")
+                                                let showitem2ElementDiv = document.getElementById("showitem2")
+                                                const changeSize = function(key) {
+                                                    document.querySelectorAll('.itemCheck').forEach((e, key) => {
+                                                        e.style.display = "none"
+                                                    })
+                                                    document.querySelectorAll('.itemCheck')[key].style.display = "block"
+                                                    document.querySelectorAll('.item1Check')[key].style.display = "none"
+                                                }
+                                            </script>
+                                            {{-- <span
                                                 style="margin-left: 10px;font-weight: bold">{{ $data->nameSize }}
-                                            </span><br>
+                                            </span> --}}
+                                            {{-- @if ($data->sale_value)
+                                                @if ($data->type_sale == 0)
+                                                    <i>(sản phẩm đang được giảm {{ $data->sale_value }})</i>
+                                                @else
+                                                    <i>(Giảm {{ $data->sale_value }}%)</i>
+                                                @endif
+                                            @endif
+                                            <br> --}}
                                         @endforeach
                                     </div>
                                     <br>
@@ -180,14 +313,14 @@
                                                     id="icon{{ $item->id }}" name="color_id" type="radio"
                                                     value="{{ $item->color_id }}"
                                                     style="width: 20px;height:20px; cursor: pointer;" id="">
-                                                <div style="margin-left: 9px" class="iconCheck iconCheck{{ $key}}"
+                                                <div style="margin-left: 9px"
+                                                    class="iconCheck iconCheck{{ $key }}"
                                                     style="display: none;z-index: inherit;">
                                                     <i style="color: white" class="fas fa-check"></i>
                                                 </div>
                                             </div>
                                         @endforeach
                                     </div>
-
                                     <script>
                                         let iconElemetRadio = document.getElementById("icon1")
                                         let showiconElementDiv = document.getElementById("showicon1")
@@ -433,11 +566,19 @@
             let total = document.getElementById("total_price")
             let db_price = document.getElementById("db_price")
             let mn_price = document.getElementById("mn_price")
+            // 
+            let type_sale_submit = document.getElementById("type_sale_submit")
+            // let sale_value_submit = document.getElementById("sale_value_submit")
+
+            let type_sale = document.getElementById("type_sale")
+            let mmtype_sale = document.getElementById("mmtype_sale")
+
             id1ElemetRadio.onchange = function() {
                 if (this.checked) {
                     id1ElementDiv.style.display = "block"
                     console.log(db_price1.value);
                     total.value = db_price1.value;
+                    type_sale_submit.value = type_sale1.value;
                     id2ElementDiv.style.display = "none"
                     id3ElementDiv.style.display = "none"
                     // 
@@ -451,6 +592,7 @@
                     id2ElementDiv.style.display = "block"
                     console.log(db_price2.value);
                     total.value = db_price2.value;
+                    type_sale_submit.value = type_sale2.value;
                     id1ElementDiv.style.display = "none"
                     id3ElementDiv.style.display = "none"
                     // 
@@ -463,6 +605,7 @@
                 if (this.checked) {
                     id3ElementDiv.style.display = "block"
                     total.value = db_price3.value;
+                    type_sale_submit.value = type_sale3.value;
                     id2ElementDiv.style.display = "none"
                     id1ElementDiv.style.display = "none"
                     // 
@@ -478,6 +621,7 @@
                     id4ElementDiv.style.display = "block"
                     console.log(mn_price1.value);
                     total.value = mn_price1.value;
+                    type_sale_submit.value = mmtype_sale1.value;
                     id5ElementDiv.style.display = "none"
                     id6ElementDiv.style.display = "none"
                     // 
@@ -491,6 +635,7 @@
                     id5ElementDiv.style.display = "block"
                     console.log(mn_price1.value);
                     total.value = mn_price2.value;
+                    type_sale_submit.value = mmtype_sale2.value;
                     id4ElementDiv.style.display = "none"
                     id6ElementDiv.style.display = "none"
                     // 
@@ -504,6 +649,7 @@
                     id6ElementDiv.style.display = "block"
                     console.log(mn_price1.value);
                     total.value = mn_price3.value;
+                    type_sale_submit.value = mmtype_sale3.value;
                     id5ElementDiv.style.display = "none"
                     id4ElementDiv.style.display = "none"
                     // 

@@ -22,6 +22,7 @@ use App\Models\Ship;
 use App\Models\Size;
 use App\Models\User;
 use DateTime;
+use GuzzleHttp\Handler\Proxy;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -78,41 +79,43 @@ class ClientController extends Controller
     }
     public function cart(Request $request)
     {
+        // dd($request->all());
         $mass = 0;
         $total = 0;
         $ship = 0;
-        $products = Cart::select('carts.*', 'products.nameProduct', 'products.avatar', 'products.mass', 'products.sale', 'sizes.nameSize', 'materials.name_Material', 'colors.name_Color')
+        $products = Cart::select('carts.*', 'products.nameProduct', 'products.avatar', 'products.mass', 'products.sale', 'sizes.nameSize', 'materials.name_Material', 'colors.name_Color', 'price_products.sale_value', 'price_products.type_sale')
+            ->join('price_products', 'carts.price_product_id', '=', 'price_products.id')
             ->join('products', 'carts.productId', '=', 'products.id')
-            ->join('sizes', 'carts.size_id', '=', 'sizes.id')
+            ->join('sizes', 'price_products.size_Id', '=', 'sizes.id')
             ->join('colors', 'carts.color_id', '=', 'colors.id')
-            ->join('materials', 'carts.material_id', '=', 'materials.id_material')
+            ->join('materials', 'price_products.material_Id', '=', 'materials.id_material')
             ->where('userId', '=', Auth::user()->id)
             ->get();
-
         // dd($products);
-
         return view('KH.cart', compact('products', 'total', 'mass', 'ship'));
     }
     public function storeCart(Request $request)
     {
+        $kk = Price_product::find($request->price_product_id);
         // dd($request->all());
-        //dd(1);
         if (Auth::user()) {
+            if ($request->quantity > $kk->quantity) {
+                session()->flash('error', 'Không đủ số luọng trong kho');
+                return redirect()->back();
+            }
             // dd(2);
             $product = new Cart();
+            $product->price_product_id = $request->price_product_id;
             $product->fill($request->all());
-            //
-            $price = Price_product::where('product_Id', '=', $request->productId)->where('price', '=', $request->price)
-                ->get();
+            // $price = Price_product::where('product_Id', '=', $request->productId)->where('price', '=', $request->price)
+            //     ->get();
             $cartAllId = DB::table('carts')
                 ->where('carts.userId', '=', Auth::user()->id)->get();
             // dd($cartAllId);
             foreach ($cartAllId as $data) {
                 if ($request->productId) {
-                    // dd('cay vcl');
                     if ($request->material_id) {
-                        // dd(2);
-                        if ($request->size_id == $data->size_id && $request->color_id == $data->color_id && $request->material_id == $data->material_id) {
+                        if ($request->size_id == $data->size_id && $request->color_id == $data->color_id) {
                             $cartId = DB::table('carts')->where('carts.userId', '=', Auth::user()->id)
                                 ->where('carts.productId', '=', $request->productId)
                                 ->where('carts.size_id', '=', $request->size_id)
@@ -121,13 +124,13 @@ class ClientController extends Controller
                                 ->get();
                             // dd($cartId);
                             $number = $data->quantity + $request->quantity;
-                            // \dd($number);
+                            //dd($number);
                             $id = $cartId->pluck('id'); // Lấy ra mảng id
                             Cart::whereIn('id', $id)->update(['quantity' => $number]); // update các post có id trong mảng
                             session()->flash('success', 'Thêm vào giỏ hàng thành công!9999999999');
                             return redirect()->route('client.cart');
                         }
-                        if ($request->size_id == $data->size_id && $request->color_id == $data->color_id && $request->material_id != $data->material_id) {
+                        elseif ($request->size_id == $data->size_id && $request->color_id != $data->color_id) {
                             $product = new Cart();
                             // dd($product);
                             $product->fill($request->all());
@@ -137,8 +140,6 @@ class ClientController extends Controller
                             }
                             $product->save();
                             session()->flash('success', 'Thêm giỏ hàng thành công poil,mnb!');
-                            return redirect()->route('client.cart');
-                            session()->flash('success', 'Thêm vào giỏ hàng thành công!9999999999');
                             return redirect()->route('client.cart');
                         } elseif (!$request->color_id && !$data->size_id) {
                             // dd(2);
@@ -162,18 +163,9 @@ class ClientController extends Controller
                             $product->save();
                             session()->flash('success', 'Thêm giỏ hàng thành công hihihi!');
                             return redirect()->route('client.cart');
-                        } elseif ($request->color_id != $data->color_id && $request->size_id == $data->size_id) {
-                            $product = new Cart();
-                            $product->fill($request->all());
-                            if ($request->color_id == null) {
-                                session()->flash('error', 'vui lòng chọn màu sắc!');
-                                return redirect()->back();
-                            }
-                            $product->save();
-                            session()->flash('success', 'Thêm giỏ hàng thành công hihihi!');
-                            return redirect()->route('client.cart');
-                        }
-                    } else {
+                        } 
+                    } 
+                    else {
                         $product = new Cart();
                         $product->fill($request->all());
                         if ($request->color_id == null) {
@@ -231,14 +223,16 @@ class ClientController extends Controller
             ->where('price_products.material_Id', '=', 1)
             ->join('products', 'price_products.product_Id', '=', 'products.id')
             ->join('sizes', 'sizes.id', '=', 'price_products.size_Id')
-            ->select('price_products.*', 'sizes.*', 'products.sale')
+            ->join('materials', 'materials.id_material', '=', 'price_products.material_Id')
+            ->select('price_products.*', 'sizes.nameSize', 'sizes.statusSize', 'products.sale', 'materials.name_Material')
             ->get();
         // dd($price_material);
         $price_material2 = Price_product::where('price_products.product_Id', '=', $id)
             ->where('price_products.material_Id', '=', 2)
-            ->join('sizes', 'sizes.id', '=', 'price_products.size_Id')
             ->join('products', 'price_products.product_Id', '=', 'products.id')
-            ->select('price_products.*', 'sizes.*', 'products.sale')
+            ->join('sizes', 'sizes.id', '=', 'price_products.size_Id')
+            ->join('materials', 'materials.id_material', '=', 'price_products.material_Id')
+            ->select('price_products.*', 'sizes.nameSize', 'sizes.statusSize', 'products.sale', 'materials.name_Material')
             ->get();
 
         // dd($price_material2);
@@ -264,6 +258,59 @@ class ClientController extends Controller
         ]);
     }
 
+    public function getSizeMate(Request $request)
+    {
+        $data = DB::table('price_products')
+            ->join('sizes', 'price_products.size_Id', '=', 'sizes.id')
+            ->where('product_Id', '=', $request->prd)->where('material_Id', '=', $request->mate)
+            ->select('price_products.*', 'sizes.nameSize')
+            ->get();
+        $size = Size::all();
+        $dataProduct = Product::find($request->prd);
+        $check = 0;
+        $show = '';
+        $total = 0;
+
+        foreach ($size as $el) {
+            foreach ($data as $it) {
+                if ($it->size_Id == $el->id) {
+                    if ($it->type_sale == 2) {
+                        $price_pr = $it->price;
+                        $total = $it->price - $it->price * ($dataProduct->sale / 100) - $it->price * ($it->sale_value / 100);
+                    } elseif ($it->type_sale == 1) {
+                        $price_pr = $it->price;
+                        $total = $it->price - $it->price * ($dataProduct->sale / 100) - $it->sale_value;
+                    } else {
+                        $price_pr = $it->price;
+                        $total = $it->price - $it->price * ($dataProduct->sale / 100);
+                    }
+                    // dd($total);
+                    $show .= "<div style='display: inline-flex'>
+                                <button type='button' 
+                                  class='btn btn-outline-danger clearCo color$it->id' onclick='clickRadio($it->id, $total,$price_pr)'>
+                                      $it->nameSize
+                                  <input style='cursor: pointer;width: 100%;opacity: 0;' type='radio'
+                                      name='size_id' value='$it->size_Id'
+                                      id='size$it->size_Id'>
+                              </button>
+                              </div>";
+                    $check = 1;
+                }
+            }
+            if ($check == 0) {
+                $show .= " <button  type='button'
+                class='btn border none' disable>
+                    $el->nameSize
+                <input disable style='cursor: pointer;width: 100%;opacity: 0;' type='radio'
+                    name='size_id' value='$el->size_Id'
+                    id='size$el->size_Id'>
+            </button>";
+            }
+            $check = 0;
+        }
+        // dd($size);
+        return response()->json(['show' => $show, 'size' => $size], 200);
+    }
     public function storeComment(Request $request)
     {
         if ($request->content == null) {
@@ -293,6 +340,8 @@ class ClientController extends Controller
     }
     public function checkout(Request $request)
     {
+        // dd($request->all());
+        $coupon = Coupon::select('coupons.*')->get();
         $ships = Ship::all();
         $kk = Information::all();
         // dd($data);
@@ -301,11 +350,10 @@ class ClientController extends Controller
             $price_coupon = 0;
             $id_cart = $request->id;
             $products = Cart::select('carts.*', 'products.nameProduct', 'products.avatar', 'price', 'products.mass', 'products.sale')
-                // ->join('price_products', 'carts.productId', '=', 'price_products.product_Id')
                 ->join('products', 'carts.productId', '=', 'products.id')
                 ->where('userId', '=', Auth::user()->id)
                 ->get();
-
+            // dd($products);
 
             if (count($products) == 0) {
                 session()->flash('error', 'Giỏi hàng hiện đang trống !');
@@ -335,7 +383,7 @@ class ClientController extends Controller
                     $ship = 500000;
                 }
                 // dd($products);
-                return view('KH.checkout', compact('kk', 'products', 'mass', 'total', 'ship', 'id_cart', 'price_coupon', 'ships', 'address'));
+                return view('KH.checkout', compact('kk', 'products', 'mass', 'total', 'ship', 'id_cart', 'price_coupon', 'ships', 'address', 'coupon'));
             }
         } else {
             session()->flash('empty_checkbok', 'Vui lòng chọn sản phẩm thanh toán !');
@@ -344,56 +392,106 @@ class ClientController extends Controller
     }
     public function check_coupon(Request $request)
     {
+        // dd($request->all());
         $ships = Ship::all();
         $kk = Information::all();
         $address = Information::where('information.status', '=', 0)->get();
-
         $price_coupon = 0;
-        $coupon = Coupon::all();
+        $coupon = Coupon::select('coupons.*')->get();
         // dd($coupon);
-        foreach ($coupon as $item) {
-            if ($item->code == $request->code) {
-                $id_cart = $request->id;
-                $products = Cart::select('carts.*', 'products.nameProduct', 'products.avatar', 'price', 'products.mass', 'products.sale')
-                    // ->join('price_products', 'carts.productId', '=', 'price_products.product_Id')
-                    ->join('products', 'carts.productId', '=', 'products.id')
-                    ->where('userId', '=', Auth::user()->id)
-                    ->get();
-                if (count($products) == 0) {
-                    session()->flash('error', 'Giỏi hàng hiện đang trống !');
-                    return redirect()->back();
-                } else {
-                    $total = 0;
-                    $ship = 0;
-                    $mass = 0;
-                    // $products = Cart::select('carts.*', 'products.nameProduct', 'products.avatar', 'products.price', 'products.mass')->join('products', 'carts.productId', '=', 'products.id')->where('userId', '=', Auth::user()->id)->get();
+
+        foreach ($coupon as $key => $item) {
+            if ($request->code) {
+                if ($item->code == $request->code) {
+                    $id_cart = $request->id;
                     $products = Cart::select('carts.*', 'products.nameProduct', 'products.avatar', 'price', 'products.mass', 'products.sale')
                         // ->join('price_products', 'carts.productId', '=', 'price_products.product_Id')
                         ->join('products', 'carts.productId', '=', 'products.id')
                         ->where('userId', '=', Auth::user()->id)
                         ->get();
-
-                    // dd($products);
-                    foreach ($products as $data) {
-                        $mass += $data->quantity * $data->mass;
-                    }
-                    if ($mass <= 10) {
-                        $ship = 50000;
-                    } elseif ($mass <= 30) {
-                        $ship = 150000;
-                    } elseif ($mass <= 60) {
-                        $ship = 300000;
+                    if (count($products) == 0) {
+                        session()->flash('error', 'Giỏi hàng hiện đang trống !');
+                        return redirect()->back();
                     } else {
-                        $ship = 500000;
+                        $total = 0;
+                        $ship = 0;
+                        $mass = 0;
+                        // $products = Cart::select('carts.*', 'products.nameProduct', 'products.avatar', 'products.price', 'products.mass')->join('products', 'carts.productId', '=', 'products.id')->where('userId', '=', Auth::user()->id)->get();
+                        $products = Cart::select('carts.*', 'products.nameProduct', 'products.avatar', 'price', 'products.mass', 'products.sale')
+                            // ->join('price_products', 'carts.productId', '=', 'price_products.product_Id')
+                            ->join('products', 'carts.productId', '=', 'products.id')
+                            ->where('userId', '=', Auth::user()->id)
+                            ->get();
+
+                        // dd($products);
+                        foreach ($products as $data) {
+                            $mass += $data->quantity * $data->mass;
+                        }
+                        if ($mass <= 10) {
+                            $ship = 50000;
+                        } elseif ($mass <= 30) {
+                            $ship = 150000;
+                        } elseif ($mass <= 60) {
+                            $ship = 300000;
+                        } else {
+                            $ship = 500000;
+                        }
+                        // dd($products);
                     }
-                    // dd($products);
+                    $price_coupon = $item->sale;
+                    // dd($price_coupon);
+                    session()->flash('success', 'Đã thêm mã giảm giá thành công!');
+                    return view('KH.checkout', compact('coupon', 'products', 'mass', 'total', 'ship', 'id_cart', 'price_coupon', 'kk', 'ships', 'address'));
                 }
-                $price_coupon = $item->sale;
-                // dd($price_coupon);
-                session()->flash('success', 'Đã thêm mã giảm giá thành công!');
-                return view('KH.checkout', compact('products', 'mass', 'total', 'ship', 'id_cart', 'price_coupon', 'kk', 'ships', 'address'));
-            } elseif ($request->code != $item->code) {
-                dd('ma giam gia khong hop le');
+                // elseif ($request->code != $item->code) {
+                //     dd('ma giam gia khong hop le');
+                // }
+            }
+            if ($request->voucher) {
+                if ($item->id == $request->voucher) {
+                    $id_cart = $request->id;
+                    $products = Cart::select('carts.*', 'products.nameProduct', 'products.avatar', 'price', 'products.mass', 'products.sale')
+                        // ->join('price_products', 'carts.productId', '=', 'price_products.product_Id')
+                        ->join('products', 'carts.productId', '=', 'products.id')
+                        ->where('userId', '=', Auth::user()->id)
+                        ->get();
+                    if (count($products) == 0) {
+                        session()->flash('error', 'Giỏi hàng hiện đang trống !');
+                        return redirect()->back();
+                    } else {
+                        $total = 0;
+                        $ship = 0;
+                        $mass = 0;
+                        // $products = Cart::select('carts.*', 'products.nameProduct', 'products.avatar', 'products.price', 'products.mass')->join('products', 'carts.productId', '=', 'products.id')->where('userId', '=', Auth::user()->id)->get();
+                        $products = Cart::select('carts.*', 'products.nameProduct', 'products.avatar', 'price', 'products.mass', 'products.sale')
+                            // ->join('price_products', 'carts.productId', '=', 'price_products.product_Id')
+                            ->join('products', 'carts.productId', '=', 'products.id')
+                            ->where('userId', '=', Auth::user()->id)
+                            ->get();
+
+                        // dd($products);
+                        foreach ($products as $data) {
+                            $mass += $data->quantity * $data->mass;
+                        }
+                        if ($mass <= 10) {
+                            $ship = 50000;
+                        } elseif ($mass <= 30) {
+                            $ship = 150000;
+                        } elseif ($mass <= 60) {
+                            $ship = 300000;
+                        } else {
+                            $ship = 500000;
+                        }
+                        // dd($products);
+                    }
+                    $price_coupon = $item->sale;
+                    // dd($price_coupon);
+                    session()->flash('success', 'Đã thêm mã giảm giá thành công!');
+                    return view('KH.checkout', compact('coupon', 'products', 'mass', 'total', 'ship', 'id_cart', 'price_coupon', 'kk', 'ships', 'address'));
+                }
+                //else {
+                //     dd('khong duoc giam gia dau cu');
+                // }
             }
         }
     }
@@ -416,8 +514,8 @@ class ClientController extends Controller
             $request->ship = $request->ship_db + ($request->ship_db * ($bla->price_ship / 100));
         }
         $pice_ship = $request->ship;
-        $statement = DB::select("SHOW TABLE STATUS LIKE 'orders'");
-        $nextId = $statement[0]->Auto_increment;
+        // $statement = DB::select("SHOW TABLE STATUS LIKE 'orders'");
+        // $nextId = $statement[0]->Auto_increment;
         // \dd($nextId);        
         $order = new Order();
         $order->orderDate = date('Y-m-d');
@@ -433,43 +531,31 @@ class ClientController extends Controller
         // dd($request->total);
         $order->save();
         $carts = Cart::all()->where('userId', '=', Auth::user()->id);
-
         // 
-        // $products = Cart::select('carts.*', 'products.nameProduct', 'products.avatar', 'price', 'products.mass', 'products.sale')
-        //     ->join('products', 'carts.productId', '=', 'products.id')
-        //     ->where('userId', '=', Auth::user()->id)
-        //     ->where('carts.id', '=', $id)
-        //     ->get();
-        // foreach ($carts as $it) {
-        //     $orderDetail = new OrderDetail();
-        //     $orderDetail->order_id = $nextId;
-        //     $orderDetail->product_id = $it->productId;
-        //     $orderDetail->oddNamePrd = 'a';
-        //     $orderDetail->oddPricePrd = $it->price;
-        //     $orderDetail->oddQuantityPrd = $it->quantity;
-        //     $orderDetail->save();
-        // }
         foreach ($request->id_cart as $value) {
             $cart_id = Cart::where('userId', '=', Auth::user()->id)
                 ->where('carts.id', '=', $value)
                 ->select('carts.*')
                 ->get();
             foreach ($cart_id as $hihi) {
+                $data = Price_product::find($hihi->price_product_id);
+                $data->quantity = $data->quantity - $hihi->quantity;
+                $data->save();
+                // 
                 $orderDetail = new OrderDetail();
-                $orderDetail->order_id = $nextId;
+                $orderDetail->order_id = $order->id;
                 $orderDetail->product_id = $hihi->productId;
                 $orderDetail->oddNamePrd = 'a';
                 $orderDetail->oddPricePrd = $hihi->price;
                 $orderDetail->oddQuantityPrd = $hihi->quantity;
+                $orderDetail->price_product_id = $hihi->price_product_id;
                 $orderDetail->save();
                 $hihi->delete();
             }
         }
         session()->flash('success', 'Thanh toán hóa đơn thành công!');
         // SendMaid::dispatch($request->input('oderEmail'))->delay(now()->addSeconds(2));
-
         return redirect()->route('client.cart');
-        // dd($carts);
     }
     public function profile($user)
     {

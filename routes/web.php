@@ -272,3 +272,4 @@ Route::get('/check_price/{size}', [ClientController::class, 'check_price'])->nam
 Route::post('/check_coupon', [ClientController::class, 'check_coupon'])->name('check_coupon');
 
 Route::get('/test', [ClientController::class, 'test'])->name('test');
+Route::get('/getSizeMate', [ClientController::class, 'getSizeMate']);

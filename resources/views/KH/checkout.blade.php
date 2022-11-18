@@ -71,17 +71,46 @@
 
                                 @foreach ($id_cart as $id)
                                     <span hidden>
-                                        {{ $products = DB::table('carts')->select('carts.*', 'products.nameProduct', 'products.avatar', 'price', 'products.mass', 'products.sale')->join('products', 'carts.productId', '=', 'products.id')->where('userId', '=', Auth::user()->id)->where('carts.id', '=', $id)->get() }}
+                                        {{ $products = DB::table('carts')->select(
+                                                'carts.*',
+                                                'products.nameProduct',
+                                                'products.avatar',
+                                                'products.mass',
+                                                'products.sale',
+                                                'price_products.sale_value',
+                                                'price_products.type_sale',
+                                            )->join('products', 'carts.productId', '=', 'products.id')->join('price_products', 'carts.price_product_id', '=', 'price_productS.id')->where('userId', '=', Auth::user()->id)->where('carts.id', '=', $id)->get() }}
                                     </span>
                                     @foreach ($products as $item)
                                         <span hidden>
-                                            {{ $price_sale = $item->price - $item->price * ($item->sale / 100) }}
+                                            {{-- {{ $price_sale = $item->price - $item->price * ($item->sale / 100) }} --}}
+                                            @if ($item->type_sale == 1)
+                                                {{ $price_sale = $item->price - $item->price * ($item->sale / 100) - $item->sale_value }}
+                                                <p hidden>
+                                                    {{ $type_sale = 1 }}
+                                                    {{ $sale_value = $item->sale_value }}
+                                                    {{ $total += $item->quantity * $price_sale }}
+                                                    {{ $mass += $item->quantity * $item->mass }}
+                                                </p>
+                                            @elseif ($item->type_sale == 2)
+                                                {{ $price_sale = $item->price - $item->price * ($item->sale / 100) - $item->price * ($item->sale_value / 100) }}
+                                                <p hidden>
+                                                    {{ $type_sale = 1 }}
+                                                    {{ $sale_value = $item->sale_value }}
+                                                    {{ $total += $item->quantity * $price_sale }}
+                                                    {{ $mass += $item->quantity * $item->mass }}
+                                                </p>
+                                            @else
+                                                {{ $price_sale = $item->price - $item->price * ($item->sale / 100) }}
+                                                {{ $total += $item->quantity * $price_sale }}
+                                                {{ $mass += $item->quantity * $item->mass }}
+                                            @endif
                                         </span>
-                                        <p hidden>
+                                        {{-- <p hidden>
 
                                             {{ $total += $item->quantity * $price_sale }}
                                             {{ $mass += $item->quantity * $item->mass }}
-                                        </p>
+                                        </p> --}}
                                     @endforeach
                                 @endforeach
                                 <div class="card-header" id="headingOne">
@@ -129,15 +158,15 @@
                                                     {{-- start modals edit address --}}
                                                     <!-- Button trigger modal -->
                                                     <!-- Modal -->
-                                                    <div style="width: 500px;margin-left: 701px;margin-top: 100px"
+                                                    <div style="width: 500px;margin-left: 616px;margin-top: 100px"
                                                         class="modal fade" id="exampleModal1{{ $value->id }}"
                                                         tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
                                                         aria-hidden="true">
                                                         <div class="modal-dialog" role="document">
                                                             <div class="modal-content">
                                                                 <div class="modal-header">
-                                                                    <h5 class="modal-title" id="exampleModalLabel">Modal
-                                                                        title</h5>
+                                                                    <h5 class="modal-title" id="exampleModalLabel">Cập nhật
+                                                                        địa chỉ</h5>
                                                                     <button type="button" class="close"
                                                                         data-dismiss="modal" aria-label="Close">
                                                                         <span aria-hidden="true">&times;</span>
@@ -249,6 +278,8 @@
                                                     {{-- @foreach ($products as $item) --}}
                                                     <input hidden type="text" name="total"
                                                         value="{{ $total - $price_coupon }}" id="">
+                                                    {{-- <input type="text" name="type_sale" value="{{$type_sale}}" id="">
+                                                        <input type="text" name="sale_value" value="{{$sale_value}}" id=""> --}}
                                                 @endforeach
                                                 {{-- @endforeach --}}
                                                 @foreach ($id_cart as $haha)
@@ -296,6 +327,30 @@
                                                         ({{ number_format($ship + ($value->price_ship / 100) * $ship) }}<sup>đ</sup>)
                                                     </span><br>
                                                 @endforeach
+                                            </div>
+                                            <br>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card single-accordion">
+                                <div class="card-header" id="headingTwo">
+                                    <h5 class="mb-0">
+                                        <!-- Button trigger modal -->
+                                        <button type="button" class="btn btn-primary" data-toggle="modal"
+                                            data-target="#exampleModal5">
+                                            Chọn voucher
+                                        </button>
+                                    </h5>
+                                    <!-- Modal(dong 606) -->
+
+                                </div>
+                                <div id="" class="collapse" aria-labelledby="headingTwo"
+                                    data-parent="#accordionExample">
+                                    <div class="card-body">
+                                        <div class="shipping-address-form">
+                                            <div>
+
                                             </div>
                                             <br>
                                         </div>
@@ -416,7 +471,8 @@
                                         </div> <br>
                                     </div>
                                 </div>
-                            </div> <br>
+                            </div>
+                            <br>
                             <button id="btn_order" class="bnt btn-default"
                                 style="display: none;background: #F28123;color: white;width: 110px;height: 40px;border: 0px;border-radius: 10px">Đặt
                                 hàng</button>
@@ -445,26 +501,67 @@
                                 </span>
                                 @foreach ($id_cart as $id)
                                     <span hidden>
-                                        {{ $products = DB::table('carts')->select('carts.*', 'products.nameProduct', 'products.avatar', 'price', 'products.mass', 'products.sale')->join('products', 'carts.productId', '=', 'products.id')->where('userId', '=', Auth::user()->id)->where('carts.id', '=', $id)->get() }}
+                                        {{ $products = DB::table('carts')->select(
+                                                'carts.*',
+                                                'products.nameProduct',
+                                                'products.avatar',
+                                                'products.mass',
+                                                'products.sale',
+                                                'price_products.sale_value',
+                                                'price_products.type_sale',
+                                            )->join('products', 'carts.productId', '=', 'products.id')->join('price_products', 'carts.price_product_id', '=', 'price_productS.id')->where('userId', '=', Auth::user()->id)->where('carts.id', '=', $id)->get() }}
                                     </span>
                                     @foreach ($products as $item)
                                         <span hidden>
-                                            {{ $price_sale = $item->price - $item->price * ($item->sale / 100) }}
+                                            {{-- {{ $price_sale = $item->price - $item->price * ($item->sale / 100) }} --}}
+                                            @if ($item->type_sale == 1)
+                                                {{ $price_sale = $item->price - $item->price * ($item->sale / 100) - $item->sale_value }}
+                                                <p hidden>
+                                                    {{ $total += $item->quantity * $price_sale }}
+                                                    {{ $mass += $item->quantity * $item->mass }}
+                                                </p>
+                                            @elseif ($item->type_sale == 2)
+                                                {{ $price_sale = $item->price - $item->price * ($item->sale / 100) - $item->price * ($item->sale_value / 100) }}
+                                                <p hidden>
+                                                    {{ $total += $item->quantity * $price_sale }}
+                                                    {{ $mass += $item->quantity * $item->mass }}
+                                                </p>
+                                            @else
+                                                {{ $price_sale = $item->price - $item->price * ($item->sale / 100) }}
+                                                {{ $total += $item->quantity * $price_sale }}
+                                                {{ $mass += $item->quantity * $item->mass }}
+                                            @endif
                                         </span>
-                                        <p hidden>
+                                        {{-- <p hidden>
 
                                             {{ $total += $item->quantity * $price_sale }}
                                             {{ $mass += $item->quantity * $item->mass }}
-                                        </p>
+                                        </p> --}}
                                         <tr>
                                             <td>{{ $item->nameProduct }}</td>
                                             <td>
-                                                @if ($item->sale > 0)
+                                                @if ($item->sale > 0 || $item->sale_value)
                                                     <span style="text-decoration: line-through">
                                                         {{ number_format($item->price) }}
                                                     </span>
                                                 @endif
-                                                {{ number_format($item->price - $item->price * ($item->sale / 100)) }}
+                                                {{-- {{ number_format($item->price - $item->price * ($item->sale / 100)) }} --}}
+                                                @if ($item->type_sale == 2)
+                                                    {{ number_format($item->price - $item->price * ($item->sale / 100) - $item->price * ($item->sale_value / 100)) }}<sup>đ</sup>
+                                                    @if ($item->quantity > 1)
+                                                        x{{ $item->quantity }}
+                                                    @endif
+                                                @elseif ($item->type_sale == 1)
+                                                    {{ number_format($item->price - $item->price * ($item->sale / 100) - $item->sale_value) }}<sup>đ</sup>
+                                                    @if ($item->quantity > 1)
+                                                        x{{ $item->quantity }}
+                                                    @endif
+                                                @else
+                                                    {{ number_format($item->price - $item->price * ($item->sale / 100)) }}<sup>đ</sup>
+                                                    @if ($item->quantity > 1)
+                                                        x{{ $item->quantity }}
+                                                    @endif
+                                                @endif
                                             </td>
                                         </tr>
                                     @endforeach
@@ -503,9 +600,84 @@
                                         <div>
                                             @foreach ($ships as $value)
                                                 <div style="display: none" id="tongtien{{ $value->id }}">
-                                                    {{ number_format( $total + ($ship + ($value->price_ship / 100) * $ship) - $price_coupon) }}<sup>đ</sup>
+                                                    {{ number_format($total + ($ship + ($value->price_ship / 100) * $ship) - $price_coupon) }}<sup>đ</sup>
                                                 </div>
                                             @endforeach
+                                            {{-- modals --}}
+                                            <div class="modal fade" id="exampleModal5" tabindex="-1" role="dialog"
+                                                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLabel">Voucher giảm
+                                                                giá </h5>
+                                                            <button type="button" class="close" data-dismiss="modal"
+                                                                aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form action="{{ route('check_coupon') }}" method="POST">
+                                                                @csrf
+                                                                @foreach ($id_cart as $db)
+                                                                    <input type="text" hidden name="id[]"
+                                                                        value="{{ $db }}" id="">
+                                                                @endforeach
+                                                                <div
+                                                                    style="display: flex;background: #f8f8f8;height: 50px">
+                                                                    <input type="text" class="form-control"
+                                                                        name="code" placeholder="add coupon"
+                                                                        id="">
+                                                                    {{-- <input width="100px" height="30px" type="submit" name="check_coupon" class=""
+                                                    value="Áp dụng" id=""> --}}
+                                                                    {{-- <div style="">
+                                                        <input class="" class="form-control"  type="submit" name="check_coupon" value="Áp dụng" id="">
+                                                    </div> --}}
+                                                                    <div style="width: 20%"><button
+                                                                            class="btn btn-outline-danger"
+                                                                            name="check_coupon" type="submit">Áp
+                                                                            dụng</button></div>
+                                                                </div>
+                                                            </form>
+                                                            <br>
+                                                            <form action="{{ route('check_coupon') }}" method="POST">
+                                                                @csrf
+                                                                @foreach ($id_cart as $db)
+                                                                    <input type="text" hidden name="id[]"
+                                                                        value="{{ $db }}" id="">
+                                                                @endforeach
+                                                                @foreach ($coupon as $value)
+                                                                    <div
+                                                                        style="width: 100%;min-height: 50px;display: flex">
+                                                                        <div>
+                                                                            <img src="https://cf.shopee.vn/file/05a0d5c56d00e1c21b53f0a08356efc1"
+                                                                                width="70px" height="70px" w
+                                                                                alt="">
+                                                                        </div>
+                                                                        <div style="margin-left: 15px">
+                                                                            Giảm {{ number_format($value->sale) }} <br>
+                                                                            Đơn tối thiểu
+                                                                            {{ number_format($value->Minimum_bill) }}
+                                                                        </div>
+                                                                        <div>
+                                                                            <input
+                                                                                {{ $total < $value->Minimum_bill ? 'disabled' : '' }}
+                                                                                style="margin-left: 200px;margin-top: 30px"
+                                                                                type="radio" name="voucher"
+                                                                                value="{{$value->id}}" id="">
+                                                                        </div>
+                                                                    </div> <br>
+                                                                @endforeach
+                                                                <button>hoan thanh</button>
+                                                            </form>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" data-dismiss="modal"
+                                                                class="btn btn-primary">Hoàn thành</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </td>
                                     {{-- <td>{{dd($price_coupon)}}</td> --}}
@@ -570,7 +742,7 @@
             hienthi1ElementDiv.style.display = "none"
             hienthi2ElementDiv.style.display = "block"
             hienthi3ElementDiv.style.display = "none"
-            
+
             // 
             tongtien1ElementDiv.style.display = "none"
             tongtien2ElementDiv.style.display = "block"

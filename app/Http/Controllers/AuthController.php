@@ -39,22 +39,21 @@ class AuthController extends Controller
                 if ($user->status == 0) {
                     if ($user->role == 1) {
                         return redirect()->route('admin.dashboard');
-                    }if ($user->role == 0) {
+                    }
+                    if ($user->role == 0) {
                         return redirect()->route('client.index');
                         // dd('an cut');
                     }
-                } else{
-                    session()->flash('error','Tài khoản củ bạn đã bị khóa');
+                } else {
+                    session()->flash('error', 'Tài khoản củ bạn đã bị khóa');
                     return redirect()->route('auth.getLogin');
                     // return back();
                     // return('tai khoan cua ban khong hoat dong');
                 }
             }
-        }
-         else 
-        {
+        } else {
             //nếu k khớp bản ghi nào trong db thì quay về login
-            session()->flash('error','Tài khoản mật khẩu không chính xác !');
+            session()->flash('error', 'Tài khoản mật khẩu không chính xác !');
             return redirect()->route('auth.getLogin');
             // dd('cc');
         }
@@ -78,24 +77,24 @@ class AuthController extends Controller
     }
     public function store(Request $request)
     {
-      
+
         $user = new User();
-    
+
         $user->fill($request->all());
         // 2. Kiểm tra file và lưu
-        $user->password=Hash::make($request->password);
+        $user->password = Hash::make($request->password);
         if ($request->hasFile('avatar')) {
             $avatar = $request->avatar;
             $avatarName = $avatar->hashName();
             $avatarName = $request->username . '_' . $avatarName;
-          
+
             $user->avatar = $avatar->storeAs('images/users', $avatarName);
-          
         } else {
             $user->avatar = '';
         }
         // 3. Lưu $user vào CSDL
         $user->save();
-        session()->flash('success','bạn đã đăng kí thành công');
-        return redirect()->route('auth.getLogin');    }
+        session()->flash('success', 'bạn đã đăng kí thành công');
+        return redirect()->route('auth.getLogin');
+    }
 }

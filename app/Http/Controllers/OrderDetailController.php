@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\OrderDetail;
+use App\Models\Price_product;
 use App\Models\Return_detail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -64,10 +65,10 @@ class OrderDetailController extends Controller
 
     $total_price = $request->oddPricePrd;
     // dd($total_price);
-    $orders = OrderDetail::select('order_details.*', 'products.*')
+    $orders = OrderDetail::select('order_details.*', 'products.*', 'price_products.*')
       ->join('products', 'order_details.product_id', '=', 'products.id')
       ->where('order_id', '=', $order)
-      // ->join('price_products','order_details.product_id','=','price_products.product_Id')
+      ->join('price_products', 'order_details.price_product_id', '=', 'price_products.id')
       // ->where('order_details.product_id','=','price_products.product_Id')
       ->get();
     // dd($orders);
@@ -82,11 +83,23 @@ class OrderDetailController extends Controller
   }
   public function updateStatusOrder($order)
   {
+    $data = OrderDetail::where('order_id', '=', $order)->get();
+    // dd($data);
     // dd($order);
     $updateStatus = Order::find($order);
     if ($updateStatus->oderStatus == 0) {
+      foreach ($data as $value) {
+        $price_product = Price_product::find($value->price_product_id);
+        $price_product->quantity = $value->oddQuantityPrd + $price_product->quantity;
+        $price_product->save();
+      }
       $updateStatus->oderStatus = 4;
     } elseif ($updateStatus->oderStatus == 1) {
+      foreach ($data as $value) {
+        $price_product = Price_product::find($value->price_product_id);
+        $price_product->quantity = $value->oddQuantityPrd + $price_product->quantity;
+        $price_product->save();
+      }
       $updateStatus->oderStatus = 4;
     } elseif ($updateStatus->oderStatus == 2) {
       $updateStatus->oderStatus = 3;
@@ -99,11 +112,10 @@ class OrderDetailController extends Controller
       $updateStatus->oderStatus = 6;
       $updateStatus->save();
       return redirect()->route('client.returnProducts.create', $id_Order);
-    } 
+    }
 
     $updateStatus->save();
     session()->flash('success', 'Bạn đã cập nhật trạng thái thành công!');
     return redirect()->route('client.showOrder');
   }
-  
 }

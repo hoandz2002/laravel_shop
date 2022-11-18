@@ -50,7 +50,7 @@ class ProductController extends Controller
 
     public function store(ProductRequest $request)
     {
-        dd($request->all());
+        // dd($request->all());
         $product = new Product();
         $product->fill($request->all());
         // 2. Kiểm tra file và lưu
@@ -91,6 +91,8 @@ class ProductController extends Controller
             $data->size_Id = $request->size_Id[$i];
             $data->material_Id = $request->material_Id[$i];
             $data->price = $request->price[$i];
+            $data->type_sale = $request->type_sale[$i];
+            $data->sale_value = $request->sale_value[$i];
             $data->product_Id = $product->id;
             $data->save();
         }
@@ -109,8 +111,11 @@ class ProductController extends Controller
     {
         $data = Product::find($product);
         $trongloz = DB::table('price_products')->where('product_Id', '=', $product)->get();
-        // dd($trongloz);
         $price = Price_product::all()->where('product_Id', '=', $product);
+        $color_product = ProductColor::all()->where('product_id', '=', $product);
+        foreach ($color_product as $value) {
+            $value->delete();
+        }
         foreach ($price as $db) {
             $db->delete();
         }
@@ -121,17 +126,12 @@ class ProductController extends Controller
     {
         $material = Material::all();
         $color = Color::all();
-
         $cate = CategoryProduct::all()->where('statusCate', '=', 0);
         $sizes = Size::all()->where('statusSize', '=', 0);
         $price_pro = DB::table('price_products')
             ->where('product_Id', '=', 12)
             ->select('price_products.*')
             ->get();
-
-        // $old_pice = Price_product::where('price_products.product_Id', '=', $product)
-        //     ->get();
-        // dd($old_pice);
         return view('admin.products.edit_product', compact('product', 'cate', 'sizes', 'price_pro', 'color', 'material'));
     }
     public function update(ProductRequest $request, $product)
@@ -209,6 +209,9 @@ class ProductController extends Controller
         $product->size_Id = $request->size_Id;
         $product->material_Id = $request->material_Id;
         $product->price = $request->price;
+        $product->type_sale = $request->type_sale;
+        $product->sale_value = $request->sale_value;
+        $product->quantity = $request->quantity;
 
         $product->save();
         return redirect()->route('admin.datailProduct.list', $request->product_Id);

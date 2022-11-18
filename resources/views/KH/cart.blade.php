@@ -78,23 +78,31 @@
                                         <th colspan="3" class="product-quantity">Quantity</th>
                                         <th class="product-total">Total</th>
                                         <th class="product-remove">Action</th>
-
                                         {{-- <th class="product-action">Action</th> --}}
-
                                     </tr>
                                 </thead>
                                 @if (count($products) > 0)
                                     <tbody>
-
                                         @foreach ($products as $item)
                                             <span hidden>
-                                                {{ $price_sale = $item->price - $item->price * ($item->sale / 100) }}
+                                                @if ($item->type_sale == 1)
+                                                    {{ $price_sale = $item->price - $item->price * ($item->sale / 100) - $item->sale_value }}
+                                                    <p hidden>
+                                                        {{ $total += $item->quantity * $price_sale }}
+                                                        {{ $mass += $item->quantity * $item->mass }}
+                                                    </p>
+                                                @elseif ($item->type_sale == 2)
+                                                    {{ $price_sale = $item->price - $item->price * ($item->sale / 100) - $item->price * ($item->sale_value / 100) }}
+                                                    <p hidden>
+                                                        {{ $total += $item->quantity * $price_sale }}
+                                                        {{ $mass += $item->quantity * $item->mass }}
+                                                    </p>
+                                                @endif
                                             </span>
-                                            <p hidden>
+                                            {{-- <p hidden>
                                                 {{ $total += $item->quantity * $price_sale }}
                                                 {{ $mass += $item->quantity * $item->mass }}
-                                            </p>
-
+                                            </p> --}}
                                             <tr class="table-body-row">
                                                 <td>
                                                     <input type="checkbox" name="id[]" value="{{ $item->id }}"
@@ -111,13 +119,19 @@
                                                     {{ $item->name_Material }}</td>
                                                 {{-- <input type="text" name="nameProduct" value="{{$item->nameProduct}}"  id=""> --}}
                                                 <td class="product-price" style="width: 100px">
-                                                    @if ($item->sale > 0)
+                                                    @if ($item->sale > 0 || $item->sale_value)
                                                         <span
                                                             style="text-decoration: line-through">{{ number_format($item->price) }}
                                                             {{-- <input type="text" name="price" id="" value="{{$item->price}}"> --}}
                                                         </span>
                                                     @endif <br>
-                                                    {{ number_format($item->price - $item->price * ($item->sale / 100)) }}
+                                                    @if ($item->type_sale == 2)
+                                                        {{ number_format($item->price - $item->price * ($item->sale / 100) - $item->price * ($item->sale_value / 100)) }}
+                                                    @elseif ($item->type_sale == 1)
+                                                        {{ number_format($item->price - $item->price * ($item->sale / 100) - $item->sale_value) }}
+                                                    @else
+                                                        {{ number_format($item->price - $item->price * ($item->sale / 100)) }}
+                                                    @endif
                                                 </td>
                                                 <td hidden>
                                                     <form action="">
@@ -130,7 +144,8 @@
                                                         @csrf
                                                 <td>
                                                     <input style="height: 35px" type="number" name="quantity"
-                                                        value="{{ $item->quantity }}" placeholder="0" min="1" max="5">
+                                                        value="{{ $item->quantity }}" placeholder="0" min="1"
+                                                        max="5">
                                                 </td>
 
                                                 <td>
@@ -140,13 +155,25 @@
                         </form>
                         </td>
                         <td class="product-total">
-                            {{ number_format($item->quantity * $price_sale) }}<sup>đ</sup></td>
+                            @if ($item->type_sale == 1)
+                                <span
+                                    hidden>{{ $price_sale = $item->price - $item->price * ($item->sale / 100) - $item->sale_value }}</span>
+                                {{ number_format($item->quantity * $price_sale) }}<sup>đ</sup>
+                        </td>
+                        </td>
+                    @elseif ($item->type_sale == 2)
+                        <span hidden>
+                            {{ $price_sale = $item->price - $item->price * ($item->sale / 100) - $item->price * ($item->sale_value / 100) }}
+                        </span>
+                        {{ number_format($item->quantity * $price_sale) }}<sup>đ</sup></td>
+                    @else
+                        {{ number_format($item->quantity * ($price_sale = $item->price - $item->price * ($item->sale / 100))) }}<sup>đ</sup>
+                        @endif
                         {{-- <td class="product-total">{{ $item->mass}}</td> --}}
                         <td class="product-remove">
                             <form action="{{ route('client.deleteCart', $item->id) }}" method="POST">
                                 @csrf
                                 @method('DELETE')
-
                                 {{-- <td class="product-remove"><a href="{{route('client.deleteCart',$item->id)}}"><i class="far fa-window-close"></i></a></td> --}}
                                 <button class="btn btn-danger"><i class="far fa-trash-alt"></i></button>
                             </form>

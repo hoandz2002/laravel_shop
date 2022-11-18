@@ -79,18 +79,22 @@
                                 <td><img src="{{ asset($item->avatar) }}" width="100px" alt=""></td>
                                 <td>
                                     <span>
-                                        @if ($item->sale)
+                                        @if ($item->sale || $item->sale_value)
                                             <p style="text-decoration: line-through">
                                                 {{ number_format($item->oddPricePrd) }}<sup>đ</sup>
                                             </p>
-                                            {{ number_format($item->oddPricePrd - ($item->oddPricePrd * $item->sale) / 100) }}<sup>đ</sup>
-                                        @else
-                                            {{ number_format($item->oddPricePrd) }}<sup>đ</sup>
+                                            @if ($item->type_sale == 2)
+                                                {{ number_format($item->price - $item->price * ($item->sale / 100) - $item->price * ($item->sale_value / 100)) }}<sup>đ</sup>
+                                            @elseif ($item->type_sale == 1)
+                                                {{ number_format($item->price - $item->price * ($item->sale / 100) - $item->sale_value) }}<sup>đ</sup>
+                                            @else
+                                                {{ number_format($item->price - $item->price * ($item->sale / 100)) }}<sup>đ</sup>
+                                            @endif
                                         @endif
                                     </span>
                                 </td>
                                 {{-- <td>
-                                    @if ($item->size_Id== 1)
+                                    @if ($item->size_Id == 1)
                                         Size lớn
                                         @elseif ($item->size_Id == 2)
                                         Size nhỏ
@@ -102,16 +106,33 @@
                                 <td>{{ $item->oddQuantityPrd }}</td>
                                 <td>
                                     <span>
-                                        @if ($item->sale)
-                                            {{ number_format(($item->oddPricePrd - ($item->oddPricePrd * $item->sale) / 100) * $item->oddQuantityPrd) }}<sup>đ</sup>
-                                        @else
-                                            {{ number_format($item->oddPricePrd * $item->oddQuantityPrd) }}<sup>đ</sup>
+                                        @if ($item->sale || $item->sale_value)
+                                            @if ($item->type_sale == 2)
+                                                {{ number_format($item->price - $item->price * ($item->sale / 100) - $item->price * ($item->sale_value / 100) * $item->oddQuantityPrd) }}<sup>đ</sup>
+                                            @elseif ($item->type_sale == 1)
+                                                {{ number_format(($item->price - $item->price * ($item->sale / 100) - $item->sale_value) * $item->oddQuantityPrd) }}<sup>đ</sup>
+                                            @else
+                                                {{ number_format(($item->price - $item->price * ($item->sale / 100)) * $item->oddQuantityPrd) }}<sup>đ</sup>
+                                            @endif
                                         @endif
                                     </span>
                                 </td>
-                                <p hidden>{{ $total += $item->oddPricePrd * $item->oddQuantityPrd }}</p>
+                                <p hidden>
+                                    {{-- {{ $total += $item->oddPricePrd * $item->oddQuantityPrd }} --}}
+                                    @if ($item->sale || $item->sale_value)
+                                        @if ($item->type_sale == 2)
+                                            {{ $total += $item->price - $item->price * ($item->sale / 100) - $item->price * ($item->sale_value / 100) * $item->oddQuantityPrd }}
+                                        @elseif ($item->type_sale == 1)
+                                            {{ ($total += $item->price - $item->price * ($item->sale / 100) - $item->sale_value) * $item->oddQuantityPrd }}
+                                        @else
+                                            {{ ($total += $item->price - $item->price * ($item->sale / 100)) * $item->oddQuantityPrd }}
+                                        @endif
+                                    @endif
+                                </p>
                             </tr>
                         @endforeach
+                        {{-- {{ dd($total) }} --}}
+
                         {{-- <tr>
                         <td colspan="4">Tổng tiền:</td>
                         <td colspan="1">{{ number_format($total) }}<sup>đ</sup></td>
@@ -135,13 +156,19 @@
                         @foreach ($orders as $item)
                             <tr>
                                 <td>{{ $item->nameProduct }}</td>
-                                <td><span>
-                                        @if ($item->sale)
-                                            {{ number_format(($item->oddPricePrd - ($item->oddPricePrd * $item->sale) / 100) * $item->oddQuantityPrd) }}<sup>đ</sup>
-                                        @else
-                                            {{ number_format($item->oddPricePrd * $item->oddQuantityPrd) }}<sup>đ</sup>
+                                <td>
+                                    <span>
+                                        @if ($item->sale || $item->sale_value)
+                                            @if ($item->type_sale == 2)
+                                                {{ number_format($item->price - $item->price * ($item->sale / 100) - $item->price * ($item->sale_value / 100) * $item->oddQuantityPrd) }}<sup>đ</sup>
+                                            @elseif ($item->type_sale == 1)
+                                                {{ number_format(($item->price - $item->price * ($item->sale / 100) - $item->sale_value) * $item->oddQuantityPrd) }}<sup>đ</sup>
+                                            @else
+                                                {{ number_format(($item->price - $item->price * ($item->sale / 100)) * $item->oddQuantityPrd) }}<sup>đ</sup>
+                                            @endif
                                         @endif
-                                    </span></td>
+                                    </span>
+                                </td>
                             </tr>
                         @endforeach
                         <tr>
@@ -152,7 +179,7 @@
                         </tr>
                         <tr>
                             <td>Mã giảm giá</td>
-                            <td>{{ number_format($total_price - $price_sale - $ship) }} <sup>đ</sup></td>
+                            <td>{{ number_format($total_price - $ship - $total) }} <sup>đ</sup></td>
                         </tr>
                         <tr>
                             <td><strong>Tổng tiền</strong></td>

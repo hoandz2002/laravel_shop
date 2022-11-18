@@ -16,11 +16,9 @@
             height: 1px;
             background: #eee;
         }
-
         .h-custom {
             height: calc(100% - 73px);
         }
-
         @media (max-width: 450px) {
             .h-custom {
                 height: 100%;
@@ -28,7 +26,6 @@
         }
     </style>
 </head>
-
 <body>
     <a style="margin-left: 40px;position: absolute;top: 50px" href="{{route('client.index')}}"><button class="btn btn-outline-success">Trang chủ</button></a>
     <section class="vh-100">

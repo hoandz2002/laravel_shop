@@ -17,7 +17,7 @@
                 {{-- <input type="text" name="product_Id" id="" value="{{ $value->nameSize }}" class="form-control"> --}}
                 <select name="size_Id" id="">
                     @foreach ($sizes as $item)
-                        <option value="{{ $item->id }}">{{ $item->nameSize }}</option>
+                        <option {{ $value->size_Id == $item->id ? 'selected' : '' }} value="{{ $item->id }}">{{ $item->nameSize }}</option>
                     @endforeach
                 </select>
             </div>
@@ -27,14 +27,30 @@
                     class="form-control"> --}}
                 <select name="material_Id" id="">
                     @foreach ($material as $item)
-                        <option value="{{ $item->id_material }}">{{ $item->name_Material }}</option>
+                        <option {{ $value->material_Id == $item->id_material ? 'selected' : '' }} value="{{ $item->id_material }}">{{ $item->name_Material }}</option>
                     @endforeach
                 </select>
             </div>
             <div class="form-group">
                 <label for="">Giá tiền: </label>
                 <input type="text" name="price" id="" value="{{ $value->price }}" class="form-control">
-
+            </div>
+            <div class="form-group">
+                <label for="">Loại giảm giá</label>
+                {{-- <input type="text" name="type_sale" id="" value="{{ $value->type_sale }}" class="form-control"> --}}
+                <br>
+                <select name="type_sale" id="">
+                    <option {{ $value->type_sale == 1 ? 'selected' : '' }} value="1">Trừ tiền</option>
+                    <option {{ $value->type_sale == 2 ? 'selected' : '' }} value="2">Trừ % giá trị</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="">Giá giảm </label>
+                <input type="text" name="sale_value" id="" value="{{ $value->sale_value }}" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="">Số lượng sản phẩm</label>
+                <input type="text" name="quantity" id="" value="{{ $value->quantity }}" class="form-control">
             </div>
             <button class="btn btn-success">
                 {{ isset($price_pro) ? 'Update' : 'Create' }}

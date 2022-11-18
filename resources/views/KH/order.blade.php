@@ -127,7 +127,7 @@
                             <form action="https://www.facebook.com/profile.php?id=100070668864172">
                                 <button class="btn btn-primary">Liên hệ shop</button>
                             </form>
-                        </td> --}}
+                         </td> --}}
                         <td>
                             <form method="POST" action="{{ route('client.updateStatusOrder', $item->id) }}">
                                 @csrf

@@ -89,7 +89,6 @@
                             <p class="product-price">
                             <p style="color: red" class="product-price">
                                 {{ number_format($item->price_in_active) }} <sup>đ</sup> </p>
-
                             </p>
                             <span hidden>
                                 {{ $sale = ($item->price * $item->sale) / 100 }}

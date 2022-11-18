@@ -18,6 +18,7 @@ class Cart extends Model
         'size_id',
         'material_id',
         'color_id',
+        'price_product_id'
     ];
 
     //  public function product_prices()
