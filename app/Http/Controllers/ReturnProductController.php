@@ -31,25 +31,37 @@ class ReturnProductController extends Controller
     // dd($data);
     return view('admin.order.listReturn', compact('data'));
   }
-  public function updateStatus($order)
+  public function updateStatus(Request $request, $order)
   {
-    // dd(1);
-    // dd($order);
+    // dd($request->all());
     $updateStatus = Order::find($order);
-    if ($updateStatus->oderStatus == 6) {
-      $id_Order = $order;
+    if ($request->tu_choi == 1) {
+      $updateStatus->oderStatus = 100;
+      $updateStatus->save();
+      // dd($request->tu_choi);
+      session()->flash('error', 'Bạn đã từ chối yêu cầu đổi hàng!');
+      return redirect()->back();
+    }
+    if ($request->tu_choi == 0) {
+      // dd(2);
       $updateStatus->oderStatus = 7;
       $updateStatus->save();
-      return redirect()->route('client.returnProducts.listReturnProduct');
+      session()->flash('success', 'Bạn đã cập nhật trạng thái thành công!');
+      return redirect()->back();
     }
-    $updateStatus->save();
-    session()->flash('success', 'Bạn đã cập nhật trạng thái thành công!');
-    return redirect()->route('client.returnProducts.listReturnProduct');
+    if ($request->oderStatus) {
+      $updateStatus->oderStatus = $request->oderStatus;
+      // dd(3);
+      session()->flash('success', 'Bạn đã cập nhật trạng thái thành công!');
+      $updateStatus->save();
+      return redirect()->back();
+    }
+    dd(4);
   }
   public function listReturnProduct()
   {
-    $data = Order::select('orders.*')->where('orders.oderStatus','>',5)->get();
+    $data = Order::select('orders.*')->where('orders.oderStatus', '>', 5)->get();
     // dd($data);
-    return view('admin.order.listReturnProduct',compact('data'));
+    return view('admin.order.listReturnProduct', compact('data'));
   }
 }

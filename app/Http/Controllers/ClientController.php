@@ -19,6 +19,7 @@ use App\Models\Price_product;
 use App\Models\Product;
 use App\Models\ProductColor;
 use App\Models\Ship;
+use App\Models\Shipping;
 use App\Models\Size;
 use App\Models\User;
 use DateTime;
@@ -96,26 +97,37 @@ class ClientController extends Controller
     }
     public function storeCart(Request $request)
     {
-        $kk = Price_product::find($request->price_product_id);
+        if (!$request->material_id) {
+            session()->flash('error','Chất liệu không được để trống');
+            return redirect()->back();
+        }
+        elseif (!$request->size_id) {
+            session()->flash('error','Size không được để trống');
+            return redirect()->back();        
+        }
+        elseif (!$request->color_id) {
+            session()->flash('error','Màu sắc không được để trống');
+            return redirect()->back();        
+        }
         // dd($request->all());
+        $kk = Price_product::find($request->price_product_id);
         if (Auth::user()) {
             if ($request->quantity > $kk->quantity) {
                 session()->flash('error', 'Không đủ số luọng trong kho');
                 return redirect()->back();
             }
-            // dd(2);
-            $product = new Cart();
-            $product->price_product_id = $request->price_product_id;
-            $product->fill($request->all());
-            // $price = Price_product::where('product_Id', '=', $request->productId)->where('price', '=', $request->price)
-            //     ->get();
+            // dd(1);
+
             $cartAllId = DB::table('carts')
                 ->where('carts.userId', '=', Auth::user()->id)->get();
             // dd($cartAllId);
             foreach ($cartAllId as $data) {
-                if ($request->productId) {
-                    if ($request->material_id) {
+                if ($request->productId == $data->productId) {
+                    // dd(01);
+                    if ($request->material_id == $data->material_id) {
+                        // dd(12);
                         if ($request->size_id == $data->size_id && $request->color_id == $data->color_id) {
+                            // dd(2);
                             $cartId = DB::table('carts')->where('carts.userId', '=', Auth::user()->id)
                                 ->where('carts.productId', '=', $request->productId)
                                 ->where('carts.size_id', '=', $request->size_id)
@@ -129,43 +141,57 @@ class ClientController extends Controller
                             Cart::whereIn('id', $id)->update(['quantity' => $number]); // update các post có id trong mảng
                             session()->flash('success', 'Thêm vào giỏ hàng thành công!9999999999');
                             return redirect()->route('client.cart');
+                        } else {
+                            // dd(999);
+                            $product = new Cart();
+                            $product->fill($request->all());
+                            if ($request->color_id == null) {
+                                session()->flash('error', 'vui lòng chọn màu sắc!');
+                                return redirect()->back();
+                            }
+                            $product->save();
+                            session()->flash('success', 'Thêm giỏ hàng thành công lalla!');
+                            return redirect()->route('client.cart');
                         }
-                        elseif ($request->size_id == $data->size_id && $request->color_id != $data->color_id) {
-                            $product = new Cart();
-                            // dd($product);
-                            $product->fill($request->all());
-                            if ($request->color_id == null) {
-                                session()->flash('error', 'vui lòng chọn màu sắc!');
-                                return redirect()->back();
-                            }
-                            $product->save();
-                            session()->flash('success', 'Thêm giỏ hàng thành công poil,mnb!');
-                            return redirect()->route('client.cart');
-                        } elseif (!$request->color_id && !$data->size_id) {
-                            // dd(2);
-                            $product = new Cart();
-                            $product->fill($request->all());
-                            if ($request->color_id == null) {
-                                session()->flash('error', 'vui lòng chọn màu sắc!');
-                                return redirect()->back();
-                            }
-                            $product->save();
-                            session()->flash('success', 'Thêm giỏ hàng thành công oiuytrew!');
-                            return redirect()->route('client.cart');
-                        } elseif ($request->color_id == $data->color_id && $request->size_id != $data->size_id) {
-                            // dd(2);
-                            $product = new Cart();
-                            $product->fill($request->all());
-                            if ($request->color_id == null) {
-                                session()->flash('error', 'vui lòng chọn màu sắc!');
-                                return redirect()->back();
-                            }
-                            $product->save();
-                            session()->flash('success', 'Thêm giỏ hàng thành công hihihi!');
-                            return redirect()->route('client.cart');
-                        } 
-                    } 
-                    else {
+                        // elseif ($request->size_id == $data->size_id && $request->color_id !== $data->color_id) {
+                        //     dd(291002);
+                        //     $product = new Cart();
+                        //     // dd($product);
+                        //     $product->fill($request->all());
+                        //     if ($request->color_id == null) {
+                        //         session()->flash('error', 'vui lòng chọn màu sắc!');
+                        //         return redirect()->back();
+                        //     }
+                        //     $product->save();
+                        //     session()->flash('success', 'Thêm giỏ hàng thành công poil,mnb!');
+                        //     return redirect()->route('client.cart');
+                        // } 
+                        // elseif ($request->color_id !== $request->color_id && $request->size_id !== $data->size_id) {
+                        //     dd(3);
+                        //     $product = new Cart();
+                        //     $product->fill($request->all());
+                        //     if ($request->color_id == null) {
+                        //         session()->flash('error', 'vui lòng chọn màu sắc!');
+                        //         return redirect()->back();
+                        //     }
+                        //     $product->save();
+                        //     session()->flash('success', 'Thêm giỏ hàng thành công oiuytrew!');
+                        //     return redirect()->route('client.cart');
+                        // } 
+                        // elseif ($request->color_id == $data->color_id  && $request->size_id != $data->size_id) {
+                        //     // dd(4);
+                        //     $product = new Cart();
+                        //     $product->fill($request->all());
+                        //     if ($request->color_id == null) {
+                        //         session()->flash('error', 'vui lòng chọn màu sắc!');
+                        //         return redirect()->back();
+                        //     }
+                        //     $product->save();
+                        //     session()->flash('success', 'Thêm giỏ hàng thành công hihihi!');
+                        //     return redirect()->route('client.cart');
+                        // }
+                    } else {
+                        // dd(5);
                         $product = new Cart();
                         $product->fill($request->all());
                         if ($request->color_id == null) {
@@ -177,6 +203,7 @@ class ClientController extends Controller
                         return redirect()->route('client.cart');
                     }
                 } else {
+                    // dd(6);
                     $product = new Cart();
                     $product->fill($request->all());
                     if ($request->color_id == null) {
@@ -189,6 +216,7 @@ class ClientController extends Controller
                 }
             }
             if (count($cartAllId) == 0) {
+                // dd(987);
                 $product = new Cart();
                 $product->fill($request->all());
                 if ($request->color_id == null) {
@@ -203,6 +231,7 @@ class ClientController extends Controller
             session()->flash('error_emty_user', 'Bạn cần đăng nhập tài khoản !');
             return redirect()->back();
         }
+        dd('end');
     }
     public function deleteCart($products)
     {
@@ -346,6 +375,8 @@ class ClientController extends Controller
         $kk = Information::all();
         // dd($data);
         $address = Information::where('information.status', '=', 0)->get();
+        // $address_thaydoi = Information::where('information.status','=',2)->get();
+        // dd($address_thaydoi);
         if ($request->id) {
             $price_coupon = 0;
             $id_cart = $request->id;
@@ -389,6 +420,14 @@ class ClientController extends Controller
             session()->flash('empty_checkbok', 'Vui lòng chọn sản phẩm thanh toán !');
             return redirect()->back();
         }
+    }
+    public function ajax_ship(Request $request)
+    {
+        // dd($request->all());
+        $voucher = Coupon::find($request->id_voucher);
+        $giam_gia = $voucher->sale;
+        // dd($giam_gia);
+        return response()->json(['success' => true, 'giam_gia' => $giam_gia]);
     }
     public function check_coupon(Request $request)
     {
@@ -521,7 +560,7 @@ class ClientController extends Controller
         $order->orderDate = date('Y-m-d');
         $order->oderStatus = 0;
         $order->total = $request->total + $request->ship;
-        // dd($order->total);
+        $order->coupon = $request->coupon;
         $order->orderShip = $request->ship;
         $order->user_id = Auth::user()->id;
         $order->orderName = $request->orderName;
@@ -530,6 +569,13 @@ class ClientController extends Controller
         $order->address = $request->address;
         // dd($request->total);
         $order->save();
+        // // insert shipping
+        // $shipping = new Shipping();
+        // $shipping->code_ship = $haha;
+        // $shipping->status = 2;
+        // // save shipping
+        // $shipping->save();
+        // 
         $carts = Cart::all()->where('userId', '=', Auth::user()->id);
         // 
         foreach ($request->id_cart as $value) {

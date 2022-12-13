@@ -95,8 +95,8 @@
                                     </option>
                                     <option {{ $item->oderStatus == 4 ? 'selected' : '' }} value="4">Hủy đơn hàng
                                     </option>
-                                    <option {{ $item->oderStatus == 5 ? 'selected' : '' }} value="5">Đã thanh toán
-                                    </option>
+                                    <option {{ $item->oderStatus >= 5 ? 'selected' : '' }} value="5">Đã thanh toán
+                                    {{-- </option>
                                     <option {{ $item->oderStatus == 6 ? 'selected' : '' }} value="6">đang xác nhận HT
                                     </option>
                                     <option {{ $item->oderStatus == 7 ? 'selected' : '' }} value="7">Chuẩn bị lấy hàng
@@ -107,7 +107,7 @@
                                         công
                                     </option>
                                     <option {{ $item->oderStatus == 10 ? 'selected' : '' }} value="10">Đã hoàn tiền
-                                    </option>
+                                    </option> --}}
                                 </select>
                                 {{-- <button style="height: 30px" class="btn btn-dark "><i class="fa fa-redo"></i></button> --}}
                             </form>
@@ -117,6 +117,8 @@
                             <form action="{{ route('client.detail', $item->id) }}">
                                 <input type="text" hidden name="oddPricePrd" value="{{ $item->total }}" id="">
                                 <input type="text" hidden name="orderShip" value="{{ $item->orderShip }}"
+                                    id="">
+                                    <input type="text" hidden name="coupon" value="{{ $item->coupon }}"
                                     id="">
                                 <button class="btn btn-warning">
                                     <i class="fas fa-eye"></i>

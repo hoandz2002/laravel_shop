@@ -18,6 +18,8 @@ class Order extends Model
         'oderEmail',
         'orderName',
         'orderShip',
+        'coupon',
         'total',
+        'code_ship',
     ];
 }

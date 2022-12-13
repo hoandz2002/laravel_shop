@@ -2,9 +2,36 @@
 @section('title', 'san pham')
 @section('conten-title', 'san pham')
 @section('content')
+    {{-- <style>
+        /* The alert message box */
+        .alert {
+            width: 200px;
+            float: right
+            padding: 1000px;
+            background-color: rgb(188, 239, 188);
+            /* Red */
+            color: black;
+            /* margin-bottom: 15px; */
+          
+        }
 
-
-
+        /* The close button */
+        .closebtn {
+            margin-left: 15px;
+            color: black;
+            font-weight: bold;
+            float: right;
+            font-size: 22px;
+            line-height: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        /* When moving the mouse over the close button */
+        .closebtn:hover {
+            color: black;
+        }
+    </style> --}}
+   
     <!-- search area -->
     <form action="{{ route('client.shop') }}">
         <div class="search-area">
@@ -40,7 +67,11 @@
         </div>
     </div>
     <!-- end breadcrumb section -->
-
+    {{-- test thong bao alert --}}
+    <span id="hien_thi_thong_diep">
+      
+    </span>
+    {{-- end test thong baos alert --}}
     <!-- cart -->
     <div>
         @if (session()->has('success'))
@@ -144,15 +175,20 @@
                                                         @csrf
                                                 <td>
                                                     <input style="height: 35px" type="number" name="quantity"
-                                                        value="{{ $item->quantity }}" placeholder="0" min="1"
-                                                        max="5">
+                                                        id="so_luong" value="{{ $item->quantity }}" placeholder="0"
+                                                        data-url="{{ route('client.updateCartsl', $item->id) }}"
+                                                        min="1">
                                                 </td>
-
-                                                <td>
+                                                {{-- <td>
                                                     <button style="margin-bottom: 15px" type="submit"
                                                         class="btn btn-success"><i class="fas fa-check-circle"></i></button>
-                                                </td>
+                                                </td> --}}
+
                         </form>
+                        <td>
+                            <button id="ok" type="button" style="margin-bottom: 15px" class="btn btn-success"><i
+                                    class="fas fa-check-circle"></i></button>
+                        </td>
                         </td>
                         <td class="product-total">
                             @if ($item->type_sale == 1)
@@ -257,4 +293,46 @@
         </div>
     </div>
     <!-- end cart -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script>
+        $('#ok').ready(function() {
+            $(document).on('change', '#so_luong', function(event) {
+                console.log(1)
+                const url = $(this).data('url')
+                const data = $(this).val();
+                console.log(url, data);
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    type: 'POST',
+                    url: url,
+                    data: {
+                        so_luong_update: data,
+                    },
+                    success: function(res) {
+                        console.log(res.thong_diep);
+                        alert(res.thong_diep);
+                        // let htmls = `  <div class="alert">
+                        //             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                        //             <span id="kkk">
+                        // vcl
+                        // </span>
+                        //             </div>`
+                        // $('#hien_thi_thong_diep').html(htmls);
+                    }
+                })
+            })
+        })
+    </script>
+    {{-- test style alert --}}
+    {{-- <style>
+        .alert {
+            opacity: 1;
+            transition: opacity 0.6s;
+            /* 600ms to fade out */
+        }
+    </style> --}}
+
+
 @endsection

@@ -10,16 +10,18 @@
             <button class='btn btn-success'>Tạo mới</button>
         </a>
     </div>
-    <div class="d-inline-flex">
-        <form action="" class="form-group d-block">
-            <input type="text" class="form-control mr-1 d-inline-block" name="search" placeholder="Tìm kiếm tên sản phẩm">
-            <button type="submit" class="btn btn-primary w-50">Tìm kiếm</button>
+    <br>
+    <div style="margin-bottom: 20px">
+        <form action="" class="form-group-lg">
+            <input type="text" name="search" class="form-group" placeholder="nhập tên sản phẩm..." style="height: 37px" id="">
+            <button class="btn btn-outline-secondary"><i class="fas fa-search"></i></button>
         </form>
     </div>
     <table class='table'>
         <thead>
             <tr>
                 <th>ID</th>
+                <th>SKU</th>
                 <th>Tên sản phẩm</th>
                 <th>Danh mục sản phẩm</th>
                 <th>Màu sắc</th>
@@ -33,6 +35,7 @@
             @foreach ($products as $product)
                 <tr>
                     <td>{{ $product->id }}</td>
+                    <td>{{ $product->SKU }}</td>
                     <td>
                         {{ $product->nameProduct }}
                     </td>

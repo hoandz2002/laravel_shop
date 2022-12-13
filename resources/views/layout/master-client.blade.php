@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap"
         rel="stylesheet">
@@ -131,7 +132,29 @@ https://templatemo.com/tm-546-sixteen-clothing
             }
         }
     </script>
+  <script>
+    // Get all elements with class="closebtn"
+    var close = document.getElementsByClassName("closebtn");
+    var i;
 
+    // Loop through all close buttons
+    for (i = 0; i < close.length; i++) {
+        // When someone clicks on a close button
+        close[i].onclick = function() {
+
+            // Get the parent of <span class="closebtn"> (<div class="alert">)
+            var div = this.parentElement;
+
+            // Set the opacity of div to 0 (transparent)
+            div.style.opacity = "0";
+
+            // Hide the div after 600ms (the same amount of milliseconds it takes to fade out)
+            setTimeout(function() {
+                div.style.display = "none";
+            }, 600);
+        }
+    }
+</script>
 
 </body>
 

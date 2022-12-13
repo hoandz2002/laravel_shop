@@ -19,6 +19,7 @@ class Product extends Model
         'statusPrd',
         'mass',
         'sale',
+        'SKU',
     ];
     public function scopeSearch($query) {
         if($key = request()->search){

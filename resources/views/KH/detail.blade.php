@@ -116,23 +116,23 @@
                                             @endif
                                         @endif
                                     </span>
+
                                 </td>
                                 <p hidden>
                                     {{-- {{ $total += $item->oddPricePrd * $item->oddQuantityPrd }} --}}
                                     @if ($item->sale || $item->sale_value)
                                         @if ($item->type_sale == 2)
-                                            {{ $total += $item->price - $item->price * ($item->sale / 100) - $item->price * ($item->sale_value / 100) * $item->oddQuantityPrd }}
+                                            {{ $total += $total + ($item->price - $item->price * ($item->sale / 100) - $item->price * ($item->sale_value / 100) * $item->oddQuantityPrd) }}
                                         @elseif ($item->type_sale == 1)
-                                            {{ ($total += $item->price - $item->price * ($item->sale / 100) - $item->sale_value) * $item->oddQuantityPrd }}
+                                            {{ $total += $total + ($item->price - $item->price * ($item->sale / 100) - $item->sale_value) * $item->oddQuantityPrd }}
                                         @else
-                                            {{ ($total += $item->price - $item->price * ($item->sale / 100)) * $item->oddQuantityPrd }}
+                                            {{ $total += $total + ($item->price - $item->price * ($item->sale / 100)) * $item->oddQuantityPrd }}
                                         @endif
                                     @endif
                                 </p>
                             </tr>
                         @endforeach
                         {{-- {{ dd($total) }} --}}
-
                         {{-- <tr>
                         <td colspan="4">Tổng tiền:</td>
                         <td colspan="1">{{ number_format($total) }}<sup>đ</sup></td>
@@ -179,7 +179,7 @@
                         </tr>
                         <tr>
                             <td>Mã giảm giá</td>
-                            <td>{{ number_format($total_price - $ship - $total) }} <sup>đ</sup></td>
+                            <td>-{{$coupon}} <sup>đ</sup></td>
                         </tr>
                         <tr>
                             <td><strong>Tổng tiền</strong></td>

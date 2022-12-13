@@ -135,8 +135,9 @@
                                             </div>
                                             <div class="modal-body" style="width: 100%">
                                                 @foreach ($kk as $value)
-                                                    <a href="{{ route('client.informations.updateStatus', $value->id) }}"
-                                                        style="text-decoration: none;">
+                                                    {{-- href="{{ route('client.informations.updateStatus', $value->id) }}" --}}
+                                                    <a data-dismiss="modal" class="changeAddress"
+                                                        data-id="{{ $value->id }}" style="text-decoration: none;">
                                                         <div style="border: 1px solid gray;width: 100%;height: 161px;">
                                                             <span style="margin-left: 20px"><b>Name:</b>
                                                                 {{ $value->name_to }}</span> <br>
@@ -158,7 +159,7 @@
                                                     {{-- start modals edit address --}}
                                                     <!-- Button trigger modal -->
                                                     <!-- Modal -->
-                                                    <div style="width: 500px;margin-left: 616px;margin-top: 100px"
+                                                    <div style="width: 500px;margin-left: 702px;margin-top: 100px"
                                                         class="modal fade" id="exampleModal1{{ $value->id }}"
                                                         tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
                                                         aria-hidden="true">
@@ -230,6 +231,33 @@
                                                     </div>
                                                     {{-- end modals edit address --}}
                                                 @endforeach
+                                                <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"
+                                                    integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA=="
+                                                    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+                                                <script>
+                                                    $(".changeAddress").click(function() {
+                                                        $.ajax({
+                                                            headers: {
+                                                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                                            },
+                                                            type: "POST",
+                                                            url: "/informations/changeAddress/" + $(this).data("id"),
+                                                            // data: "data",
+                                                            dataType: "JSON",
+                                                            success: function(response) {
+                                                                $("input[name=oderStatus]").val(response.status)
+                                                                $("input[name=orderName]").val(response.name_to)
+                                                                $("input[name=oderEmail]").val(response.email_to)
+                                                                $("input[name=address]").val(response.address_to)
+                                                                $("input[name=phone]").val(response.phone)
+                                                                $("#ten").text(response.name_to)
+                                                                $("#email").text(response.email_to)
+                                                                $("#dia_chi").text(response.address_to)
+                                                                $("#sdt").text(response.phone)
+                                                            }
+                                                        });
+                                                    })
+                                                </script>
                                             </div>
                                         </div>
                                     </div>
@@ -243,10 +271,14 @@
                                                 hàng</span></i>
                                         @foreach ($address as $value)
                                             <div style="margin-left: 10px">
-                                                <span><b>Name:</b> {{ $value->name_to }}</span> <br>
-                                                <span><b>Email:</b> {{ $value->email_to }}</span> <br>
-                                                <span><b>address:</b> {{ $value->address_to }}</span> <br>
-                                                <span><b>Phone:</b> {{ $value->phone }}</span> <br> <br>
+                                                <span><b>Name:</b> <span class=""
+                                                        id="ten">{{ $value->name_to }}</span> </span> <br>
+                                                <span><b>Email:</b> <span class="" id="email">
+                                                        {{ $value->email_to }}</span></span> <br>
+                                                <span><b>address:</b> <span class=""
+                                                        id="dia_chi">{{ $value->address_to }}</span> </span> <br>
+                                                <span><b>Phone:</b> <span class="" id="sdt">
+                                                        {{ $value->phone }}</span></span> <br> <br>
                                                 <!-- Button trigger modal -->
                                                 <button style="color: black" type="button"
                                                     class="btn btn-outline-warning" data-toggle="modal"
@@ -271,13 +303,15 @@
                                                             name="oderEmail" placeholder="Email"></p>
                                                     <p><input hidden type="text" value="{{ $item->address_to }}"
                                                             name="address" placeholder="Address"></p>
-                                                    <input hidden type="text" hidden name="ship_db"
-                                                        value="{{ $ship }}" id="">
+                                                    <input hidden type="text" name="ship_db" value="500000"
+                                                        id="ship_db">
+                                                    <input hidden type="text" name="coupon" id="gia_code_voucher"
+                                                        value="0">
                                                     <p><input hidden type="tel" name="phone"
                                                             value="{{ $item->phone }}" placeholder="Phone"></p>
                                                     {{-- @foreach ($products as $item) --}}
                                                     <input hidden type="text" name="total"
-                                                        value="{{ $total - $price_coupon }}" id="">
+                                                        value="{{ $total - $price_coupon }}" id="total">
                                                     {{-- <input type="text" name="type_sale" value="{{$type_sale}}" id="">
                                                         <input type="text" name="sale_value" value="{{$sale_value}}" id=""> --}}
                                                 @endforeach
@@ -320,7 +354,7 @@
                                             <div>
                                                 @foreach ($ships as $value)
                                                     <input type="radio" onclick="ok{{ $value->id }}()"
-                                                        id="alo{{ $value->id }}" name="ship"
+                                                        id="alo{{ $value->id }}"
                                                         value="{{ $ship + ($value->price_ship / 100) * $ship }}"
                                                         id=""><span
                                                         style="margin-left: 10px">{{ $value->name_ship }}
@@ -377,7 +411,7 @@
                                             <!-- Button trigger modal -->
                                             <button type="button" class="btn btn-primary" data-toggle="modal"
                                                 data-target="#exampleModal2">
-                                                Thanh toán onile
+                                                Thanh toán chuyển khoản
                                             </button>
 
                                             <!-- Modal -->
@@ -474,8 +508,9 @@
                             </div>
                             <br>
                             <button id="btn_order" class="bnt btn-default"
-                                style="display: none;background: #F28123;color: white;width: 110px;height: 40px;border: 0px;border-radius: 10px">Đặt
-                                hàng</button>
+                                style="background: #F28123;color: white;width: 110px;height: 40px;border: 0px;border-radius: 10px">Đặt
+                                hàng
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -486,15 +521,17 @@
                         <table class="order-details">
                             <thead>
                                 <tr>
-                                    <th>Chi tiết đon hàng</th>
+                                    <th>Chi tiết đơn hàng</th>
                                     <th style="width: 100px">Giá tiền</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody class="order-details-body">
 
                                 <tr>
-                                    <td>Product</td>
-                                    <td>Total</td>
+                                    <td>Sản phẩm</td>
+                                    <td>Giá tiền</td>
+                                    <td>Tổng tiền</td>
                                 </tr>
                                 <span hidden>
                                     {{ $total = 0 }}
@@ -548,30 +585,35 @@
                                                 {{-- {{ number_format($item->price - $item->price * ($item->sale / 100)) }} --}}
                                                 @if ($item->type_sale == 2)
                                                     {{ number_format($item->price - $item->price * ($item->sale / 100) - $item->price * ($item->sale_value / 100)) }}<sup>đ</sup>
-                                                    @if ($item->quantity > 1)
-                                                        x{{ $item->quantity }}
+                                                    @if ($item->quantity > 0)
+                                                        <b>x{{ $item->quantity }}</b>
                                                     @endif
                                                 @elseif ($item->type_sale == 1)
                                                     {{ number_format($item->price - $item->price * ($item->sale / 100) - $item->sale_value) }}<sup>đ</sup>
-                                                    @if ($item->quantity > 1)
-                                                        x{{ $item->quantity }}
+                                                    @if ($item->quantity > 0)
+                                                        <b>x{{ $item->quantity }}</b>
                                                     @endif
                                                 @else
                                                     {{ number_format($item->price - $item->price * ($item->sale / 100)) }}<sup>đ</sup>
-                                                    @if ($item->quantity > 1)
-                                                        x{{ $item->quantity }}
+                                                    @if ($item->quantity > 0)
+                                                        <b>x{{ $item->quantity }}</b>
                                                     @endif
+                                                @endif
+                                            </td>
+                                            {{-- tong tien tưng sp * sl --}}
+                                            <td>
+                                                {{-- {{ number_format($item->price - $item->price * ($item->sale / 100)) }} --}}
+                                                @if ($item->type_sale == 2)
+                                                    {{ number_format(($item->price - $item->price * ($item->sale / 100) - $item->price * ($item->sale_value / 100)) * $item->quantity) }}<sup>đ</sup>
+                                                @elseif ($item->type_sale == 1)
+                                                    {{ number_format(($item->price - $item->price * ($item->sale / 100) - $item->sale_value) * $item->quantity) }}<sup>đ</sup>
+                                                @else
+                                                    {{ number_format(($item->price - $item->price * ($item->sale / 100)) * $item->quantity) }}<sup>đ</sup>
                                                 @endif
                                             </td>
                                         </tr>
                                     @endforeach
                                 @endforeach
-                                {{-- <span>
-                                    {{
-                                        $total += $total
-                                    }}
-                                </span> --}}
-
                             </tbody>
                             <tbody class="checkout-details">
                                 {{-- <tr>
@@ -580,23 +622,41 @@
 								</tr> --}}
                                 <tr>
                                     <td>Phí ship</td>
-                                    <td>
-                                        <div id="haha">{{ $ship }}</div>
+                                    <td colspan="2">
+                                        <div style="text-align: right" id="haha">{{ number_format($ship) }}
+                                            <sup>đ</sup>
+                                        </div>
                                         @foreach ($ships as $value)
-                                            <div style="display: none" id="hienthi{{ $value->id }}">
+                                            <div style="display: none;" id="hienthi{{ $value->id }}">
                                                 {{ number_format($ship + ($value->price_ship / 100) * $ship) }}<sup>đ</sup>
                                             </div>
+                                            <input hidden type="text" name=""
+                                                id="tien_ship{{ $value->id }}"
+                                                value="{{ $ship + ($value->price_ship / 100) * $ship }}">
                                         @endforeach
-                                        {{-- <div id="hienhi2">{{ number_format($ship) }}</div>
-                                        <div id="hienthi3">{{ number_format($ship) }}</div> --}}
+                                        <input hidden type="text" id="value_ship" value="500000" name=""
+                                            id="">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Giảm giá</td>
+                                    {{-- <td colspan="2">
+                                        <div style="text-align: right">-{{ number_format($price_coupon) }} <sup>đ</sup>
+                                        </div>
+                                    </td> --}}
+                                    <td colspan="2">
+                                        <div style="text-align: right" id="hien_thi_gia_voucher">-0 <sup>đ      </sup>
+                                        </div>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Tổng tiền</td>
-                                    <td>
-                                        <div id="kkk">
+                                    <td colspan="2">
+                                        <div style="text-align: right" id="kkk">
                                             {{ number_format($total + $ship - $price_coupon) }}
                                         </div>
+                                        <input hidden type="text" name="" id="money"
+                                            value="{{ $total + $ship }}">
                                         <div>
                                             @foreach ($ships as $value)
                                                 <div style="display: none" id="tongtien{{ $value->id }}">
@@ -632,7 +692,7 @@
                                                     value="Áp dụng" id=""> --}}
                                                                     {{-- <div style="">
                                                         <input class="" class="form-control"  type="submit" name="check_coupon" value="Áp dụng" id="">
-                                                    </div> --}}
+                                                    </div> --}}@aware(['propName'])
                                                                     <div style="width: 20%"><button
                                                                             class="btn btn-outline-danger"
                                                                             name="check_coupon" type="submit">Áp
@@ -664,17 +724,22 @@
                                                                                 {{ $total < $value->Minimum_bill ? 'disabled' : '' }}
                                                                                 style="margin-left: 200px;margin-top: 30px"
                                                                                 type="radio" name="voucher"
-                                                                                value="{{$value->id}}" id="">
+                                                                                value="{{ $value->id }}"
+                                                                                data-url="{{ route('client.ajax_ship') }}"
+                                                                                id="radio_voucher">
                                                                         </div>
                                                                     </div> <br>
                                                                 @endforeach
-                                                                <button>hoan thanh</button>
+                                                                <div class="modal-footer">
+                                                                    <button data-dismiss="modal"
+                                                                        class="btn btn-success">Hoàn thành</button>
+                                                                </div>
                                                             </form>
                                                         </div>
-                                                        <div class="modal-footer">
+                                                        {{-- <div class="modal-footer">
                                                             <button type="button" data-dismiss="modal"
-                                                                class="btn btn-primary">Hoàn thành</button>
-                                                        </div>
+                                                                class="btn btn-primary">Đóng</button>
+                                                        </div> --}}
                                                     </div>
                                                 </div>
                                             </div>
@@ -686,25 +751,14 @@
                         </table>
                         <br>
                         {{-- <a href="" class="boxed-btn">Place Order</a> --}}
-                        <form action="{{ route('vnpay_payment') }}" method="POST">
+                        {{-- <form action="{{ route('vnpay_payment') }}" method="POST">
                             @csrf
                             <button type="submit" name="redirect">
                                 <img src="https://huewaco.net.vn/Images/icon/vnpay_qr.png" width="170px" height="40px"
                                     alt="">
                             </button>
-                        </form>
+                        </form> --}}
                         <br>
-                        <form action="{{ route('check_coupon') }}" method="POST">
-                            @csrf
-                            @foreach ($id_cart as $db)
-                                <input type="text" hidden name="id[]" value="{{ $db }}" id="">
-                            @endforeach
-                            <input type="text" class="form-control" name="code" placeholder="add coupon"
-                                id=""> <br>
-                            <input type="submit" name="check_coupon" class="bnt btn-default check_coupon"
-                                value="tính mã giảm giá" id="">
-                        </form>
-
                     </div>
                 </div>
             </div>
@@ -712,8 +766,40 @@
     </div>
     <!-- end check out section -->
     <script>
+        $(document).ready(function() {
+            $(document).on('change', '#radio_voucher', function(event) {
+                console.log('anh hoan dep zai');
+                const url = $(this).data('url')
+                const data = $(this).val()
+                const value_ship = $('#value_ship').val()
+                const tongtien = $('#money').val()
+                // const gia_code_voucher = $('#gia_code_voucher').val()
+                console.log(url, data, tongtien, value_ship);
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                    data: {
+                        id_voucher: data
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        gia_voucher = `${response.giam_gia} <sup>đ</sup>`
+                        thanh_tien = tongtien - response.giam_gia - (-value_ship) - 500000
+                        console.log(thanh_tien, 'hhaha');
+                        hienthi_thanhtien = `${thanh_tien} <sup>đ</sup>`
+                        $('#hien_thi_gia_voucher').html(gia_voucher)
+                        $('#kkk').html(hienthi_thanhtien)
+                        $('#gia_code_voucher').val(response.giam_gia)
+                        const total = tongtien - response.giam_gia - 500000
+                        console.log(total);
+                        $('#total').val(total)
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
         let btn_orderElementDiv = document.getElementById("btn_order")
-
         // 
         let hienthi1ElementDiv = document.getElementById("hienthi1")
         let hienthi2ElementDiv = document.getElementById("hienthi2")
@@ -724,14 +810,25 @@
         let tongtien2ElementDiv = document.getElementById("tongtien2")
         let tongtien3ElementDiv = document.getElementById("tongtien3")
         let kkkElementDiv = document.getElementById("kkk")
+        // 
+        let value_ship = document.getElementById("value_ship")
+        let tienship1 = document.getElementById("tien_ship1")
+        let tienship2 = document.getElementById("tien_ship2")
+        let tienship3 = document.getElementById("tien_ship3")
+
 
         function ok1() {
             hienthi1ElementDiv.style.display = "block"
+            hienthi1ElementDiv.style.float = "right"
             hienthi2ElementDiv.style.display = "none"
             hienthi3ElementDiv.style.display = "none"
             hahaElementDiv.style.display = "none"
             // 
+            value_ship.value = tienship1.value
+            ship_db.value = value_ship.value
+            // 
             tongtien1ElementDiv.style.display = "block"
+            tongtien1ElementDiv.style.float = "right"
             tongtien2ElementDiv.style.display = "none"
             tongtien3ElementDiv.style.display = "none"
             kkkElementDiv.style.display = "none"
@@ -741,11 +838,17 @@
         function ok2() {
             hienthi1ElementDiv.style.display = "none"
             hienthi2ElementDiv.style.display = "block"
+            hienthi2ElementDiv.style.float = "right"
             hienthi3ElementDiv.style.display = "none"
+            hahaElementDiv.style.display = "none"
+            // 
+            value_ship.value = tienship2.value
+            ship_db.value = value_ship.value
 
             // 
             tongtien1ElementDiv.style.display = "none"
             tongtien2ElementDiv.style.display = "block"
+            tongtien2ElementDiv.style.float = "right"
             tongtien3ElementDiv.style.display = "none"
             kkkElementDiv.style.display = "none"
 
@@ -755,11 +858,17 @@
             hienthi1ElementDiv.style.display = "none"
             hienthi2ElementDiv.style.display = "none"
             hienthi3ElementDiv.style.display = "block"
+            hienthi3ElementDiv.style.float = "right"
             kkkElementDiv.style.display = "none"
+            // 
+            value_ship.value = tienship3.value
+            ship_db.value = value_ship.value
+
             // 
             tongtien1ElementDiv.style.display = "none"
             tongtien2ElementDiv.style.display = "none"
             tongtien3ElementDiv.style.display = "block"
+            tongtien3ElementDiv.style.float = "right"
             hahaElementDiv.style.display = "none"
 
         }
@@ -772,4 +881,5 @@
             btn_orderElementDiv.style.display = "block"
         }
     </script>
+
 @endsection

@@ -62,7 +62,8 @@ class OrderDetailController extends Controller
     $total = 0;
     $price_sale = 0;
     // dd($request->all());
-
+$coupon = $request->coupon;
+// dd($coupon);
     $total_price = $request->oddPricePrd;
     // dd($total_price);
     $orders = OrderDetail::select('order_details.*', 'products.*', 'price_products.*')
@@ -79,7 +80,7 @@ class OrderDetailController extends Controller
     }
     $data = Order::find($order);
     // dd($data);
-    return view('KH.detail', compact('orders', 'data', 'total', 'mass', 'order', 'ship', 'total_price', 'price_sale'));
+    return view('KH.detail', compact('orders', 'data', 'total', 'mass', 'order', 'ship', 'total_price', 'price_sale','coupon'));
   }
   public function updateStatusOrder($order)
   {

@@ -18,6 +18,7 @@ use App\Http\Controllers\ProductColorController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReturnProductController;
 use App\Http\Controllers\ShipController;
+use App\Http\Controllers\ShippingController;
 use App\Http\Controllers\SizeController;
 use App\Http\Controllers\UserController;
 use App\Models\Cart;
@@ -88,7 +89,8 @@ Route::name('client.')->group(function () {
     Route::post('/storeCart', [ClientController::class, 'storeCart'])->name('storeCart');
     Route::post('/addtocart', [ClientController::class, 'addtocart'])->name('addtocart');
     Route::delete('/deleteCart/{products}', [ClientController::class, 'deleteCart'])->name('deleteCart');
-    Route::post('/updateCartsl/{cart}', [CartController::class, 'updateCartsl'])->name('updateCartsl');
+    // Route::post('/updateCartsl/{cart}', [CartController::class, 'updateCartsl'])->name('updateCartsl');
+        Route::post('/updateCartsl/{cart}', [CartController::class, 'updateCartsl'])->name('updateCartsl');
     //about- new
     Route::get('/about', [ClientController::class, 'about'])->name('about');
     Route::get('/new', [ClientController::class, 'new'])->name('new');
@@ -99,6 +101,7 @@ Route::name('client.')->group(function () {
     Route::delete('/deleteComment/{product}', [ClientController::class, 'deleteComment'])->name('deleteComment');
     // checkout -> order
     Route::get('/checkout', [ClientController::class, 'checkout'])->name('checkout');
+    Route::get('/ajax_ship', [ClientController::class, 'ajax_ship'])->name('ajax_ship');
     Route::post('/createOrder', [ClientController::class, 'createOrder'])->name('createOrder');
     Route::post('/storeOrder', [ClientController::class, 'storeOrder'])->name('storeOrder');
     Route::get('/showOrder', [OrderController::class, 'showOrder'])->name('showOrder');
@@ -135,6 +138,8 @@ Route::name('client.')->group(function () {
         Route::get('/edit/{id}', [InformationController::class, 'edit'])->name('edit');
         Route::put('/update/{id}', [InformationController::class, 'update'])->name('update');
         Route::get('/updateStatus/{id}', [InformationController::class, 'updateStatus'])->name('updateStatus');
+        Route::post('/changeAddress/{id}', [InformationController::class, 'changeAddress'])->name('changeAddress');
+
     });
 });
 //giao dien danh muc san pham
@@ -157,7 +162,8 @@ Route::middleware('admin')->prefix('/admin')->name('admin.')->group(function () 
     // thong ke
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     // Route::post('/orderReturn', [OrderDetailController::class, 'orderReturn'])->name('orderReturn');
-
+    // trang thai don hang
+    Route::get('/shippinglist', [ShippingController::class, 'index'])->name('shippinglist');
     // quan ky lien he
     Route::prefix('/contacts')->name('contacts.')->group(function () {
         Route::get('/list', [ContactController::class, 'index'])->name('list');
@@ -223,6 +229,8 @@ Route::middleware('admin')->prefix('/admin')->name('admin.')->group(function () 
         Route::get('/list', [OrderController::class, 'index'])->name('list');
         Route::get('/detail/{order}', [OrderDetailController::class, 'index'])->name('detail');
         Route::put('/updateStatusOrder/{order}', [OrderController::class, 'updateStatusOrder'])->name('updateStatusOrder');
+        Route::post('/add_code_ship', [OrderController::class, 'add_code_ship'])->name('add_code_ship');
+
     });
     // Quan ly phieu giam gia
     Route::prefix('coupons')->name('coupons.')->group(function () {

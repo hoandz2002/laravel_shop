@@ -16,7 +16,7 @@ class InformationController extends Controller
     public function index()
     {
         $data = DB::table('information')->select('information.*')->get();
-        return view('KH.informations.list',compact('data'));
+        return view('KH.informations.list', compact('data'));
     }
 
     /**
@@ -63,7 +63,6 @@ class InformationController extends Controller
      */
     public function edit($id)
     {
-      
     }
 
     /**
@@ -94,18 +93,22 @@ class InformationController extends Controller
     }
     public function updateStatus($id)
     {
-        $uploadStatus = Information::where('information.status','=',0)->get();
-         foreach($uploadStatus as $value){
+        $uploadStatus = Information::where('information.status', '=', 0)->get();
+        foreach ($uploadStatus as $value) {
             $value->status = 1;
             $value->save();
-         }
+        }
         // dd($uploadStatus);
         $updateStatus = Information::find($id);
-        if($updateStatus->status === 1){
+        if ($updateStatus->status === 1) {
             $updateStatus->status = 0;
         }
         $updateStatus->save();
         session()->flash('success', 'Bạn đã cập nhật trạng thái thành công!');
         return redirect()->back();
+    }
+    public function changeAddress($id) {
+        $data = Information::find($id);
+        return response()->json($data);
     }
 }

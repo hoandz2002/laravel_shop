@@ -205,6 +205,7 @@
                                                 data: {
                                                     prd: id_prd,
                                                     mate: id_mate,
+                                                    tuoi: 20,
                                                 },
                                                 dataType: "JSON",
                                                 success: function(response) {
@@ -218,7 +219,6 @@
                                         function clickRadio(el, pr, kk) {
                                             // alert(pr)
                                             $('#showtotals').html(
-
                                                 ` <p style="text-decoration: line-through;">${new Intl.NumberFormat('vn-VN').format(kk)}<sup>đ</sup></p>
                                                 <p style="color: red;font-size: 25px;font-weight: bold;margin-top: -30px">${new Intl.NumberFormat('vn-VN').format(pr)}<sup>đ</sup></p>
                                                 `)
@@ -313,9 +313,8 @@
                                                     id="icon{{ $item->id }}" name="color_id" type="radio"
                                                     value="{{ $item->color_id }}"
                                                     style="width: 20px;height:20px; cursor: pointer;" id="">
-                                                <div style="margin-left: 9px"
-                                                    class="iconCheck iconCheck{{ $key }}"
-                                                    style="display: none;z-index: inherit;">
+                                                <div style="margin-left: 9px;display: none;z-index: inherit;"
+                                                    class="iconCheck iconCheck{{ $key }}">
                                                     <i style="color: white" class="fas fa-check"></i>
                                                 </div>
                                             </div>
@@ -341,7 +340,7 @@
                                         name="userId" id="">
                                     {{-- <input hidden type="text" value="{{ $dataProduct->price }}" name="price"
                                     id=""> --}}
-                                    <input type="number" name="quantity" min="1" max="5" value="1"
+                                    <input type="number" name="quantity" min="1" value="1"
                                         placeholder="0">
                                     <br>
                                     <button class="btn btn-warning p-2" style="border-radius: 20px;font-weight: bold">

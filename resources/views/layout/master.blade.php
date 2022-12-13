@@ -16,6 +16,8 @@
     <!-- Theme style -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ asset('dist/css/adminlte.min.css') }}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -214,7 +216,7 @@
                             <a href="{{ route('admin.dashboard') }}" class="nav-link">
                                 <i class="nav-icon fas fa-tachometer-alt"></i>
                                 <p>
-                                    Dashboard
+                                    Thống kê
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
@@ -232,7 +234,7 @@
                             <a href="{{ route('products.list') }}" class="nav-link">
                                 <i class="nav-icon fas fa-volleyball-ball"></i>
                                 <p>
-                                    Product
+                                    Sản phẩm
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
@@ -250,7 +252,7 @@
                             <a href="{{ route('catepr.list') }}" class="nav-link">
                                 <i class="nav-icon fas fa-cocktail"></i>
                                 <p>
-                                    Category Product
+                                    Danh mục sản phẩm
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
@@ -267,7 +269,7 @@
                             <a href="{{ route('admin.contacts.list') }}" class="nav-link">
                                 <i class="nav-icon fas fa-comment"></i>
                                 <p>
-                                    Contacts
+                                    Liên hệ
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
@@ -284,7 +286,7 @@
                             <a href="{{ route('users.list') }}" class="nav-link">
                                 <i class="nav-icon fas fa-user"></i>
                                 <p>
-                                    Users
+                                    Người dùng
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
@@ -302,7 +304,7 @@
                             <a href="{{ route('admin.coupons.list') }}" class="nav-link">
                                 <i class="nav-icon fas fa-voicemail"></i>
                                 <p>
-                                    Coupons
+                                    Giảm giá 
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
@@ -319,7 +321,7 @@
                             <a href="{{ route('admin.colors.list') }}" class="nav-link">
                                 <i class="nav-icon fas fa-voicemail"></i>
                                 <p>
-                                    Colors
+                                    Màu sắc
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
@@ -336,7 +338,7 @@
                             <a href="{{ route('admin.materials.list') }}" class="nav-link">
                                 <i class="nav-icon fas fa-voicemail"></i>
                                 <p>
-                                    Materials
+                                    Chất liệu
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
@@ -354,7 +356,7 @@
                             <a href="{{ route('admin.ships.list') }}" class="nav-link">
                                 <i class="nav-icon fas fa-voicemail"></i>
                                 <p>
-                                    Ships
+                                    Đơn vị vận chuyển
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
@@ -372,7 +374,7 @@
                             <a href="{{ route('admin.sizes.list') }}" class="nav-link">
                                 <i class="nav-icon fas fa-neuter"></i>
                                 <p>
-                                    Sizes
+                                    Kích cỡ
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
@@ -389,7 +391,7 @@
                             <a href="{{ route('admin.orders.list') }}" class="nav-link">
                                 <i class="nav-icon fas fa-cart-plus"></i>
                                 <p>
-                                    Orders
+                                    Hóa đơn
                                     <i class="right fas fa-angle-left"></i>
                                     <?php
                                     $data = DB::table('orders')
@@ -417,7 +419,7 @@
                             <a href="{{route('client.returnProducts.listReturnProduct')}}" class="nav-link">
                                 <i class="nav-icon fas fa-cart-plus"></i>
                                 <p>
-                                    orders return
+                                    Hóa đơn hoàn trả
                                     <i class="right fas fa-angle-left"></i>
                                     <?php
                                     $data = DB::table('orders')
@@ -427,7 +429,7 @@
                                     ?>
                                    @if (count($data) > 0)
                                    <div
-                                   style="width: 25px;height: 25px;background: white;color: red;font-weight: bold;text-align: center; border-radius: 100%;position: absolute;top: -5px;left:130px;">
+                                   style="width: 25px;height: 25px;background: white;color: red;font-weight: bold;text-align: center; border-radius: 100%;position: absolute;top: -5px;left:160px;">
                                    {{ count($data) }}</div>
                                    @endif
                                 </p>
@@ -442,10 +444,10 @@
                         <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
                         <li class="nav-item">
-                            <a href="{{ route('admin.orders.list') }}" class="nav-link">
+                            <a href="{{ route('admin.shippinglist') }}" class="nav-link">
                                 <i class="nav-icon fas fa-newspaper"></i>
                                 <p>
-                                    News
+                                    Trạng thái vận chuyển
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
@@ -462,7 +464,7 @@
                             <a href="{{ route('admin.orders.list') }}" class="nav-link">
                                 <i class="nav-icon fas fa-tachometer-alt"></i>
                                 <p>
-                                    Category News
+                                    Danh mục bàiviết
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
@@ -479,7 +481,7 @@
                             <a href="{{ route('logout') }}" class="nav-link">
                                 <i class="nav-icon fas fa-user-alt-slash"></i>
                                 <p>
-                                    Logout
+                                    Đăng xuất
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
@@ -560,6 +562,7 @@
     <script src="{{ asset('dist/js/adminlte.min.js') }}"></script>
     <!-- AdminLTE for demo purposes -->
     <script src="{{ asset('dist/js/demo.js') }}"></script>
+    
 </body>
 
 </html>

@@ -33,7 +33,7 @@
                         </div>
                         <div class="form-group">
                             <label for="">kích thước: </label>
-                            <select name="size_Id" id="">
+                            <select class="form-control" name="size_Id" id="">
                                 @foreach ($sizes as $item)
                                     <option value="{{ $item->id }}">{{ $item->nameSize }}</option>
                                 @endforeach
@@ -43,7 +43,7 @@
                             <label for="">Chất liệu: </label>
                             {{-- <input type="text" name="product_Id" id="" value="{{ $value->name_Material }}"
                             class="form-control"> --}}
-                            <select name="material_Id" id="">
+                            <select class="form-control" name="material_Id" id="">
                                 @foreach ($material as $item)
                                     <option value="{{ $item->id_material }}">{{ $item->name_Material }}</option>
                                 @endforeach
@@ -51,26 +51,28 @@
                         </div>
                         <div class="form-group">
                             <label for="">Giá tiền: </label>
-                            <input type="text" name="price" id="" value="" class="form-control">
+                            <input type="text" placeholder="giá tiền" name="price" id="" value="" class="form-control">
 
                         </div>
-                        <div class="form-group">
-                            <label for="">Loại giảm giá </label> <br>
-                            <select name="type_sale" id="">
-                                <option value="1">Trừ tiền</option>
-                                <option value="2">Trừ % giá trị</option>
-                            </select>
+                        <div style="display: flex">
+                            <div style="width: 50%;" class="form-group">
+                                <label for="">Loại giảm giá </label> <br>
+                                <select class="form-control" name="type_sale" id="">
+                                    <option value="1">Trừ giá trị</option>
+                                    <option value="2">Trừ % giá trị</option>
+                                </select>
+                            </div>
+                            <div style="margin-left: 30px" class="form-group">
+                                <label for="">Giá trị </label>
+                                <input type="text" name="sale_value" id="" value="" placeholder="giá trị" class="form-control">
+    
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label for="">Giá giảm </label>
-                            <input type="text" name="sale_value" id="" value="" class="form-control">
-
-                        </div>
-                        {{-- <div class="form-group">
                             <label for="">Số lượng </label>
-                            <input type="text" name="quantity" id="" value="" class="form-control">
+                            <input type="text" placeholder="số lượng" name="quantity" id="" value="" class="form-control">
 
-                        </div> --}}
+                        </div>
                         <button class="btn btn-success">
                             Create
                         </button>
@@ -86,10 +88,6 @@
         </div>
     </div>
     <div class="d-inline-flex">
-        {{-- <form action="" class="form-group d-block">
-            <input type="text" class="form-control mr-1 d-inline-block" name="search" placeholder="Tìm kiếm tên sản phẩm">
-            <button type="submit" class="btn btn-primary w-50">Tìm kiếm</button>
-        </form> --}}
     </div>
     <table class='table'>
         <thead>
