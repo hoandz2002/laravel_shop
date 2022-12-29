@@ -38,7 +38,7 @@
         </div>
     </div>
     <!-- end breadcrumb section -->
-    {{-- <div>
+    <div>
         @if (session()->has('success'))
             <div class="alert alert-success">
                 {{ session()->get('success') }}
@@ -49,7 +49,7 @@
                 {{ session()->get('error') }}
             </div>
         @endif
-    </div> --}}
+    </div>
     <!-- check out section -->
     <div class="checkout-section mt-150 mb-150">
         <div class="container">
@@ -117,7 +117,7 @@
                                     <h5 class="mb-0">
                                         <button class="btn btn-link" type="button" data-toggle="collapse"
                                             data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                            địa chỉ nhận hàng
+                                            Địa chỉ nhận hàng
                                         </button>
                                     </h5>
                                 </div>
@@ -140,7 +140,12 @@
                                                         data-id="{{ $value->id }}" style="text-decoration: none;">
                                                         <div style="border: 1px solid gray;width: 100%;height: 161px;">
                                                             <span style="margin-left: 20px"><b>Name:</b>
-                                                                {{ $value->name_to }}</span> <br>
+                                                                {{ $value->name_to }} @if ($value->status === 0)
+                                                                    <span
+                                                                        style="width: 80px;height: 25px;border: solid 1px red; color: red;float: right;text-align: center;font-weight: bold">Mặc
+                                                                        định</span>
+                                                                @endif
+                                                            </span> <br>
                                                             <span style="margin-left: 20px"><b>Email:</b>
                                                                 {{ $value->email_to }}</span> <br>
                                                             <span style="margin-left: 20px"><b>address:</b>
@@ -272,7 +277,12 @@
                                         @foreach ($address as $value)
                                             <div style="margin-left: 10px">
                                                 <span><b>Name:</b> <span class=""
-                                                        id="ten">{{ $value->name_to }}</span> </span> <br>
+                                                        id="ten">{{ $value->name_to }}@if ($value->status === 0)
+                                                            <span
+                                                                style="float: right;text-align: center;color: red;border: red 1px solid;width: 80px;">Mặc
+                                                                Định</span>
+                                                        @endif
+                                                    </span> </span> <br>
                                                 <span><b>Email:</b> <span class="" id="email">
                                                         {{ $value->email_to }}</span></span> <br>
                                                 <span><b>address:</b> <span class=""
@@ -312,8 +322,6 @@
                                                     {{-- @foreach ($products as $item) --}}
                                                     <input hidden type="text" name="total"
                                                         value="{{ $total - $price_coupon }}" id="total">
-                                                    {{-- <input type="text" name="type_sale" value="{{$type_sale}}" id="">
-                                                        <input type="text" name="sale_value" value="{{$sale_value}}" id=""> --}}
                                                 @endforeach
                                                 {{-- @endforeach --}}
                                                 @foreach ($id_cart as $haha)
@@ -507,6 +515,7 @@
                                 </div>
                             </div>
                             <br>
+                            <input hidden type="text" name="id_voucher" id="id_giam_gia" value="">
                             <button id="btn_order" class="bnt btn-default"
                                 style="background: #F28123;color: white;width: 110px;height: 40px;border: 0px;border-radius: 10px">Đặt
                                 hàng
@@ -638,16 +647,8 @@
                                             id="">
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td>Giảm giá</td>
-                                    {{-- <td colspan="2">
-                                        <div style="text-align: right">-{{ number_format($price_coupon) }} <sup>đ</sup>
-                                        </div>
-                                    </td> --}}
-                                    <td colspan="2">
-                                        <div style="text-align: right" id="hien_thi_gia_voucher">-0 <sup>đ      </sup>
-                                        </div>
-                                    </td>
+                                <tr id="hien_thi_gia_voucher">
+                                    
                                 </tr>
                                 <tr>
                                     <td>Tổng tiền</td>
@@ -722,6 +723,7 @@
                                                                         <div>
                                                                             <input
                                                                                 {{ $total < $value->Minimum_bill ? 'disabled' : '' }}
+                                                                                {{ $value->quantity < 1 ? 'disabled' : '' }}
                                                                                 style="margin-left: 200px;margin-top: 30px"
                                                                                 type="radio" name="voucher"
                                                                                 value="{{ $value->id }}"
@@ -782,17 +784,27 @@
                         id_voucher: data
                     },
                     success: function(response) {
+                        //    kk =  new Intl.NumberFormat('vn-VN', { maximumSignificantDigits: 3 }).format(response.giam_gia)
                         console.log(response);
-                        gia_voucher = `${response.giam_gia} <sup>đ</sup>`
+                        let value_voucher = response.giam_gia.toLocaleString();
+                        gia_voucher = `-${value_voucher} <sup>đ</sup>`
                         thanh_tien = tongtien - response.giam_gia - (-value_ship) - 500000
+                        let text = thanh_tien.toLocaleString();
                         console.log(thanh_tien, 'hhaha');
-                        hienthi_thanhtien = `${thanh_tien} <sup>đ</sup>`
-                        $('#hien_thi_gia_voucher').html(gia_voucher)
+                        hienthi_thanhtien = `${text} <sup>đ</sup>`
+                        hienthi_voucher = `<td>Giảm giá</td>
+                                    <td colspan="2">
+                                        <div style="text-align: right" >${gia_voucher}
+                                        </div>
+                                    </td>`
+                        $('#hien_thi_gia_voucher').html(hienthi_voucher)
                         $('#kkk').html(hienthi_thanhtien)
                         $('#gia_code_voucher').val(response.giam_gia)
                         const total = tongtien - response.giam_gia - 500000
                         console.log(total);
                         $('#total').val(total)
+                        $('#id_giam_gia').val(data)
+
                     }
                 });
             });

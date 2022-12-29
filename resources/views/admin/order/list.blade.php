@@ -151,7 +151,7 @@
                                 </option> --}}
                                 <option class="form-control" {{ $item->oderStatus == 4 ? 'selected' : '' }} value="4">
                                     Đã hủy đơn</option>
-                              
+
                             </select>
                             <input type="text" name="oderEmail" value="{{ $item->oderEmail }}" hidden id="">
                             <button {{ $item->oderStatus >= 5 ? 'disabled' : '' }} style="height: 30px"
@@ -172,6 +172,7 @@
                         <form action="{{ route('admin.orders.detail', $item->id) }}">
                             <input type="text" hidden name="orderShip" value="{{ $item->orderShip }}"
                                 id="">
+                            <input type="text" hidden name="coupon" value="{{ $item->coupon }}" id="">
                             <input type="text" hidden name="oddPricePrd" value="{{ $item->total }}" id="">
                             <button class="btn btn-warning">
                                 <i class="fas fa-eye"></i>

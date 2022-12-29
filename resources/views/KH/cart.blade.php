@@ -313,26 +313,9 @@
                     success: function(res) {
                         console.log(res.thong_diep);
                         alert(res.thong_diep);
-                        // let htmls = `  <div class="alert">
-                        //             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-                        //             <span id="kkk">
-                        // vcl
-                        // </span>
-                        //             </div>`
-                        // $('#hien_thi_thong_diep').html(htmls);
                     }
                 })
             })
         })
     </script>
-    {{-- test style alert --}}
-    {{-- <style>
-        .alert {
-            opacity: 1;
-            transition: opacity 0.6s;
-            /* 600ms to fade out */
-        }
-    </style> --}}
-
-
 @endsection

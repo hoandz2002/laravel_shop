@@ -422,9 +422,9 @@
                                     Hóa đơn hoàn trả
                                     <i class="right fas fa-angle-left"></i>
                                     <?php
-                                    $data = DB::table('orders')
+                                    $data = DB::table('return_products')
                                         ->where('oderStatus', '=', 6)
-                                        ->select('orders.*')
+                                        ->select('return_products.*')
                                         ->get();
                                     ?>
                                    @if (count($data) > 0)

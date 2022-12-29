@@ -7,15 +7,22 @@
             <button class='btn btn-success'>Tạo mới</button>
         </a>
     </div>
+    {{-- <div>
+        @if (session()->has('success'))
+        <div class="alert alert-success">
+            {{ session()->get('success') }}
+        </div>
+    @endif
+    </div> --}}
     <table class='table'>
         <thead>
             <tr>
                 <th>ID</th>
                 <th>Tiêu đề</th>
-                <th>Nội dung</th>
                 <th>Mã code</th>
                 <th>Giá giảm</th>
                 <th>Số lượng</th>
+                <th>Điều kiện áp dụng</th>
                 <th>Trạng thái</th>
                 <th>Hành động</th>
             </tr>
@@ -25,18 +32,18 @@
                 <tr>
                     <td>{{ $item->id }}</td>
                     <td>{{ $item->name }}</td>
-                    <td>{{ $item->content }}</td>
                     <td>{{ $item->code }}</td>
                     <td>{{ $item->sale }}</td>
                     <td>{{ $item->quantity }}</td>
-
+                    <td>{{ number_format($item->Minimum_bill) }} VND</td>
                     <td>
                         <a onclick="return confirm('Bạn có muốn thay đổi trạng thái!')">
-                            <form action="{{ route('admin.sizes.updateStatus', $item->id) }}" method="post">
+                            <form action="{{ route('admin.coupons.updateStatus', $item->id) }}" method="post">
                                 @csrf
 
-                                @if ($item->statusSize == 0)
-                                    <i class="fab fa-circle alert-success"></i> Kích hoạt <button type="submit"
+                                @if ($item->status == 0)
+                                    <i class="fab fa-circle alert-success"></i> Kích hoạt 
+                                    <button type="submit"
                                         style="background: transparent; border: transparent"><i
                                             class="fa fa-redo"></i></button>
                                 @else

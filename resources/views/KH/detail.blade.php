@@ -90,6 +90,8 @@
                                             @else
                                                 {{ number_format($item->price - $item->price * ($item->sale / 100)) }}<sup>đ</sup>
                                             @endif
+                                        @else
+                                            {{ number_format($item->price) }} <sup>đ</sup>
                                         @endif
                                     </span>
                                 </td>
@@ -114,6 +116,8 @@
                                             @else
                                                 {{ number_format(($item->price - $item->price * ($item->sale / 100)) * $item->oddQuantityPrd) }}<sup>đ</sup>
                                             @endif
+                                        @else
+                                            {{ number_format($item->price * $item->oddQuantityPrd) }} <sup>đ</sup>
                                         @endif
                                     </span>
 
@@ -166,6 +170,8 @@
                                             @else
                                                 {{ number_format(($item->price - $item->price * ($item->sale / 100)) * $item->oddQuantityPrd) }}<sup>đ</sup>
                                             @endif
+                                        @else
+                                            {{ number_format($item->price * $item->oddQuantityPrd) }} <sup>đ</sup>
                                         @endif
                                     </span>
                                 </td>
@@ -177,10 +183,12 @@
                                 {{ number_format($ship) }}<sup>đ</sup>
                             </td>
                         </tr>
-                        <tr>
-                            <td>Mã giảm giá</td>
-                            <td>-{{$coupon}} <sup>đ</sup></td>
-                        </tr>
+                        @if (!$return)
+                            <tr>
+                                <td>Mã giảm giá</td>
+                                <td>-{{ $coupon }}<sup>đ</sup></td>
+                            </tr>
+                        @endif
                         <tr>
                             <td><strong>Tổng tiền</strong></td>
                             <td><strong>{{ number_format($total_price) }}<sup>đ</sup></strong></td>
@@ -191,4 +199,5 @@
             </div>
             <br>
         </div>
-    @endsection
+    </div>
+@endsection

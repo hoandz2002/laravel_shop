@@ -10,6 +10,7 @@ class ReturnProduct extends Model
     use HasFactory;
     protected $fillable = [
         'orderDate',
+        'order_id',
         'user_id',
         'oderStatus',
         'phone',
@@ -17,6 +18,8 @@ class ReturnProduct extends Model
         'oderEmail',
         'orderName',
         'orderShip',
+        'coupon',
+        'code_ship',
         'total',
     ];
 }

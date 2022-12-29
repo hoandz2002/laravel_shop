@@ -35,7 +35,8 @@ class CartController extends Controller
         if ($request->so_luong_update > $price_product->quantity) {
             $message = 'Số lượng không có sẵn trong kho hàng';
         } elseif ($request->so_luong_update == 0) {
-            $message = 'Số lượng không được để trông!';
+            $data->delete();
+            $message = 'Giỏ hàng đã được cập nhật.';
         } else {
             $data->quantity = $request->so_luong_update;
             $data->save();

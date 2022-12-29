@@ -65,7 +65,7 @@ class ClientController extends Controller
     {
         $cate = CategoryProduct::all();
         $sizes = Size::all();
-        $products = Product::Select('products.*')->search()->Paginate(6);
+        $products = Product::Select('products.*')->where('statusPrd', '=', 0)->search()->Paginate(6);
 
         return view('KH.shop', compact('products', 'cate', 'sizes'));
     }
@@ -97,17 +97,16 @@ class ClientController extends Controller
     }
     public function storeCart(Request $request)
     {
+        // dd($request->all());
         if (!$request->material_id) {
-            session()->flash('error','Chất liệu không được để trống');
+            session()->flash('error', 'Chất liệu không được để trống');
             return redirect()->back();
-        }
-        elseif (!$request->size_id) {
-            session()->flash('error','Size không được để trống');
-            return redirect()->back();        
-        }
-        elseif (!$request->color_id) {
-            session()->flash('error','Màu sắc không được để trống');
-            return redirect()->back();        
+        } elseif (!$request->size_id) {
+            session()->flash('error', 'Size không được để trống');
+            return redirect()->back();
+        } elseif (!$request->color_id) {
+            session()->flash('error', 'Màu sắc không được để trống');
+            return redirect()->back();
         }
         // dd($request->all());
         $kk = Price_product::find($request->price_product_id);
@@ -261,7 +260,7 @@ class ClientController extends Controller
             ->join('products', 'price_products.product_Id', '=', 'products.id')
             ->join('sizes', 'sizes.id', '=', 'price_products.size_Id')
             ->join('materials', 'materials.id_material', '=', 'price_products.material_Id')
-            ->select('price_products.*', 'sizes.nameSize', 'sizes.statusSize', 'products.sale', 'materials.name_Material')
+            ->select('price_products.*', 'sizes.nameSize', 'sizes.statusSize', 'sizes.id as size_id', 'products.sale', 'materials.name_Material')
             ->get();
 
         // dd($price_material2);
@@ -370,7 +369,9 @@ class ClientController extends Controller
     public function checkout(Request $request)
     {
         // dd($request->all());
-        $coupon = Coupon::select('coupons.*')->get();
+        $coupon = Coupon::select('coupons.*')
+            ->where('status', '=', 0)
+            ->get();
         $ships = Ship::all();
         $kk = Information::all();
         // dd($data);
@@ -547,6 +548,20 @@ class ClientController extends Controller
     public function storeOrder(OrderRequest $request)
     {
         // dd($request->all());
+        if ($request->id_voucher) {
+            $coupon = Coupon::find($request->id_voucher);
+            if ($coupon->Minimum_bill > $request->total) {
+                session()->flash('error', 'Voucher không hợp lệ. Vui lòng chọn lại');
+                return redirect()->back();
+            }
+            if ($coupon->quantity < 1) {
+                session()->flash('error', 'Voucher đã hết. Vui lòng chọn lại!');
+                return redirect()->back();
+            }
+            $coupon->quantity = $coupon->quantity - 1;
+            $coupon->save();
+        }
+        // dd('1');
         if ($request->ship == null) {
             $abc = 1;
             $bla = Ship::find($abc);
@@ -567,15 +582,10 @@ class ClientController extends Controller
         $order->oderEmail = $request->oderEmail;
         $order->phone = $request->phone;
         $order->address = $request->address;
+        $order->id_voucher = $request->id_voucher;
         // dd($request->total);
         $order->save();
-        // // insert shipping
-        // $shipping = new Shipping();
-        // $shipping->code_ship = $haha;
-        // $shipping->status = 2;
-        // // save shipping
-        // $shipping->save();
-        // 
+
         $carts = Cart::all()->where('userId', '=', Auth::user()->id);
         // 
         foreach ($request->id_cart as $value) {

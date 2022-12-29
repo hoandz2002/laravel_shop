@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Jobs\SendMaid;
 use App\Models\Order;
 use App\Models\Return_detail;
+use App\Models\ReturnProduct;
 use App\Models\Shipping;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -69,7 +70,7 @@ class OrderController extends Controller
             ->get();
         // dd($status_order);
         foreach ($status_order as $value) {
-            if ($request->oderStatus == 3 && $value->status != 1) {
+            if ($request->oderStatus == 3 && $value->status < 1) {
                 // dd(2);
                 session()->flash('error', 'Khách hàng chưa nhận được đơn hàng!');
                 return redirect()->back();
@@ -101,7 +102,7 @@ class OrderController extends Controller
         // $data = Order::all()->where('user_id', '=', Auth::id())->where('orders.oderStatus', '<', 7);
         $data = Order::select('orders.*')
             ->where('user_id', '=', Auth::id())
-            ->where('orders.oderStatus', '<', 7)
+            // ->where('orders.oderStatus', '<', 7)
             ->get();
         return view('KH.order', [
             'order_list' => $data,
@@ -109,9 +110,8 @@ class OrderController extends Controller
     }
     public function orderReturn()
     {
-        $data = Order::select('orders.*')
+        $data = ReturnProduct::select('return_products.*')
             ->where('user_id', '=', Auth::id())
-            ->where('orders.oderStatus', '>', 6)
             ->get();
         // dd($data);
         return view('KH.order_return', [

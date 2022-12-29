@@ -42,9 +42,7 @@
                 {{ session()->get('danger') }}
             </div>
         @endif
-        {{-- @if ($errors->any())
-        {{dd($errors)}}
-    @endif --}}
+
     </div>
     <div>
         @if (session()->has('success'))
@@ -52,9 +50,7 @@
                 {{ session()->get('success') }}
             </div>
         @endif
-        {{-- @if ($errors->any())
-        {{dd($errors)}}
-    @endif --}}
+
     </div>
     <div>
         <table class='table'>
@@ -96,18 +92,6 @@
                                     <option {{ $item->oderStatus == 4 ? 'selected' : '' }} value="4">Hủy đơn hàng
                                     </option>
                                     <option {{ $item->oderStatus >= 5 ? 'selected' : '' }} value="5">Đã thanh toán
-                                    {{-- </option>
-                                    <option {{ $item->oderStatus == 6 ? 'selected' : '' }} value="6">đang xác nhận HT
-                                    </option>
-                                    <option {{ $item->oderStatus == 7 ? 'selected' : '' }} value="7">Chuẩn bị lấy hàng
-                                    </option>
-                                    <option {{ $item->oderStatus == 8 ? 'selected' : '' }} value="8">Đang lấy hàng
-                                    </option>
-                                    <option {{ $item->oderStatus == 9 ? 'selected' : '' }} value="9">Lấy hàng thành
-                                        công
-                                    </option>
-                                    <option {{ $item->oderStatus == 10 ? 'selected' : '' }} value="10">Đã hoàn tiền
-                                    </option> --}}
                                 </select>
                                 {{-- <button style="height: 30px" class="btn btn-dark "><i class="fa fa-redo"></i></button> --}}
                             </form>
@@ -118,8 +102,7 @@
                                 <input type="text" hidden name="oddPricePrd" value="{{ $item->total }}" id="">
                                 <input type="text" hidden name="orderShip" value="{{ $item->orderShip }}"
                                     id="">
-                                    <input type="text" hidden name="coupon" value="{{ $item->coupon }}"
-                                    id="">
+                                <input type="text" hidden name="coupon" value="{{ $item->coupon }}" id="">
                                 <button class="btn btn-warning">
                                     <i class="fas fa-eye"></i>
                                 </button>
@@ -149,10 +132,26 @@
                                     <button style="width: 170px" class="btn btn-warning">
                                         Đánh giá
                                     </button>
-                                @elseif ($item->oderStatus == 5)
-                                    <button style="width: 170px" class="btn btn-info">
-                                        Hoàn trả
-                                    </button>
+                                @elseif ($item->oderStatus >= 5)
+                                    <?php
+                                    $date1 = date(today());
+                                    $date2 = $item->orderDate;
+                                    $diff = abs(strtotime($date2) - strtotime($date1));
+                                    $years = floor($diff / (365 * 60 * 60 * 24));
+                                    $months = floor(($diff - $years * 365 * 60 * 60 * 24) / (30 * 60 * 60 * 24));
+                                    $days = floor(($diff - $years * 365 * 60 * 60 * 24 - $months * 30 * 60 * 60 * 24) / (60 * 60 * 24));
+                                    ?>
+                                    @if ($days > 3 || $years > 1 || $months > 1)
+                                        <div>
+                                            <button class="btn btn-outline-primary" type="button">Mua
+                                                lại</button>
+                                            <button class="btn btn-outline-secondary" type="button">Liên hệ shop</button>
+                                        </div>
+                                    @else
+                                        <button style="width: 170px" class="btn btn-info">
+                                            Hoàn trả
+                                        </button>
+                                    @endif
                                 @elseif ($item->oderStatus == 4)
                                     <button style="width: 170px" class="btn btn-success">
                                         Đặt lại đơn hàng
@@ -168,4 +167,5 @@
         {{ $order_list->links() }}
     </div> --}}
     </div>
+
 @endsection

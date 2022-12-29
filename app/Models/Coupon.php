@@ -13,6 +13,8 @@ class Coupon extends Model
         'content',
         'sale',
         'code',
+        'end_date',
+        'Minimum_bill',
         'quantity',
         'status',
     ];

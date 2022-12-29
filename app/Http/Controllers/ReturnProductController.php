@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\Return_detail;
+use App\Models\ReturnProduct;
 use Illuminate\Http\Request;
 
 class ReturnProductController extends Controller
@@ -33,8 +35,10 @@ class ReturnProductController extends Controller
   }
   public function updateStatus(Request $request, $order)
   {
+    // dd($order);
     // dd($request->all());
-    $updateStatus = Order::find($order);
+    $updateStatus = ReturnProduct::find($order);
+    // dd($updateStatus);
     if ($request->tu_choi == 1) {
       $updateStatus->oderStatus = 100;
       $updateStatus->save();
@@ -44,12 +48,23 @@ class ReturnProductController extends Controller
     }
     if ($request->tu_choi == 0) {
       // dd(2);
+      $order_odd = Order::find($updateStatus->order_id);
+      $voucher = Coupon::find($order_odd->id_voucher);
+      // dd($voucher);
+      $voucher->quantity = $voucher->quantity + 1;
+      $voucher->save();
       $updateStatus->oderStatus = 7;
       $updateStatus->save();
       session()->flash('success', 'Bạn đã cập nhật trạng thái thành công!');
       return redirect()->back();
     }
     if ($request->oderStatus) {
+      if ($request->oderStatus == 8) {
+        if ($updateStatus->code_ship === null) {
+          session()->flash('error', 'Chưa có Mã vận đơn');
+          return redirect()->back();
+        }
+      }
       $updateStatus->oderStatus = $request->oderStatus;
       // dd(3);
       session()->flash('success', 'Bạn đã cập nhật trạng thái thành công!');
@@ -60,8 +75,16 @@ class ReturnProductController extends Controller
   }
   public function listReturnProduct()
   {
-    $data = Order::select('orders.*')->where('orders.oderStatus', '>', 5)->get();
+    $data = ReturnProduct::all();
     // dd($data);
     return view('admin.order.listReturnProduct', compact('data'));
+  }
+  public function add_code_ship(Request $request)
+  {
+    // dd($request->all());
+    $data = ReturnProduct::find($request->id_order);
+    $data->code_ship = $request->code_ship;
+    $data->save();
+    return redirect()->back();
   }
 }

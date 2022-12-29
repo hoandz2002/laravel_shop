@@ -73,6 +73,7 @@ Route::prefix('/products')->name('products.')->group(function () {
     Route::post('/store', [ProductController::class, 'store'])->name('store');
     Route::get('/edit/{product}', [ProductController::class, 'edit'])->name('edit');
     Route::put('/update/{product}', [ProductController::class, 'update'])->name('update');
+    Route::post('/updateStatus/{pro}', [ProductController::class, 'updateStatus'])->name('updateStatus');
 });
 
 // giao dien khach hang
@@ -128,6 +129,8 @@ Route::name('client.')->group(function () {
         Route::delete('/delete/{id}', [ReturnProductController::class, 'delete'])->name('delete');
         Route::get('/create/{id_Order}', [ReturnProductController::class, 'create'])->name('create');
         Route::post('/store', [ReturnProductController::class, 'store'])->name('store');
+        Route::post('/add_code_ship', [ReturnProductController::class, 'add_code_ship'])->name('add_code_ship');
+
     });
     // 
     Route::prefix('/informations')->name('informations.')->group(function () {
@@ -240,6 +243,7 @@ Route::middleware('admin')->prefix('/admin')->name('admin.')->group(function () 
         Route::post('/store', [CouponController::class, 'store'])->name('store');
         Route::get('/edit/{size}', [CouponController::class, 'edit'])->name('edit');
         Route::put('/update/{size}', [CouponController::class, 'update'])->name('update');
+        Route::post('/updateStatus/{coupon}', [CouponController::class, 'updateStatus'])->name('updateStatus');
     });
     //  chi tit san pham
     Route::prefix('datailProduct')->name('datailProduct.')->group(function () {

@@ -13,7 +13,8 @@
     <br>
     <div style="margin-bottom: 20px">
         <form action="" class="form-group-lg">
-            <input type="text" name="search" class="form-group" placeholder="nhập tên sản phẩm..." style="height: 37px" id="">
+            <input type="text" name="search" class="form-group" placeholder="nhập tên sản phẩm..." style="height: 37px"
+                id="">
             <button class="btn btn-outline-secondary"><i class="fas fa-search"></i></button>
         </form>
     </div>
@@ -47,7 +48,23 @@
                             <button class='btn btn-info'>Quản lý màu sắc</button>
                         </a>
                     </td>
-                    <td>{{ $product->statusPrd == 0 ? 'còn hàng' : 'hết hàng' }}</td>
+                    <td>
+                        <a onclick="return confirm('Bạn có muốn thay đổi trạng thái!')">
+                            <form action="{{ route('products.updateStatus', $product->id) }}" method="post">
+                                @csrf
+
+                                @if ($product->statusPrd == 0)
+                                    <i class="fab fa-circle alert-success"></i> Hiển thị
+                                    <button type="submit" style="background: transparent; border: transparent"><i
+                                            class="fa fa-redo"></i></button>
+                                @else
+                                    <i class="fab fa-circle alert-danger"></i>Không hiển thị <button type="submit"
+                                        style="background: transparent; border: transparent"><i
+                                            class="fa fa-redo"></i></button>
+                                @endif
+                            </form>
+                        </a>
+                    </td>
                     <td><img src="{{ asset($product->avatar) }}" alt="" width="100"></td>
                     <td>
                         {{-- <a href="{{ route('admin.datailProduct.list', $product->id) }}"><i class="fas fa-eye"></i></a> --}}

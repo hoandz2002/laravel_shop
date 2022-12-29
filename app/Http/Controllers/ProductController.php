@@ -237,4 +237,18 @@ class ProductController extends Controller
         $data->delete();
         return redirect()->back();
     }
+    public function updateStatus($pro)
+    {
+        $hihi = Product::find($pro);
+        // dd($data);
+        if ($hihi->statusPrd == 0) {
+            $data = Product::where('id', '=', $pro)
+                ->update(['statusPrd' => 1]);
+        } elseif ($hihi->statusPrd == 1) {
+            $data = Product::where('id', '=', $pro)
+                ->update(['statusPrd' => 0]);
+        }
+        $hihi->save();
+        return redirect()->back();
+    }
 }

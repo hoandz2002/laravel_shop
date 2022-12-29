@@ -21,5 +21,6 @@ class Order extends Model
         'coupon',
         'total',
         'code_ship',
+        'id_voucher',
     ];
 }
