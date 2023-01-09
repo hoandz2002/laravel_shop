@@ -53,6 +53,13 @@
 
     </div>
     <div>
+        @if (session()->has('error_empty'))
+            <div class="alert alert-warning">
+                {{ session()->get('error_empty') }}
+            </div>
+        @endif
+    </div>
+    <div>
         <table class='table'>
             <thead>
                 <tr>

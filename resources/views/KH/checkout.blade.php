@@ -2,7 +2,8 @@
 @section('title', 'san pham')
 @section('conten-title', 'san pham')
 @section('content')
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <!-- search area -->
     <form action="{{ route('client.shop') }}">
         <div class="search-area">
@@ -302,6 +303,8 @@
                                             <form action="{{ route('client.storeOrder') }}" method="POST">
                                                 @csrf
                                                 @foreach ($address as $item)
+                                                    <input type="text" value="{{ $ship }}" hidden
+                                                        name="ship_mac_dinh" id="">
                                                     <input hidden type="text" name="user_id"
                                                         value="{{ Auth::id() }}" id="">
                                                     <input hidden type="text" name="oderStatus" value="0"
@@ -313,7 +316,7 @@
                                                             name="oderEmail" placeholder="Email"></p>
                                                     <p><input hidden type="text" value="{{ $item->address_to }}"
                                                             name="address" placeholder="Address"></p>
-                                                    <input hidden type="text" name="ship_db" value="500000"
+                                                    <input hidden type="text" name="ship_db" value=""
                                                         id="ship_db">
                                                     <input hidden type="text" name="coupon" id="gia_code_voucher"
                                                         value="0">
@@ -417,99 +420,20 @@
                                         <div class="card-details">
                                             {{-- <p>Your card details goes here.</p> --}}
                                             <!-- Button trigger modal -->
-                                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                            {{-- <button type="button" class="btn btn-primary" data-toggle="modal"
                                                 data-target="#exampleModal2">
                                                 Thanh toán chuyển khoản
-                                            </button>
-
-                                            <!-- Modal -->
-                                            <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog"
-                                                aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog" role="document">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="exampleModalLabel">Ngân hàng liên
-                                                                kết
-                                                            </h5>
-                                                            <button type="button" class="close" data-dismiss="modal"
-                                                                aria-label="Close">
-                                                                <span aria-hidden="true">&times;</span>
-                                                            </button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <span><b>Số tài khoản:</b> 19036632929019 </span> <br>
-                                                            <span><b>Tên tài khoản:</b> DAO CU HOAN </span> <br>
-                                                            <span><b>Ngân hàng:</b> TECHCOMBANK</span> <br>
-                                                            <span><b>Ghi chú:</b> {{ Auth::user()->name }} thanh toan tien
-                                                                hang </span> <br>
-                                                            <hr>
-                                                            <span><b>Số tài khoản:</b> 0392397262 </span> <br>
-                                                            <span><b>Tên tài khoản:</b> DAO CU HOAN </span> <br>
-                                                            <span><b>Ngân hàng:</b> MOMO</span> <br>
-                                                            <span><b>Ghi chú:</b> {{ Auth::user()->name }} thanh toan tien
-                                                                hang </span> <br>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            {{-- <button type="button" class="btn btn-secondary"
-                                                                data-dismiss="modal">Close</button> --}}
-                                                            <button data-dismiss="modal" type="button"
-                                                                class="btn btn-primary" onclick="hienthi0()">thanh toán
-                                                                thành công</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            {{-- end modals --}}
-                                            <!-- Button trigger modal -->
-                                            <button type="button" class="btn btn-primary" data-toggle="modal"
-                                                data-target="#exampleModal3">
-                                                thanh toán sau khi nhận hàng
-                                            </button>
-
-                                            <!-- Modal -->
-                                            <div class="modal fade" id="exampleModal3" tabindex="-1" role="dialog"
-                                                aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog" role="document">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="exampleModalLabel">Modal title
-                                                            </h5>
-                                                            <button type="button" class="close" data-dismiss="modal"
-                                                                aria-label="Close">
-                                                                <span aria-hidden="true">&times;</span>
-                                                            </button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <p style="font-style: italic">Vui lòng cọc 15% tiền hàng để đảm
-                                                                bảo tính xác thực trước khi nhận hàng mong quý khách chuyển
-                                                                qua STK dưới đây: </p>
-                                                            <br>
-                                                            <span style="font-style: italic">Số tiền phải cọc:
-                                                                {{ number_format(0.2 * ($total + $ship - $price_coupon)) }}</span>
-                                                            <br>
-                                                            <span><b>Số tài khoản:</b> 19036632929019 </span> <br>
-                                                            <span><b>Tên tài khoản:</b> DAO CU HOAN </span> <br>
-                                                            <span><b>Ngân hàng:</b> TECHCOMBANK</span> <br>
-                                                            <span><b>Ghi chú:</b> khach hang {{ Auth::user()->name }}
-                                                                chuyen tien coc hang </span> <br>
-                                                            <hr>
-                                                            <span><b>Số tài khoản:</b> 0392397262 </span> <br>
-                                                            <span><b>Tên tài khoản:</b> DAO CU HOAN </span> <br>
-                                                            <span><b>Ngân hàng:</b> MOMO</span> <br>
-                                                            <span><b>Ghi chú:</b> khach hang {{ Auth::user()->name }}
-                                                                chuyen tien coc hang </span> <br>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            {{-- <button type="button" class="btn btn-secondary"
-                                                                data-dismiss="modal">Close</button> --}}
-                                                            <button data-dismiss="modal" onclick="hienthi()"
-                                                                type="button" class="btn btn-primary">thanh toán thành
-                                                                công</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            {{-- end modals coc --}}
+                                            </button> --}}
+                                            {{-- <input type="radio" name="vi_tien" value="0" id=""> --}}
+                                            <input type="radio" name="vitien" value="0" class="btn-check" id="btn-check-2"
+                                                checked autocomplete="off">
+                                            <label class="btn btn-outline-secondary" for="btn-check-2">Thanh toán qua ví
+                                                tiền</label>
+                                                {{-- phương thức thanh toaNS 2 --}}
+                                            <input type="radio" name="vitien" value="1" class="btn-check" id="btn-check-3"
+                                                checked autocomplete="off">
+                                            <label class="btn btn-outline-secondary" for="btn-check-3">thanh toán sau khi
+                                                nhận hàng</label>
                                         </div> <br>
                                     </div>
                                 </div>
@@ -643,12 +567,12 @@
                                                 id="tien_ship{{ $value->id }}"
                                                 value="{{ $ship + ($value->price_ship / 100) * $ship }}">
                                         @endforeach
-                                        <input hidden type="text" id="value_ship" value="500000" name=""
+                                        <input hidden type="text" id="value_ship" value="" name=""
                                             id="">
                                     </td>
                                 </tr>
                                 <tr id="hien_thi_gia_voucher">
-                                    
+
                                 </tr>
                                 <tr>
                                     <td>Tổng tiền</td>

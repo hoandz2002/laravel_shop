@@ -137,7 +137,7 @@
                                 <option {{ $item->oderStatus == 10 ? 'selected' : '' }}
                                     @if ($item->oderStatus == 7 || $item->oderStatus == 8) disabled @endif value="10">Đã hoàn tiền
                                 </option>
-                                <option {{ $item->oderStatus == 100 ? 'selected' : '' }} value="10">Khách hàng hủy đơn
+                                <option {{ $item->oderStatus == 100 ? 'selected' : '' }} value="10">Đã hủy đơn
                                 </option>
                             </select>
                             <input type="text" name="oderEmail" value="{{ $item->oderEmail }}" hidden id="">

@@ -43,9 +43,6 @@
                 {{ session()->get('danger') }}
             </div>
         @endif
-        {{-- @if ($errors->any())
-        {{dd($errors)}}
-    @endif --}}
     </div>
     <div>
         @if (session()->has('success'))
@@ -53,9 +50,6 @@
                 {{ session()->get('success') }}
             </div>
         @endif
-        {{-- @if ($errors->any())
-        {{dd($errors)}}
-    @endif --}}
     </div>
     <div>
         <table class='table'>
@@ -97,7 +91,8 @@
                                     </option>
                                     <option {{ $item->oderStatus == 10 ? 'selected' : '' }} value="10">Đã hoàn tiền
                                     </option>
-                                    <option {{ $item->oderStatus == 100 ? 'selected' : '' }} value="100">Không được xác nhận
+                                    <option {{ $item->oderStatus == 100 ? 'selected' : '' }} value="100">Không được xác
+                                        nhận
                                     </option>
                                 </select>
                                 {{-- <button style="height: 30px" class="btn btn-dark "><i class="fa fa-redo"></i></button> --}}
@@ -108,7 +103,7 @@
                                 <input type="text" hidden name="oddPricePrd" value="{{ $item->total }}" id="">
                                 <input type="text" hidden name="orderShip" value="{{ $item->orderShip }}"
                                     id="">
-                                    <input type="text" name="return" value="ok" hidden id="">
+                                <input type="text" name="return" value="ok" hidden id="">
                                 <button style="margin-left: 150px" class="btn btn-warning">
                                     <i class="fas fa-eye"></i>
                                 </button>

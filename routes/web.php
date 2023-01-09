@@ -16,6 +16,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderDetailController;
 use App\Http\Controllers\ProductColorController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\PurseController;
 use App\Http\Controllers\ReturnProductController;
 use App\Http\Controllers\ShipController;
 use App\Http\Controllers\ShippingController;
@@ -91,7 +92,7 @@ Route::name('client.')->group(function () {
     Route::post('/addtocart', [ClientController::class, 'addtocart'])->name('addtocart');
     Route::delete('/deleteCart/{products}', [ClientController::class, 'deleteCart'])->name('deleteCart');
     // Route::post('/updateCartsl/{cart}', [CartController::class, 'updateCartsl'])->name('updateCartsl');
-        Route::post('/updateCartsl/{cart}', [CartController::class, 'updateCartsl'])->name('updateCartsl');
+    Route::post('/updateCartsl/{cart}', [CartController::class, 'updateCartsl'])->name('updateCartsl');
     //about- new
     Route::get('/about', [ClientController::class, 'about'])->name('about');
     Route::get('/new', [ClientController::class, 'new'])->name('new');
@@ -130,7 +131,6 @@ Route::name('client.')->group(function () {
         Route::get('/create/{id_Order}', [ReturnProductController::class, 'create'])->name('create');
         Route::post('/store', [ReturnProductController::class, 'store'])->name('store');
         Route::post('/add_code_ship', [ReturnProductController::class, 'add_code_ship'])->name('add_code_ship');
-
     });
     // 
     Route::prefix('/informations')->name('informations.')->group(function () {
@@ -142,7 +142,15 @@ Route::name('client.')->group(function () {
         Route::put('/update/{id}', [InformationController::class, 'update'])->name('update');
         Route::get('/updateStatus/{id}', [InformationController::class, 'updateStatus'])->name('updateStatus');
         Route::post('/changeAddress/{id}', [InformationController::class, 'changeAddress'])->name('changeAddress');
-
+    });
+    //  ví tiền 
+    Route::prefix('/purses')->name('purses.')->group(function () {
+        Route::get('/list', [PurseController::class, 'index'])->name('list');
+        Route::get('/create', [PurseController::class, 'create'])->name('create');
+        Route::post('/store', [PurseController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [PurseController::class, 'edit'])->name('edit');
+        Route::put('/update/{id}', [PurseController::class, 'update'])->name('update');
+        Route::get('/updateStatus/{id}', [PurseController::class, 'updateStatus'])->name('updateStatus');
     });
 });
 //giao dien danh muc san pham
@@ -158,6 +166,8 @@ Route::prefix('/catepr')->name('catepr.')->group(function () {
 
 // cổng thanh toán
 Route::post('/vnpay_payment', [ClientController::class, 'vnpay_payment'])->name('vnpay_payment');
+// momo
+Route::post('/momo_payment', [ClientController::class, 'momo_payment'])->name('momo_payment');
 
 // ===================================ADMIN===================================================
 
@@ -233,7 +243,6 @@ Route::middleware('admin')->prefix('/admin')->name('admin.')->group(function () 
         Route::get('/detail/{order}', [OrderDetailController::class, 'index'])->name('detail');
         Route::put('/updateStatusOrder/{order}', [OrderController::class, 'updateStatusOrder'])->name('updateStatusOrder');
         Route::post('/add_code_ship', [OrderController::class, 'add_code_ship'])->name('add_code_ship');
-
     });
     // Quan ly phieu giam gia
     Route::prefix('coupons')->name('coupons.')->group(function () {

@@ -108,22 +108,26 @@ class OrderDetailController extends Controller
       return redirect()->route('client.create', $id_Order);
     } elseif ($updateStatus->oderStatus = 5) {
       $id_Order = $order;
-      $data = Order::find($order);
-      // dd($data);
-      $now = date(now());
-      $thoi_gian = $data->orderDate;
-      // test
+      $odd_order = Order::find($order);
+      // 
+      $return_id = ReturnProduct::where('order_id', '=', $order)->where('oderStatus', '<=', 10)->get();
+      // dd($return_id);
+      if ($return_id->count() > 0) {
+        session()->flash('error_empty', 'Bạn đã gửi yêu cầu hoàn trả và đang đợi hệ thống xác nhận!');
+        return redirect()->back();
+      }
+      // 
       $order_return = new ReturnProduct();
       $order_return->order_id = $order;
       $order_return->orderDate = date(now());
-      $order_return->user_id = $data->user_id;
-      $order_return->oderStatus = $data->oderStatus + 1;
-      $order_return->phone = $data->phone;
-      $order_return->address = $data->address;
-      $order_return->oderEmail = $data->oderEmail;
-      $order_return->orderName = $data->orderName;
-      $order_return->orderShip = $data->orderShip;
-      $order_return->total = $data->total;
+      $order_return->user_id = $odd_order->user_id;
+      $order_return->oderStatus = $odd_order->oderStatus + 1;
+      $order_return->phone = $odd_order->phone;
+      $order_return->address = $odd_order->address;
+      $order_return->oderEmail = $odd_order->oderEmail;
+      $order_return->orderName = $odd_order->orderName;
+      $order_return->orderShip = $odd_order->orderShip;
+      $order_return->total = $odd_order->total;
       $order_return->save();
 
       return redirect()->route('client.returnProducts.create', $id_Order);

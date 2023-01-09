@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Coupon;
 use App\Models\Order;
+use App\Models\Purse;
 use App\Models\Return_detail;
 use App\Models\ReturnProduct;
+use App\Models\Transaction;
+use DateTime;
 use Illuminate\Http\Request;
 
 class ReturnProductController extends Controller
@@ -51,8 +54,8 @@ class ReturnProductController extends Controller
       $order_odd = Order::find($updateStatus->order_id);
       $voucher = Coupon::find($order_odd->id_voucher);
       // dd($voucher);
-      $voucher->quantity = $voucher->quantity + 1;
-      $voucher->save();
+      // $voucher->quantity = $voucher->quantity + 1;
+      // $voucher->save();
       $updateStatus->oderStatus = 7;
       $updateStatus->save();
       session()->flash('success', 'Bạn đã cập nhật trạng thái thành công!');
@@ -64,6 +67,29 @@ class ReturnProductController extends Controller
           session()->flash('error', 'Chưa có Mã vận đơn');
           return redirect()->back();
         }
+      }
+      if ($request->oderStatus == 10) {
+        $hoantien = Purse::where('user_id', '=', $updateStatus->user_id)->first();
+        // dd($hoantien);
+        $hoantien->surplus = $hoantien->surplus + $updateStatus->total;
+        $hoantien->save();
+        // save
+        $updateStatus->oderStatus = $request->oderStatus;
+        // them vao lich su hoan tien 
+        $vi_tien = Purse::where('user_id', '=', $updateStatus->user_id)->first();
+        // 
+        $lich_su_hoan_tien = new Transaction();
+        $lich_su_hoan_tien->date_time = Date(now());
+        $lich_su_hoan_tien->content = "Hoàn tiền hàng";
+        $lich_su_hoan_tien->money = $updateStatus->total;
+        $lich_su_hoan_tien->user_id = $updateStatus->user_id;
+        $lich_su_hoan_tien->type = "Admin chuyển tiền";
+        $lich_su_hoan_tien->surplus = $hoantien->surplus;
+        // save lich su haon tien
+        $lich_su_hoan_tien->save();
+        session()->flash('success', 'Đã hoàn tiền cho khách hàng!');
+        $updateStatus->save();
+        return redirect()->back();
       }
       $updateStatus->oderStatus = $request->oderStatus;
       // dd(3);

@@ -18,9 +18,11 @@ use App\Models\OrderDetail;
 use App\Models\Price_product;
 use App\Models\Product;
 use App\Models\ProductColor;
+use App\Models\Purse;
 use App\Models\Ship;
 use App\Models\Shipping;
 use App\Models\Size;
+use App\Models\Transaction;
 use App\Models\User;
 use DateTime;
 use GuzzleHttp\Handler\Proxy;
@@ -562,21 +564,40 @@ class ClientController extends Controller
             $coupon->save();
         }
         // dd('1');
-        if ($request->ship == null) {
+        if ($request->ship_db === null) {
+            // dd('kkk');
             $abc = 1;
             $bla = Ship::find($abc);
-            $request->ship = $request->ship_db + ($request->ship_db * ($bla->price_ship / 100));
+            $request->ship_db = $request->ship_mac_dinh;
         }
-        $pice_ship = $request->ship;
+        // dd($request->vitien);
+        if ($request->vitien == 0) {
+            $pur = Purse::where('user_id', '=', Auth::user()->id)->first();
+            $pur->surplus = $pur->surplus - ($request->total + $request->ship_db);
+            // insert lich su chuyen tien
+            $pur->save();
+            $lich_su_hoan_tien = new Transaction();
+            $lich_su_hoan_tien->date_time = Date(now());
+            $lich_su_hoan_tien->content = "Thanh toán tiền hàng";
+            $lich_su_hoan_tien->money = $request->total + $request->ship_db;
+            $lich_su_hoan_tien->user_id = Auth::user()->id;
+            $lich_su_hoan_tien->type = "Khách hàng thanh toán";
+            $lich_su_hoan_tien->surplus = $pur->surplus;
+            // save lich su haon tien
+            $lich_su_hoan_tien->save();
+        }
+        // dd("end");
+        // dd($request->ship_db);
+
         // $statement = DB::select("SHOW TABLE STATUS LIKE 'orders'");
         // $nextId = $statement[0]->Auto_increment;
         // \dd($nextId);        
         $order = new Order();
         $order->orderDate = date('Y-m-d');
         $order->oderStatus = 0;
-        $order->total = $request->total + $request->ship;
+        $order->total = $request->total + $request->ship_db;
         $order->coupon = $request->coupon;
-        $order->orderShip = $request->ship;
+        $order->orderShip = $request->ship_db;
         $order->user_id = Auth::user()->id;
         $order->orderName = $request->orderName;
         $order->oderEmail = $request->oderEmail;
@@ -784,5 +805,74 @@ class ClientController extends Controller
             echo json_encode($returnData);
         }
         // vui lòng tham khảo thêm tại code demo
+    }
+    public function execPostRequest($url, $data, $tien)
+    {
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt(
+            $ch,
+            CURLOPT_HTTPHEADER,
+            array(
+                'Content-Type: application/json',
+                'Content-Length: ' . strlen($data)
+            )
+        );
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+        //execute post
+        $result = curl_exec($ch);
+        //close connection
+        curl_close($ch);
+        $update = Purse::where('purses.user_id', '=', Auth::user()->id)->first();
+        $update->surplus = $update->surplus + $tien;
+        $update->save();
+        return $result;
+    }
+    public function momo_payment(Request $request)
+    {
+        $endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
+
+
+        $partnerCode = 'MOMOBKUN20180529';
+        $accessKey = 'klm05TvNBzhg7h7j';
+        $secretKey = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa';
+        $orderInfo = "Thanh toán qua ATM MoMo";
+        $amount = $request->money;
+        $orderId = time() . "";
+        $redirectUrl = "http://127.0.0.1:8000/purses/list";
+        $ipnUrl = "http://127.0.0.1:8000/purses/list";
+        $extraData = "";
+
+        $requestId = time() . "";
+        $requestType = "payWithATM";
+        // $extraData = ($_POST["extraData"] ? $_POST["extraData"] : "");
+        //before sign HMAC SHA256 signature
+        $rawHash = "accessKey=" . $accessKey . "&amount=" . $amount . "&extraData=" . $extraData . "&ipnUrl=" . $ipnUrl . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo . "&partnerCode=" . $partnerCode . "&redirectUrl=" . $redirectUrl . "&requestId=" . $requestId . "&requestType=" . $requestType;
+        $signature = hash_hmac("sha256", $rawHash, $secretKey);
+        // dd($signature);
+        $data = array(
+            'partnerCode' => $partnerCode,
+            'partnerName' => "Test",
+            "storeId" => "MomoTestStore",
+            'requestId' => $requestId,
+            'amount' => $amount,
+            'orderId' => $orderId,
+            'orderInfo' => $orderInfo,
+            'redirectUrl' => $redirectUrl,
+            'ipnUrl' => $ipnUrl,
+            'lang' => 'vi',
+            'extraData' => $extraData,
+            'requestType' => $requestType,
+            'signature' => $signature
+        );
+        $result = $this->execPostRequest($endpoint, json_encode($data), $amount);
+        // dd($result);
+        $jsonResult = json_decode($result, true);  // decode json
+        return redirect()->to($jsonResult['payUrl']);
+
+        //Just a example, please check more in there
     }
 }

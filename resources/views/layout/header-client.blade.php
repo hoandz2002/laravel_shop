@@ -62,6 +62,7 @@
                                                     {{-- <a href="{{route('client.profile',Auth::user()->id)}}">Thông tin cá nhân</a> --}}
                                                 </li>
                                                 {{-- <li><a href="checkout.html">Check Out</a></li> --}}
+                                                <li><a href="{{ route('client.purses.list') }}">Ví tiền</a></li>
                                                 <li><a href="{{ route('client.informations.list') }}">Địa chỉ</a></li>
                                                 <li><a href="{{ route('client.showOrder') }}">Hóa Đơn</a></li>
                                                 <li><a href="{{ route('client.orderReturn') }}">Đơn hoàn trả</a></li>
