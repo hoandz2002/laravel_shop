@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UserRequest;
 use App\Http\Requests\UserUpdateRequest;
+use App\Models\Purse;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -22,18 +23,18 @@ class UserController extends Controller
     }
     public function create()
     {
+        dd(1);
         return view('admin.users.create');
     }
 
     public function store(Request $request)
     {
-
         $user = new User();
 
         $user->fill($request->all());
         // 2. Kiểm tra file và lưu
         $user->password = Hash::make($request->password);
-        if ($request->hasFile('avatar') ) {
+        if ($request->hasFile('avatar')) {
             $avatar = $request->avatar;
             $avatarName = $avatar->hashName();
             $avatarName = $request->username . '_' . $avatarName;
@@ -44,6 +45,15 @@ class UserController extends Controller
         }
         // 3. Lưu $user vào CSDL
         $user->save();
+        // insert vao bang vi tien
+        $kk = User::select('users.*')->orderBy('id', 'desc')
+        ->first(); 
+        $vitien = new Purse();
+        $vitien->user_id = $kk->id;
+        $vitien->surplus = 0;
+        $vitien->status = 0;
+        // 
+        $vitien->save();
         if (Auth::check()) {
             return redirect()->route('users.list');
         } else {

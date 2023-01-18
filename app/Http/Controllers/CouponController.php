@@ -19,6 +19,10 @@ class CouponController extends Controller
     }
     public function store(Request $request)
     {
+        if ($request->Minimum_bill < $request->sale) {
+            session()->flash('error', 'Giá trị được giảm không được lớn hơn giá trị đơn hàng!');
+            return redirect()->back();
+        }
         $coupon = new Coupon();
 
         $coupon->fill($request->all());
@@ -34,6 +38,10 @@ class CouponController extends Controller
     }
     public function update(Request $request, $size)
     {
+        if ($request->Minimum_bill < $request->sale) {
+            session()->flash('error', 'Giá trị được giảm không được lớn hơn giá trị đơn hàng!');
+            return redirect()->back();
+        }
         $data = Coupon::find($size);
         $data->name = $request->name;
         $data->content = $request->content;

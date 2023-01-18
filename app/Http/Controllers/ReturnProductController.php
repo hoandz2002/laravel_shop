@@ -8,6 +8,8 @@ use App\Models\Purse;
 use App\Models\Return_detail;
 use App\Models\ReturnProduct;
 use App\Models\Transaction;
+use App\Models\User;
+use App\Models\Voucher_hoan_tien;
 use DateTime;
 use Illuminate\Http\Request;
 
@@ -52,10 +54,24 @@ class ReturnProductController extends Controller
     if ($request->tu_choi == 0) {
       // dd(2);
       $order_odd = Order::find($updateStatus->order_id);
-      $voucher = Coupon::find($order_odd->id_voucher);
-      // dd($voucher);
-      // $voucher->quantity = $voucher->quantity + 1;
-      // $voucher->save();
+      $hoantien = Purse::where('user_id', '=', $updateStatus->user_id)->first();
+      if ($updateStatus->id_voucher_hoan_tien != null) {
+        $voucher_hoan_tien = Voucher_hoan_tien::find($updateStatus->id_voucher_hoan_tien);
+        // dd($voucher_hoan_tien);
+        $hoantien->surplus = $hoantien->surplus + $voucher_hoan_tien->refund;
+        $hoantien->save();
+        // in sert lich su nap rut tien 
+
+        $lich_su_hoan_tien = new Transaction();
+        $lich_su_hoan_tien->date_time = Date(now());
+        $lich_su_hoan_tien->content = "Hoàn tiền sử dụng voucher";
+        $lich_su_hoan_tien->money = $voucher_hoan_tien->refund;
+        $lich_su_hoan_tien->user_id = $order_odd->user_id;
+        $lich_su_hoan_tien->type = "Hoàn tiền voucher";
+        $lich_su_hoan_tien->surplus = $hoantien->surplus;
+        // save lich su haon tien
+        $lich_su_hoan_tien->save();
+      }
       $updateStatus->oderStatus = 7;
       $updateStatus->save();
       session()->flash('success', 'Bạn đã cập nhật trạng thái thành công!');

@@ -24,6 +24,7 @@ use App\Models\Shipping;
 use App\Models\Size;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Models\Voucher_hoan_tien;
 use DateTime;
 use GuzzleHttp\Handler\Proxy;
 use Illuminate\Contracts\Session\Session;
@@ -371,6 +372,8 @@ class ClientController extends Controller
     public function checkout(Request $request)
     {
         // dd($request->all());
+        $voucher = Voucher_hoan_tien::select('voucher_hoan_tiens.*')->where('status', '=', 0)->get();
+        // 
         $coupon = Coupon::select('coupons.*')
             ->where('status', '=', 0)
             ->get();
@@ -417,7 +420,7 @@ class ClientController extends Controller
                     $ship = 500000;
                 }
                 // dd($products);
-                return view('KH.checkout', compact('kk', 'products', 'mass', 'total', 'ship', 'id_cart', 'price_coupon', 'ships', 'address', 'coupon'));
+                return view('KH.checkout', compact('voucher', 'kk', 'products', 'mass', 'total', 'ship', 'id_cart', 'price_coupon', 'ships', 'address', 'coupon'));
             }
         } else {
             session()->flash('empty_checkbok', 'Vui lòng chọn sản phẩm thanh toán !');
@@ -604,6 +607,9 @@ class ClientController extends Controller
         $order->phone = $request->phone;
         $order->address = $request->address;
         $order->id_voucher = $request->id_voucher;
+        $order->payment = $request->vitien;
+        $order->id_voucher_hoan_tien = $request->id_voucher_hoan_tien;
+
         // dd($request->total);
         $order->save();
 

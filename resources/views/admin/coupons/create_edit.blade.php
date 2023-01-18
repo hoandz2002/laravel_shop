@@ -9,6 +9,13 @@
             @endforeach
         </ul>
     @endif
+     <div>
+        @if (session()->has('error'))
+        <div class="alert alert-danger">
+            {{ session()->get('error') }}
+        </div>
+    @endif
+    </div>
     <form action="{{ isset($coupon) ? route('admin.coupons.update', $coupon->id) : route('admin.coupons.store') }}"
         method="POST" enctype="multipart/form-data">
         {{ isset($coupon) ? method_field('PUT') : '' }}

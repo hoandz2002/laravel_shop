@@ -141,15 +141,17 @@
                                 <option class="form-control" {{ $item->oderStatus == 3 ? 'selected' : '' }}
                                     {{ $item->oderStatus == 0 ? 'disabled' : '' }}
                                     {{ $item->oderStatus == 1 ? 'disabled' : '' }}
-                                    {{ $item->oderStatus == 5 ? 'disabled' : '' }} value="3">Đã nhận hàng</option>
+                                    {{ $item->oderStatus == 5 ? 'disabled' : '' }}
+                                    {{ $item->payment == 0 ? 'disabled' : '' }} value="3">Đã nhận hàng</option>
                                 <option class="form-control" {{ $item->oderStatus >= 5 ? 'selected' : '' }}
-                                    {{ $item->oderStatus == 0 ? 'disabled' : '' }}
-                                    {{ $item->oderStatus == 2 ? 'disabled' : '' }}
+                                    {{ $item->oderStatus == 0 ? 'disabled' : '' }} {{-- {{ $item->oderStatus == 2 ? 'disabled' : '' }} --}}
                                     {{ $item->oderStatus == 1 ? 'disabled' : '' }} value="5">Đã thanh toán
                                 </option>
                                 {{-- <option {{ $item->oderStatus == 6 ? 'selected' : '' }} value="6">Đang xác nhận HT
                                 </option> --}}
-                                <option class="form-control" {{ $item->oderStatus == 4 ? 'selected' : '' }} value="4">
+                                <option class="form-control" {{ $item->oderStatus == 4 ? 'selected' : '' }}
+                                    {{ $item->oderStatus == 2 ? 'disabled' : '' }}
+                                    {{ $item->oderStatus == 3 ? 'disabled' : '' }} value="4">
                                     Đã hủy đơn</option>
 
                             </select>

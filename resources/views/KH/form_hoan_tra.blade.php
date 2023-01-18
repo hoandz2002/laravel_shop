@@ -77,13 +77,15 @@
                             </p>
                             <p>
                             <h6>Lí do hoàn trả</h6>
-                            <input type="radio" name="reason" value="0" id=""><span> Hàng không đúng
+                            <input type="radio" name="reason" value="Hàng không đúng
+                            mẫu" id=""><span> Hàng không đúng
                                 mẫu</span> <br>
-                            <input type="radio" name="reason" value="1" id=""><span> Giao nhầm hàng</span>
+                            <input type="radio" name="reason" value="Giao nhầm hàng" id=""><span> Giao nhầm hàng</span>
                             <br>
-                            <input type="radio" name="reason" value="2" id=""><span> chất lượng sản phẩm
+                            <input type="radio" name="reason" value="chất lượng sản phẩm
+                            không tốt" id=""><span> chất lượng sản phẩm
                                 không tốt</span> <br>
-                            <input type="radio" name="reason" value="3" id=""><span> Khác</span>
+                            <input type="radio" name="reason" value="Lý do khác" id=""><span> Khác</span>
 
                             </p>
                             <p>

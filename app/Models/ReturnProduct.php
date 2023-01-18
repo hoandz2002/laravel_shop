@@ -21,5 +21,6 @@ class ReturnProduct extends Model
         'coupon',
         'code_ship',
         'total',
+        'id_voucher_hoan_tien',
     ];
 }

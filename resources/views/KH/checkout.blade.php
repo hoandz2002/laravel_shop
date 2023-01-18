@@ -2,8 +2,11 @@
 @section('title', 'san pham')
 @section('conten-title', 'san pham')
 @section('content')
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous">
+    </script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <!-- search area -->
     <form action="{{ route('client.shop') }}">
         <div class="search-area">
@@ -425,13 +428,13 @@
                                                 Thanh toán chuyển khoản
                                             </button> --}}
                                             {{-- <input type="radio" name="vi_tien" value="0" id=""> --}}
-                                            <input type="radio" name="vitien" value="0" class="btn-check" id="btn-check-2"
-                                                checked autocomplete="off">
+                                            <input type="radio" name="vitien" value="0" class="btn-check"
+                                                id="btn-check-2" checked autocomplete="off">
                                             <label class="btn btn-outline-secondary" for="btn-check-2">Thanh toán qua ví
                                                 tiền</label>
-                                                {{-- phương thức thanh toaNS 2 --}}
-                                            <input type="radio" name="vitien" value="1" class="btn-check" id="btn-check-3"
-                                                checked autocomplete="off">
+                                            {{-- phương thức thanh toaNS 2 --}}
+                                            <input type="radio" name="vitien" value="1" class="btn-check"
+                                                id="btn-check-3" checked autocomplete="off">
                                             <label class="btn btn-outline-secondary" for="btn-check-3">thanh toán sau khi
                                                 nhận hàng</label>
                                         </div> <br>
@@ -440,6 +443,8 @@
                             </div>
                             <br>
                             <input hidden type="text" name="id_voucher" id="id_giam_gia" value="">
+                            <input type="text" name="id_voucher_hoan_tien" id="id_voucher_hoan_tien" hidden
+                                value="">
                             <button id="btn_order" class="bnt btn-default"
                                 style="background: #F28123;color: white;width: 110px;height: 40px;border: 0px;border-radius: 10px">Đặt
                                 hàng
@@ -631,28 +636,58 @@
                                                                     <input type="text" hidden name="id[]"
                                                                         value="{{ $db }}" id="">
                                                                 @endforeach
+                                                                <p>Giảm giá</p>
                                                                 @foreach ($coupon as $value)
                                                                     <div
                                                                         style="width: 100%;min-height: 50px;display: flex">
-                                                                        <div>
+                                                                        <div style="background: peru;width: 16%">
                                                                             <img src="https://cf.shopee.vn/file/05a0d5c56d00e1c21b53f0a08356efc1"
-                                                                                width="70px" height="70px" w
+                                                                                width="100%" height="70px" w
                                                                                 alt="">
                                                                         </div>
-                                                                        <div style="margin-left: 15px">
+                                                                        <div style="margin-left: 15px;width: 75%">
                                                                             Giảm {{ number_format($value->sale) }} <br>
                                                                             Đơn tối thiểu
                                                                             {{ number_format($value->Minimum_bill) }}
                                                                         </div>
-                                                                        <div>
+                                                                        <div style="width: 9%">
                                                                             <input
                                                                                 {{ $total < $value->Minimum_bill ? 'disabled' : '' }}
                                                                                 {{ $value->quantity < 1 ? 'disabled' : '' }}
-                                                                                style="margin-left: 200px;margin-top: 30px"
+                                                                                style="margin-top: 30px;float: left;margin-left: 10px"
                                                                                 type="radio" name="voucher"
                                                                                 value="{{ $value->id }}"
                                                                                 data-url="{{ route('client.ajax_ship') }}"
                                                                                 id="radio_voucher">
+                                                                        </div>
+                                                                    </div> <br>
+                                                                @endforeach
+                                                                {{-- voucher hoan tien --}}
+                                                                <hr>
+                                                                <p>Hoàn xu</p>
+                                                                @foreach ($voucher as $value)
+                                                                    <div
+                                                                        style="width: 100%;min-height: 50px;display: flex">
+                                                                        <div style="background: peru;width: 16%">
+                                                                            <img src="https://cf.shopee.vn/file/a6ff372c86c4e242c76fb75f65ae7579"
+                                                                                width="100%" height="70px" w
+                                                                                alt="">
+                                                                        </div>
+                                                                        <div style="margin-left: 15px;width: 75%">
+                                                                            Hoàn {{ number_format($value->refund) }}
+                                                                            VND vào ví điện tử<br>
+                                                                            Đơn tối thiểu
+                                                                            {{ number_format($value->minimum_bill) }} VND
+                                                                        </div>
+                                                                        <div style="width: 9%">
+                                                                            <input
+                                                                                {{ $total < $value->minimum_bill ? 'disabled' : '' }}
+                                                                                {{ $value->quantity < 1 ? 'disabled' : '' }}
+                                                                                style="margin-top: 30px;float: left;margin-left: 10px"
+                                                                                type="radio" name="voucher_hoan_tien"
+                                                                                value="{{ $value->id }}"
+                                                                                data-url="{{ route('client.ajax_voucher_hoan_tien') }}"
+                                                                                id="voucher_hoan_tien">
                                                                         </div>
                                                                     </div> <br>
                                                                 @endforeach
@@ -675,6 +710,8 @@
                                 </tr>
                             </tbody>
                         </table>
+                        <br>
+                        <p id="number" style="color: red"></p>
                         <br>
                         {{-- <a href="" class="boxed-btn">Place Order</a> --}}
                         {{-- <form action="{{ route('vnpay_payment') }}" method="POST">
@@ -729,6 +766,29 @@
                         $('#total').val(total)
                         $('#id_giam_gia').val(data)
 
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $(document).on('change', '#voucher_hoan_tien', function(event) {
+                console.log('anh hoan dep zai');
+                const url = $(this).data('url')
+                const data = $(this).val()
+                console.log(url, data);
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                    data: {
+                        id_voucher: data
+                    },
+                    success: function(response) {
+                        const tien = response.tien_hoan.toLocaleString();
+                        const hienthi = `Số tiền được hoàn: ${tien} VND`
+                        $('#id_voucher_hoan_tien').val(data);
+                        $('#number').html(hienthi)
                     }
                 });
             });

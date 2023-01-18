@@ -3,7 +3,6 @@
 @section('title', 'Đơn hàng hoàn trả')
 
 @section('content-title', 'Đơn hàng hoàn trả')
-
 @section('content')
     <div>
         @if (session()->has('success'))
@@ -78,10 +77,11 @@
                                 <i style="color: red" class="fas fa-search"></i>
                             </button>
                         @else
-                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                            {{-- <button type="button" class="btn btn-primary" data-toggle="modal"
                                 data-target="#exampleModal1{{ $item->id }}">
                                 Add code ship
-                            </button>
+                            </button> --}}
+                            <i style="color: gray">Mã vẫn đơn trống</i>
                         @endif
                     </td>
                     <div class="modal fade" id="exampleModal1{{ $item->id }}" tabindex="-1" role="dialog"
@@ -113,7 +113,9 @@
                             </div>
                         </div>
                     </div>
-                    <td>{{ number_format($item->total) }}</td>
+                    <td>
+                        {{ number_format($item->total) }}
+                    </td>
                     <td>
                         <form action="{{ route('client.returnProducts.updateStatus', $item->id) }}" method="POST">
                             @csrf
@@ -225,6 +227,7 @@
                                 id="">
                             <input type="text" hidden name="coupon" value="{{ $item->coupon }}" id="">
                             <input type="text" hidden name="oddPricePrd" value="{{ $item->total }}" id="">
+                            <input type="text" hidden name="id_voucher_hoan_tien" value="{{ $item->id_voucher_hoan_tien }}" id="">
                             <input type="text" name="return" value="ok" hidden id="">
                             <button class="btn btn-warning">
                                 <i class="fas fa-eye"></i>

@@ -136,9 +136,10 @@
                                         Đã nhận hàng
                                     </button>
                                 @elseif ($item->oderStatus == 3)
-                                    <button style="width: 170px" class="btn btn-warning">
+                                    <button class="btn btn-warning">
                                         Đánh giá
                                     </button>
+                                    <button class="btn btn-outline-info">Hoàn trả</button>
                                 @elseif ($item->oderStatus >= 5)
                                     <?php
                                     $date1 = date(today());
@@ -155,6 +156,7 @@
                                             <button class="btn btn-outline-secondary" type="button">Liên hệ shop</button>
                                         </div>
                                     @else
+                                    <input type="text" name="id_voucher_hoan_tien" value="{{$item->id_voucher_hoan_tien}}" hidden id="">
                                         <button style="width: 170px" class="btn btn-info">
                                             Hoàn trả
                                         </button>

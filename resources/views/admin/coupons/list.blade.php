@@ -7,13 +7,13 @@
             <button class='btn btn-success'>Tạo mới</button>
         </a>
     </div>
-    {{-- <div>
+    <div>
         @if (session()->has('success'))
-        <div class="alert alert-success">
-            {{ session()->get('success') }}
-        </div>
-    @endif
-    </div> --}}
+            <div class="alert alert-success">
+                {{ session()->get('success') }}
+            </div>
+        @endif
+    </div>
     <table class='table'>
         <thead>
             <tr>
@@ -33,7 +33,7 @@
                     <td>{{ $item->id }}</td>
                     <td>{{ $item->name }}</td>
                     <td>{{ $item->code }}</td>
-                    <td>{{ $item->sale }}</td>
+                    <td>{{ number_format($item->sale) }} VND</td>
                     <td>{{ $item->quantity }}</td>
                     <td>{{ number_format($item->Minimum_bill) }} VND</td>
                     <td>
@@ -42,9 +42,8 @@
                                 @csrf
 
                                 @if ($item->status == 0)
-                                    <i class="fab fa-circle alert-success"></i> Kích hoạt 
-                                    <button type="submit"
-                                        style="background: transparent; border: transparent"><i
+                                    <i class="fab fa-circle alert-success"></i> Kích hoạt
+                                    <button type="submit" style="background: transparent; border: transparent"><i
                                             class="fa fa-redo"></i></button>
                                 @else
                                     <i class="fab fa-circle alert-danger"></i>Không kích hoạt <button type="submit"
@@ -61,12 +60,13 @@
                         <form action="{{ route('admin.coupons.delete', $item->id) }}" method="POST">
                             @csrf
                             @method('DELETE')
-                            <button onclick="return confirm('Bạn có chắc chắn muốn xóa')" class='btn btn-danger'>Xoá</button>
+                            <button onclick="return confirm('Bạn có chắc chắn muốn xóa')"
+                                class='btn btn-danger'>Xoá</button>
                         </form>
                     </td>
                 </tr>
             @endforeach
         </tbody>
     </table>
-   
+
 @endsection

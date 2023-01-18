@@ -22,5 +22,6 @@ class Order extends Model
         'total',
         'code_ship',
         'id_voucher',
+        'id_voucher_hoan_tien',
     ];
 }

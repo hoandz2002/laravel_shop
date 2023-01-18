@@ -183,12 +183,19 @@
                                 {{ number_format($ship) }}<sup>đ</sup>
                             </td>
                         </tr>
-                        @if (!$return)
-                            <tr>
-                                <td>Mã giảm giá</td>
-                                <td>-{{ $coupon }}<sup>đ</sup></td>
-                            </tr>
-                        @endif
+                        {{-- @if (!$return) --}}
+                        <tr>
+                            <td>Mã giảm giá</td>
+                            <td>
+                                @if ($coupon === null)
+                                    -0
+                                    <sup>đ</sup>
+                                @else
+                                    -{{ number_format($coupon) }}<sup>đ</sup>
+                                @endif
+                            </td>
+                        </tr>
+                        {{-- @endif --}}
                         <tr>
                             <td><strong>Tổng tiền</strong></td>
                             <td><strong>{{ number_format($total_price) }}<sup>đ</sup></strong></td>
@@ -196,6 +203,16 @@
                     </tbody>
 
                 </table>
+                <br>
+                @if ($data->id_voucher_hoan_tien != null)
+                    <?php
+                    $tienhoan = DB::table('voucher_hoan_tiens')
+                        ->where('id', '=', $data->id_voucher_hoan_tien)
+                        ->first();
+                    ?>
+                    <p style="color: red;font-weight: bold">Đã hoàn {{ number_format($tienhoan->refund) }} VND vào ví tiền
+                        của bạn( {{ $tienhoan->name }} )</p>
+                @endif
             </div>
             <br>
         </div>

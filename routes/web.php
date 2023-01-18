@@ -22,6 +22,7 @@ use App\Http\Controllers\ShipController;
 use App\Http\Controllers\ShippingController;
 use App\Http\Controllers\SizeController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\Voucher_hoan_tienController;
 use App\Models\Cart;
 use App\Models\CategotyProduct;
 use App\Models\Color;
@@ -152,6 +153,7 @@ Route::name('client.')->group(function () {
         Route::put('/update/{id}', [PurseController::class, 'update'])->name('update');
         Route::get('/updateStatus/{id}', [PurseController::class, 'updateStatus'])->name('updateStatus');
     });
+    Route::get('/ajax_voucher_hoan_tien', [PurseController::class, 'ajax_voucher_hoan_tien'])->name('ajax_voucher_hoan_tien');
 });
 //giao dien danh muc san pham
 Route::prefix('/catepr')->name('catepr.')->group(function () {
@@ -253,6 +255,16 @@ Route::middleware('admin')->prefix('/admin')->name('admin.')->group(function () 
         Route::get('/edit/{size}', [CouponController::class, 'edit'])->name('edit');
         Route::put('/update/{size}', [CouponController::class, 'update'])->name('update');
         Route::post('/updateStatus/{coupon}', [CouponController::class, 'updateStatus'])->name('updateStatus');
+    });
+    // voucher hoan tieen
+    Route::prefix('vouchers')->name('vouchers.')->group(function () {
+        Route::get('/list', [Voucher_hoan_tienController::class, 'index'])->name('list');
+        Route::delete('/delete/{size}', [Voucher_hoan_tienController::class, 'delete'])->name('delete');
+        Route::get('/create', [Voucher_hoan_tienController::class, 'create'])->name('create');
+        Route::post('/store', [Voucher_hoan_tienController::class, 'store'])->name('store');
+        Route::get('/edit/{size}', [Voucher_hoan_tienController::class, 'edit'])->name('edit');
+        Route::post('/update/{size}', [Voucher_hoan_tienController::class, 'update'])->name('update');
+        Route::post('/updateStatus/{coupon}', [Voucher_hoan_tienController::class, 'updateStatus'])->name('updateStatus');
     });
     //  chi tit san pham
     Route::prefix('datailProduct')->name('datailProduct.')->group(function () {

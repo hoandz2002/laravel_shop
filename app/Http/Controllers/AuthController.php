@@ -73,11 +73,11 @@ class AuthController extends Controller
     }
     public function getdangki()
     {
+        // dd(1);
         return view('auth.dangki');
     }
     public function store(Request $request)
     {
-
         $user = new User();
 
         $user->fill($request->all());
@@ -94,6 +94,8 @@ class AuthController extends Controller
         }
         // 3. Lưu $user vào CSDL
         $user->save();
+        // insert vao bang vi tien
+
         session()->flash('success', 'bạn đã đăng kí thành công');
         return redirect()->route('auth.getLogin');
     }

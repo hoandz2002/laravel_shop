@@ -304,7 +304,7 @@
                             <a href="{{ route('admin.coupons.list') }}" class="nav-link">
                                 <i class="nav-icon fas fa-voicemail"></i>
                                 <p>
-                                    Giảm giá 
+                                    Giảm giá
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
@@ -312,6 +312,25 @@
 
                     </ul>
                 </nav>
+                {{--  --}}
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+                        data-accordion="false">
+                        <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+                        <li class="nav-item">
+                            <a href="{{ route('admin.vouchers.list') }}" class="nav-link">
+                                <i class="nav-icon fas fa-voicemail"></i>
+                                <p>
+                                    Voucher hoàn tiền
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                        </li>
+
+                    </ul>
+                </nav>
+                {{--  --}}
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                         data-accordion="false">
@@ -399,11 +418,11 @@
                                         ->select('orders.*')
                                         ->get();
                                     ?>
-                                   @if (count($data) > 0)
-                                   <div
-                                   style="width: 25px;height: 25px;background: white;color: red;font-weight: bold;text-align: center; border-radius: 100%;position: absolute;top: -5px;left: 90px;">
-                                   {{ count($data) }}</div>
-                                   @endif
+                                    @if (count($data) > 0)
+                                        <div
+                                            style="width: 25px;height: 25px;background: white;color: red;font-weight: bold;text-align: center; border-radius: 100%;position: absolute;top: -5px;left: 90px;">
+                                            {{ count($data) }}</div>
+                                    @endif
                                 </p>
                             </a>
                         </li>
@@ -416,7 +435,7 @@
                         <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
                         <li class="nav-item">
-                            <a href="{{route('client.returnProducts.listReturnProduct')}}" class="nav-link">
+                            <a href="{{ route('client.returnProducts.listReturnProduct') }}" class="nav-link">
                                 <i class="nav-icon fas fa-cart-plus"></i>
                                 <p>
                                     Hóa đơn hoàn trả
@@ -427,11 +446,11 @@
                                         ->select('return_products.*')
                                         ->get();
                                     ?>
-                                   @if (count($data) > 0)
-                                   <div
-                                   style="width: 25px;height: 25px;background: white;color: red;font-weight: bold;text-align: center; border-radius: 100%;position: absolute;top: -5px;left:160px;">
-                                   {{ count($data) }}</div>
-                                   @endif
+                                    @if (count($data) > 0)
+                                        <div
+                                            style="width: 25px;height: 25px;background: white;color: red;font-weight: bold;text-align: center; border-radius: 100%;position: absolute;top: -5px;left:160px;">
+                                            {{ count($data) }}</div>
+                                    @endif
                                 </p>
                             </a>
                         </li>
@@ -562,7 +581,7 @@
     <script src="{{ asset('dist/js/adminlte.min.js') }}"></script>
     <!-- AdminLTE for demo purposes -->
     <script src="{{ asset('dist/js/demo.js') }}"></script>
-    
+
 </body>
 
 </html>

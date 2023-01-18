@@ -60,6 +60,7 @@
                     <th>Số điện thoại</th>
                     <th>Email</th>
                     <th>Địa chỉ</th>
+                    <th>Mã vận đơn</th>
                     <th>Tổng tiền</th>
                     <th>Trạng thái</th>
                     <th colspan="2" style="text-align: center">Hành động</th>
@@ -74,6 +75,54 @@
                         <td>{{ $item->phone }}</td>
                         <td>{{ $item->oderEmail }}</td>
                         <td>{{ $item->address }}</td>
+                        <td>
+                            {{ $item->code_ship }}
+                            @if ($item->oderStatus == 6)
+                                <i style="color: gray">Chờ Admin xác nhận</i>
+                            @else
+                                @if ($item->code_ship)
+                                    <button style="background: transparent;border: 0" type="button" data-toggle="modal"
+                                        data-target="#exampleModal{{ $item->id }}">
+                                        <i style="color: red" class="fas fa-search"></i>
+                                    </button>
+                                @else
+                                    <button type="button" class="btn btn-primary" data-toggle="modal"
+                                        data-target="#exampleModal1{{ $item->id }}">
+                                        Add code ship
+                                    </button>
+                                @endif
+                            @endif
+
+                        </td>
+                        <div class="modal fade" id="exampleModal1{{ $item->id }}" tabindex="-1" role="dialog"
+                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="{{ route('client.returnProducts.add_code_ship') }}" method="POST">
+                                            @csrf
+                                            <div>
+                                                <input type="text" hidden name="id_order" value="{{ $item->id }}">
+                                                <label for="">Nhập mã vận đơn</label>
+                                                <input type="text" class="form-control" name="code_ship"
+                                                    placeholder="nhập code ship" id="">
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-dismiss="modal">Close</button>
+                                                <button class="btn btn-primary">Save changes</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <td>{{ number_format($item->total) }}</td>
                         <td>
                             <form action="{{ route('admin.orders.updateStatusOrder', $item->id) }}" method="POST">
@@ -104,6 +153,7 @@
                                 <input type="text" hidden name="orderShip" value="{{ $item->orderShip }}"
                                     id="">
                                 <input type="text" name="return" value="ok" hidden id="">
+                                <input type="text" hidden name="coupon" value="{{ $item->coupon }}" id="">
                                 <button style="margin-left: 150px" class="btn btn-warning">
                                     <i class="fas fa-eye"></i>
                                 </button>
@@ -136,8 +186,13 @@
                                     <button style="width: 170px" class="btn btn-info">
                                         Hoàn trả
                                     </button>
-                                @elseif ($item->oderStatus == 4)
-                                    <button style="width: 170px" class="btn btn-success">
+                                @elseif ($item->oderStatus == 4 ||
+                                    $item->oderStatus == 6 ||
+                                    $item->oderStatus == 7 ||
+                                    $item->oderStatus == 8 ||
+                                    $item->oderStatus == 9 ||
+                                    $item->oderStatus == 10)
+                                    <button type="button" style="width: 170px" class="btn btn-success">
                                         Đặt lại đơn hàng
                                     </button>
                                 @endif
